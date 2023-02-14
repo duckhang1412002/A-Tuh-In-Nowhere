@@ -5,8 +5,8 @@ using UnityEngine;
 public class Step : MonoBehaviour
 {
 
-    [SerializeField] private float moveSpeed = 2.0f;
-    private float step = 0;
+    [SerializeField] private float moveStep = 2.0f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -16,46 +16,27 @@ public class Step : MonoBehaviour
   
     void Update()
     {
-        // if(Input.GetKeyDown(KeyCode.UpArrow)) {
-        //     Debug.Log("Key Up");
-        //     transform.Translate(0, 2.0f, 0);
-        // }
-        // else if(Input.GetKeyDown(KeyCode.DownArrow)){
-        //    Debug.Log("Key Down"); 
-        //    transform.Translate(0, -2.0f, 0);
-        // } 
-        // else if(Input.GetKeyDown(KeyCode.LeftArrow)) {
-        //     Debug.Log("Key Left"); 
-        //     transform.Translate(-2.0f, 0, 0);
-        // }
-        // else if(Input.GetKeyDown(KeyCode.RightArrow)) {
-        //     Debug.Log("Key Right"); 
-        //     transform.Translate(2.0f, 0, 0);
-        // }
-        step = moveSpeed * Time.deltaTime;
-
         if(Input.GetKeyDown(KeyCode.UpArrow)) {
             Debug.Log("Key Up"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x,this.transform.position.y+1*100));          
+            StepMove(this.transform.position, new Vector2(this.transform.position.x,this.transform.position.y+1));          
         }
         else if(Input.GetKeyDown(KeyCode.DownArrow)){
             Debug.Log("Key Down"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x,this.transform.position.y-1*100)); 
+            StepMove(this.transform.position, new Vector2(this.transform.position.x,this.transform.position.y-1)); 
         } 
         else if(Input.GetKeyDown(KeyCode.LeftArrow)) {
             Debug.Log("Key Left"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x-1*100,this.transform.position.y)); 
+            StepMove(this.transform.position, new Vector2(this.transform.position.x-1,this.transform.position.y)); 
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
         }
         else if(Input.GetKeyDown(KeyCode.RightArrow)) {
             Debug.Log("Key Right"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x+1*100,this.transform.position.y));
+            StepMove(this.transform.position, new Vector2(this.transform.position.x+1,this.transform.position.y));
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
         void StepMove(Vector2 currentPosition, Vector2 target){
-            this.transform.position = Vector2.MoveTowards(currentPosition, target, moveSpeed);
+            this.transform.position = Vector2.MoveTowards(currentPosition, target, moveStep);
         }
     }   
-    
 }
