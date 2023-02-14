@@ -5,7 +5,12 @@ using UnityEngine;
 public class Step : MonoBehaviour
 {
 
-    [SerializeField] private float moveStep = 2.0f;
+    [SerializeField] private float moveSteps = 2.0f;
+    [SerializeField] private float moveSpeed = 5.0f;
+    private bool enableMove = true;
+
+    private Vector2 currentPosition = new Vector2(0,0);
+    private Vector2 targetPosition = new Vector2(0,0);
 
 
     // Start is called before the first frame update
@@ -16,27 +21,34 @@ public class Step : MonoBehaviour
   
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.UpArrow)) {
-            Debug.Log("Key Up"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x,this.transform.position.y+1));          
+        if(Input.GetKeyDown(KeyCode.UpArrow) && enableMove) {
+            currentPosition = this.transform.position;      
+            targetPosition = new Vector2(transform.position.x, transform.position.y+moveSteps);
         }
-        else if(Input.GetKeyDown(KeyCode.DownArrow)){
-            Debug.Log("Key Down"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x,this.transform.position.y-1)); 
+        else if(Input.GetKeyDown(KeyCode.DownArrow) && enableMove){
+            currentPosition = this.transform.position;      
+            targetPosition = new Vector2(transform.position.x, transform.position.y-moveSteps);
         } 
-        else if(Input.GetKeyDown(KeyCode.LeftArrow)) {
-            Debug.Log("Key Left"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x-1,this.transform.position.y)); 
+        else if(Input.GetKeyDown(KeyCode.LeftArrow) && enableMove) {
+            currentPosition = this.transform.position;      
+            targetPosition = new Vector2(transform.position.x-moveSteps, transform.position.y);
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
         }
-        else if(Input.GetKeyDown(KeyCode.RightArrow)) {
-            Debug.Log("Key Right"); 
-            StepMove(this.transform.position, new Vector2(this.transform.position.x+1,this.transform.position.y));
+        else if(Input.GetKeyDown(KeyCode.RightArrow) && enableMove) {
+            currentPosition = this.transform.position;      
+            targetPosition = new Vector2(transform.position.x+moveSteps, transform.position.y);
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
-        void StepMove(Vector2 currentPosition, Vector2 target){
-            this.transform.position = Vector2.MoveTowards(currentPosition, target, moveStep);
+        StepMove();   
+    }
+
+    void StepMove(){
+        this.transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed*Time.deltaTime);
+        if(new Vector2(this.transform.position.x,this.transform.position.y) != targetPosition){
+            enableMove = false;
+        } else {
+            enableMove = true;
         }
-    }   
+    }
 }
