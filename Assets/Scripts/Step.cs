@@ -12,6 +12,7 @@ public class Step : MonoBehaviour
     private bool isAtPointPosition = false;
 
     private string handlePipeColor;
+    private int indexOfStartPoint;
 
     private Vector2 currentPosition = new Vector2(0, 0);
     private Vector2 targetPosition = new Vector2(0, 0);
@@ -30,7 +31,7 @@ public class Step : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {      
+    {
         currentPosition = this.transform.position;
         path = new List<string>();
         pipeRotation = new float[4] { 0f, 90.0f, 180.0f, 270.0f };
@@ -38,15 +39,19 @@ public class Step : MonoBehaviour
         pointType = new List<string>();
         obstaclePosition = new List<Vector2>();
         obstacleType = new List<string>();
-        handlePipeColor = null;
+        handlePipeColor = "Null";
 
         pointPosition.Add(new Vector2(-12, 0));
         pointType.Add("Red");
         pointPosition.Add(new Vector2(12, 4));
         pointType.Add("Red");
+        pointPosition.Add(new Vector2(8, 0));
+        pointType.Add("White");
+        pointPosition.Add(new Vector2(-12, -4));
+        pointType.Add("White");
 
         walls = GameObject.FindGameObjectsWithTag("Wall");
-        for (int i=0; i<walls.Length; i++)
+        for (int i = 0; i < walls.Length; i++)
         {
             Vector2 blockPosition = new Vector2(walls[i].GetComponent<Transform>().position.x, walls[i].GetComponent<Transform>().position.y);
             obstaclePosition.Add(blockPosition);
@@ -64,8 +69,9 @@ public class Step : MonoBehaviour
                 currentPosition = this.transform.position;
                 targetPosition = tempNextMove;
                 if (!isNotPickPipe) GeneratePipe("Up", currentPosition, targetPosition);
+                CheckPipeEndPoint(targetPosition);
+                if (isNotPickPipe && isAtPointPosition) GeneratePipe("Up", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
-                // CheckPipeEndPoint(targetPosition);
                 SetPreviousMove("Up");
             }
         }
@@ -77,8 +83,9 @@ public class Step : MonoBehaviour
                 currentPosition = this.transform.position;
                 targetPosition = tempNextMove;
                 if (!isNotPickPipe) GeneratePipe("Down", currentPosition, targetPosition);
+                CheckPipeEndPoint(targetPosition);
+                if (isNotPickPipe && isAtPointPosition) GeneratePipe("Down", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
-                // CheckPipeEndPoint(targetPosition);
                 SetPreviousMove("Down");
             }
         }
@@ -90,8 +97,9 @@ public class Step : MonoBehaviour
                 currentPosition = this.transform.position;
                 targetPosition = tempNextMove;
                 if (!isNotPickPipe) GeneratePipe("Left", currentPosition, targetPosition);
+                CheckPipeEndPoint(targetPosition);
+                if (isNotPickPipe && isAtPointPosition) GeneratePipe("Left", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
-                // CheckPipeEndPoint(targetPosition);
                 SetPreviousMove("Left");
             }
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
@@ -104,8 +112,9 @@ public class Step : MonoBehaviour
                 currentPosition = this.transform.position;
                 targetPosition = tempNextMove;
                 if (!isNotPickPipe) GeneratePipe("Right", currentPosition, targetPosition);
+                CheckPipeEndPoint(targetPosition);
+                if (isNotPickPipe && isAtPointPosition) GeneratePipe("Right", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
-                // CheckPipeEndPoint(targetPosition);
                 SetPreviousMove("Right");
             }
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
@@ -118,13 +127,13 @@ public class Step : MonoBehaviour
     {
         for (int i = 0; i < pointPosition.Count; i++)
         {
-            if (targetPosition == pointPosition[i])
+            if (targetPosition == pointPosition[i] && !pointType[i].Equals("Done"))
             {
-                Debug.Log("Is start point");
-                isNotPickPipe = !isNotPickPipe;
+                isNotPickPipe = false;
                 isAtPointPosition = true;
                 handlePipeColor = pointType[i];
-                Debug.Log("Color: " + handlePipeColor);
+                indexOfStartPoint = i;
+                Debug.Log("Is start point --- " + handlePipeColor);
                 return;
             }
         }
@@ -136,32 +145,21 @@ public class Step : MonoBehaviour
         {
             if (targetPosition == pointPosition[i] && handlePipeColor.Equals(pointType[i]))
             {
-                Debug.Log("Is end point");
                 isNotPickPipe = true;
                 isAtPointPosition = true;
-                handlePipeColor = null;
+                handlePipeColor = "Null";
+                pointType[i] = "Done";
+                pointType[indexOfStartPoint] = "Done";
+                Debug.Log("Is end point --- " + handlePipeColor);
                 return;
             }
-        }
-    }
-
-    void StepMove()
-    {
-        this.transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-        if (new Vector2(this.transform.position.x, this.transform.position.y) != targetPosition)
-        {
-            enableMove = false;
-        }
-        else
-        {
-            enableMove = true;
         }
     }
 
     void GeneratePipe(string key, Vector2 currentPosition, Vector2 targetPosition)
     {
         GameObject pipe = new GameObject();
-        pipe.name = "PipeClone";
+        pipe.name = "PipeClone" + handlePipeColor;
         pipe.AddComponent<SpriteRenderer>();
 
         obstaclePosition.Add(currentPosition);
@@ -174,9 +172,16 @@ public class Step : MonoBehaviour
                 pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
                 pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[0]);
                 isAtPointPosition = false;
+                RenderPipe(pipe, currentPosition);
             }
-            else if(isAtPointPosition && isNotPickPipe){
-                Debug.Log("OK VeRY GOOD");
+            else if (isAtPointPosition && isNotPickPipe)
+            {
+                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
+                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
+                obstaclePosition.Add(targetPosition);
+                obstacleType.Add("Pipe");
+                isAtPointPosition = false;
+                RenderPipe(pipe, targetPosition);
             }
             else
             {
@@ -194,15 +199,26 @@ public class Step : MonoBehaviour
                     pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
                     pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
                 }
+                RenderPipe(pipe, currentPosition);
             }
         }
         if (key.Equals("Left"))
         {
-             if (isAtPointPosition && !isNotPickPipe)
+            if (isAtPointPosition && !isNotPickPipe)
             {
                 pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
                 pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
                 isAtPointPosition = false;
+                RenderPipe(pipe, currentPosition);
+            }
+            else if (isAtPointPosition && isNotPickPipe)
+            {
+                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
+                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[0]);
+                obstaclePosition.Add(targetPosition);
+                obstacleType.Add("Pipe");
+                isAtPointPosition = false;
+                RenderPipe(pipe, targetPosition);
             }
             else
             {
@@ -220,6 +236,7 @@ public class Step : MonoBehaviour
                     pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
                     pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
                 }
+                RenderPipe(pipe, currentPosition);
             }
         }
         if (key.Equals("Up"))
@@ -229,6 +246,16 @@ public class Step : MonoBehaviour
                 pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
                 pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
                 isAtPointPosition = false;
+                RenderPipe(pipe, currentPosition);
+            }
+            else if (isAtPointPosition && isNotPickPipe)
+            {
+                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
+                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
+                obstaclePosition.Add(targetPosition);
+                obstacleType.Add("Pipe");
+                isAtPointPosition = false;
+                RenderPipe(pipe, targetPosition);
             }
             else
             {
@@ -247,6 +274,7 @@ public class Step : MonoBehaviour
                     pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
                     pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
                 }
+                RenderPipe(pipe, currentPosition);
             }
         }
         if (key.Equals("Down"))
@@ -256,6 +284,16 @@ public class Step : MonoBehaviour
                 pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
                 pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
                 isAtPointPosition = false;
+                RenderPipe(pipe, currentPosition);
+            }
+            else if (isAtPointPosition && isNotPickPipe)
+            {
+                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
+                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
+                obstaclePosition.Add(targetPosition);
+                obstacleType.Add("Pipe");
+                isAtPointPosition = false;
+                RenderPipe(pipe, targetPosition);
             }
             else
             {
@@ -274,19 +312,14 @@ public class Step : MonoBehaviour
                     pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
                     pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
                 }
+                RenderPipe(pipe, currentPosition);
             }
         }
-        pipe.GetComponent<Transform>().position = new Vector3(currentPosition.x, currentPosition.y, 1);
     }
 
-    private string GetPreviousMove()
+    private void RenderPipe(GameObject pipe, Vector2 renderPosition)
     {
-        return path[path.Count - 1];
-    }
-
-    private void SetPreviousMove(string move)
-    {
-        path.Add(move);
+        pipe.GetComponent<Transform>().position = new Vector3(renderPosition.x, renderPosition.y, 1);
     }
 
     private bool CanStepToPosition(Vector2 targetMove)
@@ -311,4 +344,28 @@ public class Step : MonoBehaviour
         }
         return true;
     }
+
+    void StepMove()
+    {
+        this.transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        if (new Vector2(this.transform.position.x, this.transform.position.y) != targetPosition)
+        {
+            enableMove = false;
+        }
+        else
+        {
+            enableMove = true;
+        }
+    }
+
+    private string GetPreviousMove()
+    {
+        return path[path.Count - 1];
+    }
+
+    private void SetPreviousMove(string move)
+    {
+        path.Add(move);
+    }
+
 }
