@@ -133,7 +133,7 @@ public class Step : MonoBehaviour
                 indexOfStartPoint = i;               
                 Debug.Log("Is start point --- " + handlePipeColor);
 
-                body.GetComponent<ChangeColor>().ChangeBodyColor(body, handlePipeColor);
+                body.GetComponent<ChangeColor>().ChangeSpriteColor(body, handlePipeColor);
                 return;
             }
         }
@@ -152,7 +152,7 @@ public class Step : MonoBehaviour
                 pointType[indexOfStartPoint] = "Done";
                 Debug.Log("Is end point --- " + handlePipeColor);
 
-                body.GetComponent<ChangeColor>().ChangeBodyColor(body, "Default");
+                body.GetComponent<ChangeColor>().ChangeSpriteColor(body, "Default");
                 return;
             }
         }
@@ -315,7 +315,7 @@ public class Step : MonoBehaviour
     {
         pipe.GetComponent<Transform>().position = new Vector3(renderPosition.x, renderPosition.y, 1);
         pipe.AddComponent<ChangeColor>();
-        pipe.GetComponent<ChangeColor>().ChangeBodyColor(pipe, handlePipeColor);              
+        pipe.GetComponent<ChangeColor>().ChangeSpriteColor(pipe, handlePipeColor);     
     }
 
     private bool CanStepToPosition(Vector2 targetMove)
