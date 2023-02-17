@@ -15,24 +15,16 @@ public class ChangeColor : MonoBehaviour
     Dictionary<string, Color> colorConvertMap = new Dictionary<string, Color>();
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        colorConvertMap.Add("Default", COLOR_DEFAULT);
-        colorConvertMap.Add("Red", COLOR_RED);
-        colorConvertMap.Add("Green", COLOR_GREEN);
-        colorConvertMap.Add("Blue", COLOR_BLUE);
+        colorConvertMap["Default"] = COLOR_DEFAULT;
+        colorConvertMap["Red"] = COLOR_RED;
+        colorConvertMap["Green"] = COLOR_GREEN;
+        colorConvertMap["Blue"] = COLOR_BLUE;
     }
 
     public void ChangeSpriteColor(GameObject gameObject, string changedColor){
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-
-        foreach (KeyValuePair<string, Color> item in colorConvertMap)
-        {
-            Debug.Log(item.Key + " --- " + changedColor + "---" + item.Key.Equals(changedColor));
-            if(item.Key.Equals(changedColor)){
-                spriteRenderer.color = item.Value;
-                break;
-            }
-        }
+        spriteRenderer.color = colorConvertMap[changedColor];
     }
 }

@@ -4,56 +4,49 @@ using UnityEngine;
 
 public class Step : MonoBehaviour
 {
-    [SerializeField] private float moveSteps = 2.0f;
-    [SerializeField] private float moveSpeed = 5.0f;
+    [SerializeField] private float moveSteps = 4.0f;
+    [SerializeField] private float moveSpeed = 20.0f;
     [SerializeField] private Sprite[] pipeSprites;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject body;
     private bool enableMove = true;
     private bool isNotPickPipe = true;
     private bool isAtPointPosition = false;
 
     private string handlePipeColor;
-    private int indexOfStartPoint;
-    private Vector2 currentPosition = new Vector2(0, 0);
-    private Vector2 targetPosition = new Vector2(0, 0);
+    private Vector2 positionOfStartPoint;
+    private Vector2 currentPosition;
+    private Vector2 targetPosition;
     private List<string> path;
-    private List<Vector2> obstaclePosition;
-    private List<string> obstacleType;
-    private List<Vector2> pointPosition;
-    private List<string> pointType;
-    private float[] pipeRotation;
+
+    private Dictionary<Vector2, string> obstaclePosition;
+    private Dictionary<Vector2, string> pointPosition;
+    private static float[] pipeRotation = { 0f, 90.0f, 180.0f, 270.0f };
     private GameObject[] walls;
     private GameObject[] pipePoints;
-
-    public GameObject body;
-
     // Start is called before the first frame update
     void Start()
-    {       
-        currentPosition = this.transform.position;
+    {
+        currentPosition = player.transform.position;
+        targetPosition = player.transform.position;
+        obstaclePosition = new Dictionary<Vector2, string>();
+        pointPosition = new Dictionary<Vector2, string>();
         path = new List<string>();
-        pipeRotation = new float[4] { 0f, 90.0f, 180.0f, 270.0f };
-        pointPosition = new List<Vector2>();
-        pointType = new List<string>();
-        obstaclePosition = new List<Vector2>();
-        obstacleType = new List<string>();
-        handlePipeColor = "Null";
+        handlePipeColor = "Default";
 
         walls = GameObject.FindGameObjectsWithTag("Wall");
-        for (int i = 0; i < walls.Length; i++)
+        foreach (GameObject item in walls)
         {
-            Vector2 blockPosition = new Vector2(walls[i].GetComponent<Transform>().position.x, walls[i].GetComponent<Transform>().position.y);
-            obstaclePosition.Add(blockPosition);
-            obstacleType.Add("Wall");
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Wall";
         }
 
         pipePoints = GameObject.FindGameObjectsWithTag("PipePoint");
-        for (int i = 0; i < pipePoints.Length; i++)
+        foreach (GameObject item in pipePoints)
         {
-            Vector2 blockPosition = new Vector2(pipePoints[i].GetComponent<Transform>().position.x, pipePoints[i].GetComponent<Transform>().position.y);
-            obstaclePosition.Add(blockPosition);
-            obstacleType.Add("PipePoint");
-            pointPosition.Add(blockPosition);
-            pointType.Add(pipePoints[i].GetComponent<PipePoint>().GetColorType());
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "PipePoint";
+            pointPosition[blockPosition] = item.GetComponent<PipePoint>().GetColorType();
         }
     }
 
@@ -123,217 +116,178 @@ public class Step : MonoBehaviour
 
     void CheckPipeStartPoint(Vector2 targetPosition)
     {
-        for (int i = 0; i < pointPosition.Count; i++)
+        if (pointPosition.ContainsKey(targetPosition) && !pointPosition[targetPosition].Equals("Done"))
         {
-            if (targetPosition == pointPosition[i] && !pointType[i].Equals("Done"))
-            {
-                isNotPickPipe = false;
-                isAtPointPosition = true;
-                handlePipeColor = pointType[i];
-                indexOfStartPoint = i;               
-                Debug.Log("Is start point --- " + handlePipeColor);
+            isNotPickPipe = false;
+            isAtPointPosition = true;
+            handlePipeColor = pointPosition[targetPosition];
+            positionOfStartPoint = targetPosition;
+            Debug.Log("Is start point --- " + handlePipeColor);
 
-                body.GetComponent<ChangeColor>().ChangeSpriteColor(body, handlePipeColor);
-                return;
-            }
+            body.GetComponent<ChangeColor>().ChangeSpriteColor(body, handlePipeColor);
         }
     }
 
     void CheckPipeEndPoint(Vector2 targetPosition)
     {
-        for (int i = 0; i < pointPosition.Count; i++)
+        if (pointPosition.ContainsKey(targetPosition) && handlePipeColor.Equals(pointPosition[targetPosition]))
         {
-            if (targetPosition == pointPosition[i] && handlePipeColor.Equals(pointType[i]))
-            {
-                isNotPickPipe = true;
-                isAtPointPosition = true;
-                handlePipeColor = "Null";
-                pointType[i] = "Done";
-                pointType[indexOfStartPoint] = "Done";
-                Debug.Log("Is end point --- " + handlePipeColor);
+            isNotPickPipe = true;
+            isAtPointPosition = true;                     
+            pointPosition[targetPosition] = "Done";
+            pointPosition[positionOfStartPoint] = "Done";
+            Debug.Log("Is end point --- " + handlePipeColor);
 
-                body.GetComponent<ChangeColor>().ChangeSpriteColor(body, "Default");
-                return;
-            }
+            body.GetComponent<ChangeColor>().ChangeSpriteColor(body, "Default");
         }
     }
 
     void GeneratePipe(string key, Vector2 currentPosition, Vector2 targetPosition)
     {
-        GameObject pipe = new GameObject();
-        pipe.name = "PipeClone" + handlePipeColor;
-        pipe.AddComponent<SpriteRenderer>();
-
-        obstaclePosition.Add(currentPosition);
-        obstacleType.Add("Pipe");
+        obstaclePosition[currentPosition] = "Pipe";
 
         if (key.Equals("Right"))
         {
             if (isAtPointPosition && !isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[0]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, currentPosition);
+                RenderPipe(currentPosition, 2, 0);
             }
             else if (isAtPointPosition && isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, targetPosition);
+                RenderPipe(targetPosition, 2, 2);
             }
             else
             {
                 if (GetPreviousMove().Equals("Right"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[0];
+                    RenderPipe(currentPosition, 0, 0);
                 }
                 else if (GetPreviousMove().Equals("Down"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[0]);
+                    RenderPipe(currentPosition, 1, 0);
                 }
                 else if (GetPreviousMove().Equals("Up"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
+                    RenderPipe(currentPosition, 1, 3);
                 }
-                RenderPipe(pipe, currentPosition);
             }
         }
         if (key.Equals("Left"))
         {
             if (isAtPointPosition && !isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, currentPosition);
+                RenderPipe(currentPosition, 2, 2);
             }
             else if (isAtPointPosition && isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[0]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, targetPosition);
+                RenderPipe(targetPosition, 2, 0);
             }
             else
             {
                 if (GetPreviousMove().Equals("Left"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[0];
+                    RenderPipe(currentPosition, 0, 0);
                 }
                 else if (GetPreviousMove().Equals("Down"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
+                    RenderPipe(currentPosition, 1, 1);
                 }
                 else if (GetPreviousMove().Equals("Up"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
+                    RenderPipe(currentPosition, 1, 2);
                 }
-                RenderPipe(pipe, currentPosition);
             }
         }
         if (key.Equals("Up"))
         {
             if (isAtPointPosition && !isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, currentPosition);
+                RenderPipe(currentPosition, 2, 1);
             }
             else if (isAtPointPosition && isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, targetPosition);
+                RenderPipe(targetPosition, 2, 3);
             }
             else
             {
                 if (GetPreviousMove().Equals("Up"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[0];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
+                    RenderPipe(currentPosition, 0, 1);
                 }
                 else if (GetPreviousMove().Equals("Left"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[0]);
+                    RenderPipe(currentPosition, 1, 0);
                 }
                 else if (GetPreviousMove().Equals("Right"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
+                    RenderPipe(currentPosition, 1, 1);
                 }
-                RenderPipe(pipe, currentPosition);
             }
         }
         if (key.Equals("Down"))
         {
             if (isAtPointPosition && !isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, currentPosition);
+                RenderPipe(currentPosition, 2, 3);
             }
             else if (isAtPointPosition && isNotPickPipe)
             {
-                pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[2];
-                pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
                 isAtPointPosition = false;
-                RenderPipe(pipe, targetPosition);
+                RenderPipe(targetPosition, 2, 1);
             }
             else
             {
                 if (GetPreviousMove().Equals("Down"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[0];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[1]);
+                    RenderPipe(currentPosition, 0, 1);
                 }
                 else if (GetPreviousMove().Equals("Left"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[3]);
+                    RenderPipe(currentPosition, 1, 3);
                 }
                 else if (GetPreviousMove().Equals("Right"))
                 {
-                    pipe.GetComponent<SpriteRenderer>().sprite = pipeSprites[1];
-                    pipe.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[2]);
+                    RenderPipe(currentPosition, 1, 2);
                 }
-                RenderPipe(pipe, currentPosition);
             }
         }
     }
 
-    private void RenderPipe(GameObject pipe, Vector2 renderPosition)
+    private void RenderPipe(Vector2 renderPosition, int pipeTypeIndex, int pipeRotationIndex)
     {
-        pipe.GetComponent<Transform>().position = new Vector3(renderPosition.x, renderPosition.y, 1);
-        pipe.AddComponent<ChangeColor>();
-        pipe.GetComponent<ChangeColor>().ChangeSpriteColor(pipe, handlePipeColor);     
+        GameObject pipeClone = new GameObject();
+
+        pipeClone.AddComponent<SpriteRenderer>();
+        pipeClone.GetComponent<SpriteRenderer>().sprite = pipeSprites[pipeTypeIndex];
+        pipeClone.GetComponent<Transform>().position = renderPosition;
+        pipeClone.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[pipeRotationIndex]);
+
+        pipeClone.AddComponent<ChangeColor>();
+        pipeClone.GetComponent<ChangeColor>().Start();
+        pipeClone.GetComponent<ChangeColor>().ChangeSpriteColor(pipeClone, handlePipeColor);             
     }
 
     private bool CanStepToPosition(Vector2 targetMove)
     {
-        for (int i = 0; i < obstaclePosition.Count; i++)
+        if (obstaclePosition.ContainsKey(targetMove) && obstaclePosition[targetMove].Equals("Pipe"))
         {
-            if (obstacleType[i] == "Pipe" && targetMove == obstaclePosition[i])
-            {
-                if (!isNotPickPipe) return false;
-            }
-            else if (obstacleType[i] == "Wall" && targetMove == obstaclePosition[i])
-            {
+            if (!isNotPickPipe) return false;
+        }
+        else if (obstaclePosition.ContainsKey(targetMove) && obstaclePosition[targetMove].Equals("Wall"))
+        {
+            return false;
+        }
+        else if (obstaclePosition.ContainsKey(targetMove) && obstaclePosition[targetMove].Equals("PipePoint"))
+        {
+            if (pointPosition.ContainsKey(targetMove) && !handlePipeColor.Equals(pointPosition[targetMove]) && !isNotPickPipe)
                 return false;
-            }
-            else if(obstacleType[i] == "PipePoint" && targetMove == obstaclePosition[i]){               
-                if(!handlePipeColor.Equals(GetPointType(targetMove)) && !isNotPickPipe)
-                    return false;
-            }
         }
         return true;
     }
@@ -360,12 +314,4 @@ public class Step : MonoBehaviour
     {
         path.Add(move);
     }
-    private string GetPointType(Vector2 coordinates){
-        for(int i=0; i<pointPosition.Count; i++){
-            if(coordinates == pointPosition[i])
-                return pointType[i];
-        }
-        return "Null";
-    }
-
 }
