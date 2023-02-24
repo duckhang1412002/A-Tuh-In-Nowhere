@@ -28,11 +28,14 @@ public class Step : MonoBehaviour
     private GameObject[] pipePoints;
 
     private GameObject[] bridges;
+
+    private float defaultZAxis = 6;
     // Start is called before the first frame update
     void Start()
     {
         currentPosition = player.transform.position;
         targetPosition = player.transform.position;
+        player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, 6);
         obstaclePosition = new Dictionary<Vector2, string>();
         pointType = new Dictionary<Vector2, string>();
         bridgeType = new Dictionary<Vector2, Bridge>();
@@ -283,15 +286,43 @@ public class Step : MonoBehaviour
     private void RenderPipe(Vector2 renderPosition, int pipeTypeIndex, int pipeRotationIndex)
     {
         GameObject pipeClone = new GameObject();
-
         pipeClone.AddComponent<SpriteRenderer>();
-        pipeClone.GetComponent<SpriteRenderer>().sprite = pipeSprites[pipeTypeIndex];
-        pipeClone.GetComponent<Transform>().position = renderPosition;
-        pipeClone.GetComponent<Transform>().Rotate(0f, 0f, pipeRotation[pipeRotationIndex]);
-
         pipeClone.AddComponent<ChangeColor>();
-        pipeClone.GetComponent<ChangeColor>().Start();
-        pipeClone.GetComponent<ChangeColor>().ChangeSpriteColor(pipeClone, handlePipeColor);             
+
+        SpriteRenderer spriteRenderer = pipeClone.GetComponent<SpriteRenderer>();
+        Transform transform = pipeClone.GetComponent<Transform>();
+        ChangeColor changeColor = pipeClone.GetComponent<ChangeColor>();
+
+        changeColor.Start();
+        changeColor.ChangeSpriteColor(pipeClone, handlePipeColor);     
+        
+        spriteRenderer.sprite = pipeSprites[pipeTypeIndex];       
+        transform.Rotate(0f, 0f, pipeRotation[pipeRotationIndex]);
+
+        if(bridgeType.ContainsKey(renderPosition)){
+            if(bridgeType[renderPosition].GetBridgeType() == "Vertical" 
+            && (GetPreviousMove() == "Left" || GetPreviousMove() == "Right") 
+            && bridgeType[renderPosition].HasPipeUnderBridge){
+                transform.position = new Vector3(renderPosition.x, renderPosition.y, 6);
+            }
+            else if(bridgeType[renderPosition].GetBridgeType() == "Horizontal"
+            && (GetPreviousMove() == "Up" || GetPreviousMove() == "Down"
+            && bridgeType[renderPosition].HasPipeUnderBridge)){
+                transform.position = new Vector3(renderPosition.x, renderPosition.y, 6);
+            }
+            else if(bridgeType[renderPosition].GetBridgeType() == "Vertical"
+            && (GetPreviousMove() == "Up" || GetPreviousMove() == "Down"
+            && bridgeType[renderPosition].HasPipeOnBridge)){
+                transform.position = new Vector3(renderPosition.x, renderPosition.y, 3);
+            }
+            else if(bridgeType[renderPosition].GetBridgeType() == "Horizontal"
+            && (GetPreviousMove() == "Left" || GetPreviousMove() == "Right"
+            && bridgeType[renderPosition].HasPipeOnBridge)){
+                transform.position = new Vector3(renderPosition.x, renderPosition.y, 3);
+            }
+        } else{
+            transform.position = new Vector3(renderPosition.x, renderPosition.y, 7);
+        }        
     }
 
     private bool CanStepToPosition(Vector2 currentPosition, Vector2 targetPosition, string tempNextKey)
@@ -326,7 +357,7 @@ public class Step : MonoBehaviour
                 else if(obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe) return false;
             }
         }
-        else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Bridge") {
+        if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Bridge") {
             bool isOnBridge = false;
             Bridge bridge = bridgeType[targetPosition];
 
@@ -338,11 +369,13 @@ public class Step : MonoBehaviour
                 if(bridge.HasPipeOnBridge && !isNotPickPipe){
                     return false;
                 }
+                defaultZAxis = 2;
             }else{
                 if(bridge.HasPipeUnderBridge && !isNotPickPipe){
                     return false;
                 }
-            }
+                defaultZAxis = 5;
+            }           
         }       
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe")
         {
@@ -356,13 +389,13 @@ public class Step : MonoBehaviour
         {
             if (pointType.ContainsKey(targetPosition) && handlePipeColor != pointType[targetPosition] && !isNotPickPipe)
                 return false;
-        }
+        }      
         return true;
     }
 
     void StepMove()
     {
-        this.transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(targetPosition.x, targetPosition.y, defaultZAxis), moveSpeed * Time.deltaTime);
         if (new Vector2(this.transform.position.x, this.transform.position.y) != targetPosition)
         {
             enableMove = false;
