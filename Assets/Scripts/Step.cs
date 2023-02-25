@@ -326,7 +326,8 @@ public class Step : MonoBehaviour
     }
 
     private bool CanStepToPosition(Vector2 currentPosition, Vector2 targetPosition, string tempNextKey)
-    {      
+    {     
+        bool totalCheck = true; 
         if(obstaclePosition.ContainsKey(currentPosition) && obstaclePosition[currentPosition] == "Bridge"){
             bool isOnBridge = false;
             Bridge bridge = bridgeType[currentPosition];
@@ -342,9 +343,9 @@ public class Step : MonoBehaviour
                 
                 if(!isNotPickPipe) bridge.HasPipeOnBridge = true;
 
-                if(!obstaclePosition.ContainsKey(targetPosition)) return true;
-                else if(isNotPickPipe) return true;
-                else if(obstaclePosition[targetPosition] == "Pipe") return false;
+                if(!obstaclePosition.ContainsKey(targetPosition)) totalCheck = true;
+                else if(isNotPickPipe) totalCheck = true;
+                else if(obstaclePosition[targetPosition] == "Pipe") totalCheck = false;
             }else{
                 if ((bridge.GetBridgeType() == "Horizontal" && (tempNextKey == "Left" || tempNextKey == "Right"))
                 || (bridge.GetBridgeType() == "Vertical" && (tempNextKey == "Up" || tempNextKey == "Down")))
@@ -352,9 +353,9 @@ public class Step : MonoBehaviour
 
                 if(!isNotPickPipe) bridge.HasPipeUnderBridge = true;
 
-                if(!obstaclePosition.ContainsKey(targetPosition)) return true;
-                else if(isNotPickPipe) return true;
-                else if(obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe) return false;
+                if(!obstaclePosition.ContainsKey(targetPosition)) totalCheck = true;
+                else if(isNotPickPipe) totalCheck = true;
+                else if(obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe) totalCheck = false;
             }
         }
         if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Bridge") {
@@ -379,18 +380,18 @@ public class Step : MonoBehaviour
         }       
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe")
         {
-            if (!isNotPickPipe) return false;
+            if (!isNotPickPipe) totalCheck = false;
         }
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Wall")
         {
-            return false;
+            totalCheck = false;
         }
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "PipePoint")
         {
             if (pointType.ContainsKey(targetPosition) && handlePipeColor != pointType[targetPosition] && !isNotPickPipe)
-                return false;
+                totalCheck = false;
         }      
-        return true;
+        return totalCheck;
     }
 
     void StepMove()
