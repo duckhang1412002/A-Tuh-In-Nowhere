@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - PipePoint
+  - Bridge
   layers:
   - Default
   - TransparentFX

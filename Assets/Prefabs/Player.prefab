@@ -80,7 +80,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8180728363008695862}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 6}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -102,8 +102,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 4
   moveSpeed: 20
-  player: {fileID: 0}
-  pipeSprites: []
+  pipeSprites:
+  - {fileID: 21300000, guid: 320465867fe812349b72350d10b4937c, type: 3}
+  - {fileID: 21300000, guid: 6eb5fde8cf2175c4dada1c4c1ccddacc, type: 3}
+  - {fileID: 21300000, guid: 30ce0355d25a6aa4290f0f3adb18a161, type: 3}
+  player: {fileID: 8180728363008695862}
+  body: {fileID: 8180728363375223457}
 --- !u!1 &8180728363277563048
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +133,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8180728363277563048}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.22, y: -0.97, z: -1}
+  m_LocalPosition: {x: 1.22, y: -0.97, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -198,6 +202,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8180728363375223486}
   - component: {fileID: 8180728363375223487}
+  - component: {fileID: 1020354303}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -213,7 +218,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8180728363375223457}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -272,6 +277,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1020354303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8180728363375223457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44949323d2a236b4fa6e179e2c2422f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8180728363564668741
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,7 +316,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8180728363564668741}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.17, y: 1.17, z: -1}
+  m_LocalPosition: {x: 1.17, y: 1.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
