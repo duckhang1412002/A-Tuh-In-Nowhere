@@ -4,41 +4,54 @@ using UnityEngine;
 
 public class Step : MonoBehaviour
 {
+    [SerializeField] private Camera mainCamera;
     [SerializeField] private float moveSteps = 4.0f;
     [SerializeField] private float moveSpeed = 20.0f;
     [SerializeField] private Sprite[] pipeSprites;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject body;
+
     private bool enableMove = true;
     private bool isNotPickPipe = true;
     private bool isAtPointPosition = false;
-
     private string handlePipeColor;
     private Vector2 positionOfStartPoint;
     private Vector2 currentPosition;
     private Vector2 targetPosition;
-    private List<string> path;
+    private Vector2 tempCurrentPosition;
+    private Vector2 tempTargetPosition;
 
+    private Vector2 entranceDimensionPosition;
+
+    private List<string> path;
     private Dictionary<Vector2, string> obstaclePosition;
     private Dictionary<Vector2, string> pointType;
-
     private Dictionary<Vector2, Bridge> bridgeType;
+    private Dictionary<Vector2, Dimension> dimensionType;
+    private Dictionary<Vector2, DimensionTeleporter> dimensionTeleporterType;
+
     private static float[] pipeRotation = { 0f, 90.0f, 180.0f, 270.0f };
     private GameObject[] walls;
     private GameObject[] pipePoints;
-
     private GameObject[] bridges;
+    private GameObject[] dimensions;
+    private GameObject[] dimensionTeleporters;
 
     private float defaultZAxis = 6;
     // Start is called before the first frame update
     void Start()
     {
+        player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, 6);
         currentPosition = player.transform.position;
         targetPosition = player.transform.position;
-        player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, 6);
+        tempCurrentPosition = player.transform.position;
+        tempTargetPosition = player.transform.position;
+        entranceDimensionPosition = player.transform.position;
         obstaclePosition = new Dictionary<Vector2, string>();
         pointType = new Dictionary<Vector2, string>();
         bridgeType = new Dictionary<Vector2, Bridge>();
+        dimensionType = new Dictionary<Vector2, Dimension>();
+        dimensionTeleporterType = new Dictionary<Vector2, DimensionTeleporter>();
         path = new List<string>();
         path.Add("");
         handlePipeColor = "Default";
@@ -65,18 +78,37 @@ public class Step : MonoBehaviour
             obstaclePosition[blockPosition] = "Bridge";
             bridgeType[blockPosition] = item.GetComponent<Bridge>();
         }
+
+        dimensions = GameObject.FindGameObjectsWithTag("Dimension");
+        foreach (GameObject item in dimensions)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Dimension";
+            dimensionType[blockPosition] = item.GetComponent<Dimension>();
+        }
+
+        dimensionTeleporters = GameObject.FindGameObjectsWithTag("DimensionTeleporter");
+        foreach (GameObject item in dimensionTeleporters)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "DimensionTeleporter";
+            dimensionTeleporterType[blockPosition] = item.GetComponent<DimensionTeleporter>();
+        }
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow) && enableMove)
         {
-            Vector2 tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
-            Vector2 tempNextMove = new Vector2(transform.position.x, transform.position.y + moveSteps);
-            if (CanStepToPosition(tempCurrentPosition, tempNextMove, "Up"))
+            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
+            tempTargetPosition = new Vector2(transform.position.x, transform.position.y + moveSteps);
+            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Up"))
             {
                 currentPosition = this.transform.position;
-                targetPosition = tempNextMove;
+                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
+                    currentPosition = tempCurrentPosition;
+                }
+                targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Up", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Up", currentPosition, targetPosition);
@@ -86,12 +118,16 @@ public class Step : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow) && enableMove)
         {
-            Vector2 tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
-            Vector2 tempNextMove = new Vector2(transform.position.x, transform.position.y - moveSteps);
-            if (CanStepToPosition(tempCurrentPosition, tempNextMove, "Down"))
+            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
+            tempTargetPosition = new Vector2(transform.position.x, transform.position.y - moveSteps);
+            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Down"))
             {
                 currentPosition = this.transform.position;
-                targetPosition = tempNextMove;
+                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
+                    Debug.Log("Dimen true");
+                    currentPosition = tempCurrentPosition;
+                }
+                targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Down", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Down", currentPosition, targetPosition);
@@ -101,12 +137,16 @@ public class Step : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow) && enableMove)
         {
-            Vector2 tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
-            Vector2 tempNextMove = new Vector2(transform.position.x - moveSteps, transform.position.y);
-            if (CanStepToPosition(tempCurrentPosition, tempNextMove, "Left"))
+            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
+            tempTargetPosition = new Vector2(transform.position.x - moveSteps, transform.position.y);
+            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Left"))
             {
                 currentPosition = this.transform.position;
-                targetPosition = tempNextMove;
+                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
+                    Debug.Log("Dimen true");
+                    currentPosition = tempCurrentPosition;
+                }
+                targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Left", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Left", currentPosition, targetPosition);
@@ -117,12 +157,16 @@ public class Step : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow) && enableMove)
         {
-            Vector2 tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
-            Vector2 tempNextMove = new Vector2(transform.position.x + moveSteps, transform.position.y);
-            if (CanStepToPosition(tempCurrentPosition, tempNextMove, "Right"))
+            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
+            tempTargetPosition = new Vector2(transform.position.x + moveSteps, transform.position.y);
+            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Right"))
             {
                 currentPosition = this.transform.position;
-                targetPosition = tempNextMove;
+                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
+                    Debug.Log("Dimen true");
+                    currentPosition = tempCurrentPosition;
+                }
+                targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Right", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Right", currentPosition, targetPosition);
@@ -377,7 +421,89 @@ public class Step : MonoBehaviour
                 }
                 defaultZAxis = 5;
             }           
-        }       
+        }  
+        else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Dimension"){
+            Dimension dimension = dimensionType[targetPosition];
+
+            if(tempNextKey == "Right" && dimension.GetTargetTeleporterList().ContainsKey("Left")){
+                Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Left"];
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
+                    return false;
+                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition] && !isNotPickPipe)
+                        return false;
+                }
+
+                tempCurrentPosition = player.transform.position;                
+                tempTargetPosition = entranceTeleporterPosition;
+                entranceDimensionPosition = dimension.transform.position;
+                player.transform.position = tempTargetPosition;                 
+            }
+            else if(tempNextKey == "Left" && dimension.GetTargetTeleporterList().ContainsKey("Right")){
+                Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Right"];
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
+                    return false;
+                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition] && !isNotPickPipe)
+                        return false;
+                }
+
+                tempCurrentPosition = player.transform.position;
+                tempTargetPosition = dimension.GetTargetTeleporterList()["Right"];
+                entranceDimensionPosition = dimension.transform.position;
+                player.transform.position = tempTargetPosition;    
+            }
+            else if(tempNextKey == "Up" && dimension.GetTargetTeleporterList().ContainsKey("Bottom")){
+                Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Bottom"];
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
+                    return false;
+                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition] && !isNotPickPipe)
+                        return false;
+                }
+
+                tempCurrentPosition = player.transform.position;
+                tempTargetPosition = dimension.GetTargetTeleporterList()["Bottom"];
+                entranceDimensionPosition = dimension.transform.position;
+                player.transform.position = tempTargetPosition;   
+            }
+            else if(tempNextKey == "Down" && dimension.GetTargetTeleporterList().ContainsKey("Top")){
+                Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Top"];
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
+                    return false;
+                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition] && !isNotPickPipe)
+                        return false;
+                }
+
+                tempCurrentPosition = player.transform.position;               
+                tempTargetPosition = dimension.GetTargetTeleporterList()["Top"];  
+                entranceDimensionPosition = dimension.transform.position;              
+                player.transform.position = tempTargetPosition; 
+            }else{
+                return false;
+            }
+
+            defaultZAxis = 6;
+            dimension.SetTargetBaseCamera();    
+        }
+        else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "DimensionTeleporter"){
+            DimensionTeleporter dimensionTeleporter = dimensionTeleporterType[targetPosition];
+            Dimension dimension = dimensionType[dimensionTeleporter.getBaseDimension()];
+            Vector2 previousBaseDimensionEntrance = dimension.GetPreviousTeleporterList()[targetPosition];
+
+            if(obstaclePosition.ContainsKey(previousBaseDimensionEntrance) && obstaclePosition[previousBaseDimensionEntrance] == "Pipe" && !isNotPickPipe)
+                return false;
+            else if(obstaclePosition.ContainsKey(previousBaseDimensionEntrance) && obstaclePosition[previousBaseDimensionEntrance] == "PipePoint"){
+                if (pointType.ContainsKey(previousBaseDimensionEntrance) && handlePipeColor != pointType[previousBaseDimensionEntrance] && !isNotPickPipe)
+                    return false;
+            }
+
+            tempTargetPosition = previousBaseDimensionEntrance;
+            player.transform.position = tempTargetPosition;
+            defaultZAxis = 6;
+            dimension.SetPreviousBaseCamera();       
+        }        
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe")
         {
             if (!isNotPickPipe) totalCheck = false;

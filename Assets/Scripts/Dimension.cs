@@ -24,6 +24,11 @@ public class Dimension : MonoBehaviour
     [SerializeField]
     private Vector2 leftTeleporter;
 
+    [SerializeField]
+    private Camera previousBaseCam;
+    [SerializeField]
+    private Camera targetBaseCam;
+
     private Dictionary<string,Vector2> targetTeleporterPosition;
     private Dictionary<Vector2,Vector2> previousTeleporterPosition;
 
@@ -34,20 +39,20 @@ public class Dimension : MonoBehaviour
         float x_axis =  this.transform.position.x;
         float y_axis = this.transform.position.y;
         if(dimensionTop){
-            targetTeleporterPosition["Top"] = topTeleporter;
+            targetTeleporterPosition["Top"] = new Vector2(topTeleporter.x, topTeleporter.y-4);
             previousTeleporterPosition[topTeleporter] = new Vector2(x_axis,y_axis+4);
         }
         if(dimensionRight){
-            targetTeleporterPosition["Right"] = rightTeleporter;
-            previousTeleporterPosition[topTeleporter] = new Vector2(x_axis+4,y_axis);
+            targetTeleporterPosition["Right"] = new Vector2(rightTeleporter.x-4,rightTeleporter.y);
+            previousTeleporterPosition[rightTeleporter] = new Vector2(x_axis+4,y_axis);
         }
         if(dimensionBottom){
-            targetTeleporterPosition["Bottom"] = bottomTeleporter;
-            previousTeleporterPosition[topTeleporter] = new Vector2(x_axis,y_axis-4);
+            targetTeleporterPosition["Bottom"] = new Vector2(bottomTeleporter.x,bottomTeleporter.y+4);
+            previousTeleporterPosition[bottomTeleporter] = new Vector2(x_axis,y_axis-4);
         }
         if(dimensionLeft){
-            targetTeleporterPosition["Left"] = leftTeleporter;
-            previousTeleporterPosition[topTeleporter] = new Vector2(x_axis-4,y_axis);
+            targetTeleporterPosition["Left"] = new Vector2(leftTeleporter.x+4,leftTeleporter.y);
+            previousTeleporterPosition[leftTeleporter] = new Vector2(x_axis-4,y_axis);
         }
     }
 
@@ -57,6 +62,16 @@ public class Dimension : MonoBehaviour
 
     public Dictionary<Vector2,Vector2> GetPreviousTeleporterList(){
         return previousTeleporterPosition;
+    }
+
+    public void SetTargetBaseCamera(){
+        targetBaseCam.enabled = true;
+        previousBaseCam.enabled = false;
+    }
+
+    public void SetPreviousBaseCamera(){
+        previousBaseCam.enabled = true;
+        targetBaseCam.enabled = false;
     }
 
     void Update()
