@@ -5,11 +5,13 @@ using UnityEngine;
 public class ChangeColor : MonoBehaviour
 {
     private Color COLOR_DEFAULT = new Color(255, 255, 255, 1);
-    private Color COLOR_RED = new Color(255, 0, 0, 1);
-
-    private Color COLOR_GREEN = new Color(0, 255, 0, 1);
-
-    private Color COLOR_BLUE = new Color(0, 0, 255, 1);
+    private Color COLOR_RED = new Color(Divider(255f), Divider(0f), Divider(0), 1);
+    private Color COLOR_GREEN = new Color(Divider(0), Divider(255f), Divider(0), 1);
+    private Color COLOR_BLUE = new Color(Divider(0f), Divider(0f), Divider(255f), 1);
+    private Color COLOR_PINK = new Color(Divider(255f), Divider(102f), Divider(178f), 1);
+    private Color COLOR_PURPLE = new Color(Divider(255f), Divider(102f), Divider(255f), 1);
+    private Color COLOR_YELLOW = new Color(Divider(255f), Divider(255f), Divider(0), 1);
+    private Color COLOR_ORANGE = new Color(Divider(255f), Divider(128f), Divider(0), 1);
     private SpriteRenderer spriteRenderer; 
 
     Dictionary<string, Color> colorConvertMap = new Dictionary<string, Color>();
@@ -21,10 +23,18 @@ public class ChangeColor : MonoBehaviour
         colorConvertMap["Red"] = COLOR_RED;
         colorConvertMap["Green"] = COLOR_GREEN;
         colorConvertMap["Blue"] = COLOR_BLUE;
+        colorConvertMap["Pink"] = COLOR_PINK;
+        colorConvertMap["Purple"] = COLOR_PURPLE;
+        colorConvertMap["Yellow"] = COLOR_YELLOW;
+        colorConvertMap["Orange"] = COLOR_ORANGE;
     }
 
     public void ChangeSpriteColor(GameObject gameObject, string changedColor){
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.color = colorConvertMap[changedColor];
+    }
+
+    private static float Divider(float x){
+        return x/255f;
     }
 }
