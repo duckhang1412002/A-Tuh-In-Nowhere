@@ -20,7 +20,6 @@ public class Step : MonoBehaviour
     private Vector2 targetPosition;
     private Vector2 tempCurrentPosition;
     private Vector2 tempTargetPosition;
-
     private Vector2 entranceDimensionPosition;
 
     private List<string> path;
@@ -29,6 +28,8 @@ public class Step : MonoBehaviour
     private Dictionary<Vector2, Bridge> bridgeType;
     private Dictionary<Vector2, Dimension> dimensionType;
     private Dictionary<Vector2, DimensionTeleporter> dimensionTeleporterType;
+    private Dictionary<Vector2, DoorButton> doorButtonType;
+    private Dictionary<Vector2, Door> doorType;
 
     private static float[] pipeRotation = { 0f, 90.0f, 180.0f, 270.0f };
     private GameObject[] walls;
@@ -36,13 +37,16 @@ public class Step : MonoBehaviour
     private GameObject[] bridges;
     private GameObject[] dimensions;
     private GameObject[] dimensionTeleporters;
+    private GameObject[] doors;
+    private GameObject[] doorButtons;
+
 
     private float defaultZAxis = 6;
     // Start is called before the first frame update
     void Start()
     {
         player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, 6);
-        player.transform.position = new Vector3(116, 0, 6);
+        player.transform.position = new Vector3(0, 0, 6);
         currentPosition = player.transform.position;
         targetPosition = player.transform.position;
         tempCurrentPosition = player.transform.position;
@@ -53,6 +57,8 @@ public class Step : MonoBehaviour
         bridgeType = new Dictionary<Vector2, Bridge>();
         dimensionType = new Dictionary<Vector2, Dimension>();
         dimensionTeleporterType = new Dictionary<Vector2, DimensionTeleporter>();
+        doorButtonType = new Dictionary<Vector2, DoorButton>();
+        doorType = new Dictionary<Vector2, Door>();
         path = new List<string>();
         path.Add("");
         handlePipeColor = "Default";
@@ -94,6 +100,22 @@ public class Step : MonoBehaviour
             Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
             obstaclePosition[blockPosition] = "DimensionTeleporter";
             dimensionTeleporterType[blockPosition] = item.GetComponent<DimensionTeleporter>();
+        }
+
+        doorButtons = GameObject.FindGameObjectsWithTag("DoorButton");
+        foreach (GameObject item in doorButtons)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "DoorButton";
+            doorButtonType[blockPosition] = item.GetComponent<DoorButton>();
+        }
+
+        doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject item in doors)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Door";
+            doorType[blockPosition] = item.GetComponent<Door>();
         }
     }
 
@@ -403,7 +425,23 @@ public class Step : MonoBehaviour
                 else if(isNotPickPipe) totalCheck = true;
                 else if(obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe) totalCheck = false;
             }
-        }
+        } 
+        else if(obstaclePosition.ContainsKey(currentPosition) && obstaclePosition[currentPosition] == "DoorButton"){
+            DoorButton button = doorButtonType[currentPosition];
+            Door door = button.GetDoor();
+            button.IsActive = false;
+            if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Wall")
+                button.IsActive = true;
+            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe)
+                button.IsActive = true;
+            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "PipePoint" && pointType[targetPosition] == "Done")
+            button.IsActive = true;
+
+            if(!isNotPickPipe){
+                button.HasPipeOn = true;
+            }
+        }       
+
         if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Bridge") {
             bool isOnBridge = false;
             Bridge bridge = bridgeType[targetPosition];
@@ -506,7 +544,12 @@ public class Step : MonoBehaviour
             player.transform.position = tempTargetPosition;
             defaultZAxis = 6;
             dimension.SetPreviousBaseCamera();       
-        }        
+        }  
+        else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "DoorButton"){
+            DoorButton button = doorButtonType[targetPosition];
+            Door door = button.GetDoor();
+            button.IsActive = true;
+        }           
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe")
         {
             if (!isNotPickPipe) totalCheck = false;
@@ -519,7 +562,14 @@ public class Step : MonoBehaviour
         {
             if (pointType.ContainsKey(targetPosition) && handlePipeColor != pointType[targetPosition] && !isNotPickPipe)
                 totalCheck = false;
-        }      
+        } 
+        else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Door")
+        {   
+            Door door = doorType[targetPosition];
+            if(!door.IsActive) return false;
+        } 
+
+           
         return totalCheck;
     }
 

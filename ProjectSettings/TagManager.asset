@@ -9,6 +9,9 @@ TagManager:
   - Bridge
   - Dimension
   - DimensionTeleporter
+  - Door
+  - Button
+  - DoorButton
   layers:
   - Default
   - TransparentFX
