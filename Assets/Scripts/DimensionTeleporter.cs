@@ -10,4 +10,8 @@ public class DimensionTeleporter : MonoBehaviour
     public Vector2 getBaseDimension(){
         return baseDimension.transform.position;
     }
+
+    public Vector2 getBaseDimensionEntrance(){
+        return baseDimension.transform.position;
+    }
 }

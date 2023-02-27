@@ -1014,7 +1014,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330649243}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12, y: 0, z: 18}
+  m_LocalPosition: {x: -8, y: 0, z: 18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1990,7 +1990,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.54509807, g: 0.54509807, b: 0.54509807, a: 0}
@@ -2587,7 +2587,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705626157}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -2707,6 +2707,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4737974460615664152, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: color
+      value: Blue
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664155, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_RootOrder
       value: 16

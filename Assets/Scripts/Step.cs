@@ -42,6 +42,7 @@ public class Step : MonoBehaviour
     void Start()
     {
         player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, 6);
+        player.transform.position = new Vector3(116, 0, 6);
         currentPosition = player.transform.position;
         targetPosition = player.transform.position;
         tempCurrentPosition = player.transform.position;
@@ -105,9 +106,10 @@ public class Step : MonoBehaviour
             if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Up"))
             {
                 currentPosition = this.transform.position;
-                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
+                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
+                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
                     currentPosition = tempCurrentPosition;
-                }
+
                 targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Up", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
@@ -123,10 +125,10 @@ public class Step : MonoBehaviour
             if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Down"))
             {
                 currentPosition = this.transform.position;
-                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
-                    Debug.Log("Dimen true");
+                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
+                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
                     currentPosition = tempCurrentPosition;
-                }
+
                 targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Down", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
@@ -142,10 +144,10 @@ public class Step : MonoBehaviour
             if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Left"))
             {
                 currentPosition = this.transform.position;
-                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
-                    Debug.Log("Dimen true");
+                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
+                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
                     currentPosition = tempCurrentPosition;
-                }
+                
                 targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Left", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
@@ -162,10 +164,10 @@ public class Step : MonoBehaviour
             if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, "Right"))
             {
                 currentPosition = this.transform.position;
-                if(obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension"){
-                    Debug.Log("Dimen true");
+                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
+                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
                     currentPosition = tempCurrentPosition;
-                }
+                
                 targetPosition = tempTargetPosition;
                 if (!isNotPickPipe) GeneratePipe("Right", currentPosition, targetPosition);
                 CheckPipeEndPoint(targetPosition);
@@ -500,6 +502,7 @@ public class Step : MonoBehaviour
             }
 
             tempTargetPosition = previousBaseDimensionEntrance;
+            entranceDimensionPosition = dimensionTeleporter.transform.position;
             player.transform.position = tempTargetPosition;
             defaultZAxis = 6;
             dimension.SetPreviousBaseCamera();       
