@@ -3573,10 +3573,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Button (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 5872487537103496723, guid: ea5ff12fe97a514468fcddc855f323d7, type: 3}
-      propertyPath: m_TagString
-      value: DoorButton
-      objectReference: {fileID: 0}
     - target: {fileID: 5872487537103496725, guid: ea5ff12fe97a514468fcddc855f323d7, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -4003,10 +3999,6 @@ PrefabInstance:
     - target: {fileID: 5872487537103496723, guid: ea5ff12fe97a514468fcddc855f323d7, type: 3}
       propertyPath: m_Name
       value: Button
-      objectReference: {fileID: 0}
-    - target: {fileID: 5872487537103496723, guid: ea5ff12fe97a514468fcddc855f323d7, type: 3}
-      propertyPath: m_TagString
-      value: DoorButton
       objectReference: {fileID: 0}
     - target: {fileID: 5872487537103496725, guid: ea5ff12fe97a514468fcddc855f323d7, type: 3}
       propertyPath: m_RootOrder

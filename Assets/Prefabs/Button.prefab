@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 221c855a122f83d4d8411add610104ec, type: 3}
-  m_Color: {r: 0.36694553, g: 0.8962264, b: 0.42054427, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 991f2c14a3d3c0b4f90849fb6c08e524, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -98,3 +98,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   door: {fileID: 0}
+  unableButton: {fileID: 21300000, guid: 991f2c14a3d3c0b4f90849fb6c08e524, type: 3}
+  enableButton: {fileID: 21300000, guid: 53a1b134a7c5350469c8af4adb054a41, type: 3}

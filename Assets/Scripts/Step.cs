@@ -477,7 +477,12 @@ public class Step : MonoBehaviour
                 tempCurrentPosition = player.transform.position;                
                 tempTargetPosition = entranceTeleporterPosition;
                 entranceDimensionPosition = dimension.transform.position;
-                player.transform.position = tempTargetPosition;                 
+                player.transform.position = tempTargetPosition;
+                /*n*/
+                if(!isNotPickPipe) {
+                    Vector2 ladder = new Vector2(entranceTeleporterPosition.x-4,entranceTeleporterPosition.y);
+                    RenderPipe(ladder, 0, 0);
+                }                
             }
             else if(tempNextKey == "Left" && dimension.GetTargetTeleporterList().ContainsKey("Right")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Right"];
@@ -491,7 +496,12 @@ public class Step : MonoBehaviour
                 tempCurrentPosition = player.transform.position;
                 tempTargetPosition = dimension.GetTargetTeleporterList()["Right"];
                 entranceDimensionPosition = dimension.transform.position;
-                player.transform.position = tempTargetPosition;    
+                player.transform.position = tempTargetPosition; 
+                /*n*/
+                if(!isNotPickPipe) {
+                    Vector2 ladder = new Vector2(entranceTeleporterPosition.x+4,entranceTeleporterPosition.y);
+                    RenderPipe(ladder, 0, 0);
+                }   
             }
             else if(tempNextKey == "Up" && dimension.GetTargetTeleporterList().ContainsKey("Bottom")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Bottom"];
@@ -505,7 +515,12 @@ public class Step : MonoBehaviour
                 tempCurrentPosition = player.transform.position;
                 tempTargetPosition = dimension.GetTargetTeleporterList()["Bottom"];
                 entranceDimensionPosition = dimension.transform.position;
-                player.transform.position = tempTargetPosition;   
+                player.transform.position = tempTargetPosition;
+                /*n*/
+                if(!isNotPickPipe) {
+                    Vector2 ladder = new Vector2(entranceTeleporterPosition.x,entranceTeleporterPosition.y-4);
+                    RenderPipe(ladder, 0, 1);
+                }  
             }
             else if(tempNextKey == "Down" && dimension.GetTargetTeleporterList().ContainsKey("Top")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Top"];
@@ -520,6 +535,11 @@ public class Step : MonoBehaviour
                 tempTargetPosition = dimension.GetTargetTeleporterList()["Top"];  
                 entranceDimensionPosition = dimension.transform.position;              
                 player.transform.position = tempTargetPosition; 
+                /*n*/
+                if(!isNotPickPipe) {
+                    Vector2 ladder = new Vector2(entranceTeleporterPosition.x,entranceTeleporterPosition.y+4);
+                    RenderPipe(ladder, 0, 1);
+                } 
             }else{
                 return false;
             }
@@ -543,7 +563,16 @@ public class Step : MonoBehaviour
             entranceDimensionPosition = dimensionTeleporter.transform.position;
             player.transform.position = tempTargetPosition;
             defaultZAxis = 6;
-            dimension.SetPreviousBaseCamera();       
+            dimension.SetPreviousBaseCamera();   
+
+            /*n*/
+            if(!isNotPickPipe && (tempNextKey == "Right" || tempNextKey == "Left")) {
+                Vector2 ladder = new Vector2(dimensionTeleporter.transform.position.x,dimensionTeleporter.transform.position.y);
+                RenderPipe(ladder, 0, 0);
+            } else if(!isNotPickPipe && (tempNextKey == "Up" || tempNextKey == "Down")) {
+                Vector2 ladder = new Vector2(dimensionTeleporter.transform.position.x,dimensionTeleporter.transform.position.y);
+                RenderPipe(ladder, 0, 1);
+            }    
         }  
         else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "DoorButton"){
             DoorButton button = doorButtonType[targetPosition];
