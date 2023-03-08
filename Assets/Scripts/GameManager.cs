@@ -1,0 +1,129 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject player;
+
+    [SerializeField]
+    private GameObject WinUI;
+
+    private List<string> path;
+    private Dictionary<Vector2, string> obstaclePosition;
+    private Dictionary<Vector2, PipePoint> pointType;
+    private Dictionary<Vector2, Bridge> bridgeType;
+    private Dictionary<Vector2, Dimension> dimensionType;
+    private Dictionary<Vector2, DimensionTeleporter> dimensionTeleporterType;
+    private Dictionary<Vector2, DoorButton> doorButtonType;
+    private Dictionary<Vector2, Door> doorType;
+
+    private GameObject[] walls;
+    private GameObject[] pipePoints;
+    private GameObject[] bridges;
+    private GameObject[] dimensions;
+    private GameObject[] dimensionTeleporters;
+    private GameObject[] doors;
+    private GameObject[] doorButtons;
+
+    public int Score{get; set;}
+
+    public void Start()
+    {
+        player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, 6);
+        Score = 0;
+
+        obstaclePosition = new Dictionary<Vector2, string>();
+        pointType = new Dictionary<Vector2, PipePoint>();
+        bridgeType = new Dictionary<Vector2, Bridge>();
+        dimensionType = new Dictionary<Vector2, Dimension>();
+        dimensionTeleporterType = new Dictionary<Vector2, DimensionTeleporter>();
+        doorButtonType = new Dictionary<Vector2, DoorButton>();
+        doorType = new Dictionary<Vector2, Door>();
+        path = new List<string>();
+        path.Add("");
+
+        walls = GameObject.FindGameObjectsWithTag("Wall");
+        foreach (GameObject item in walls)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Wall";
+        }
+
+        pipePoints = GameObject.FindGameObjectsWithTag("PipePoint");
+        foreach (GameObject item in pipePoints)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "PipePoint";
+            pointType[blockPosition] = item.GetComponent<PipePoint>();
+        }
+
+        bridges = GameObject.FindGameObjectsWithTag("Bridge");
+        foreach (GameObject item in bridges)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Bridge";
+            bridgeType[blockPosition] = item.GetComponent<Bridge>();
+        }
+
+        dimensions = GameObject.FindGameObjectsWithTag("Dimension");
+        foreach (GameObject item in dimensions)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Dimension";
+            dimensionType[blockPosition] = item.GetComponent<Dimension>();
+        }
+
+        dimensionTeleporters = GameObject.FindGameObjectsWithTag("DimensionTeleporter");
+        foreach (GameObject item in dimensionTeleporters)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "DimensionTeleporter";
+            dimensionTeleporterType[blockPosition] = item.GetComponent<DimensionTeleporter>();
+        }
+
+        doorButtons = GameObject.FindGameObjectsWithTag("DoorButton");
+        foreach (GameObject item in doorButtons)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "DoorButton";
+            doorButtonType[blockPosition] = item.GetComponent<DoorButton>();
+        }
+
+        doors = GameObject.FindGameObjectsWithTag("Door");
+        foreach (GameObject item in doors)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Door";
+            doorType[blockPosition] = item.GetComponent<Door>();
+        }
+    }
+
+    public List<string> GetPath(){return path;}
+    public Dictionary<Vector2, string> GetObstaclePosition(){return obstaclePosition;}
+    public Dictionary<Vector2, PipePoint> GetPointType(){return pointType;}
+    public Dictionary<Vector2, Bridge> GetBridgeType(){return bridgeType;}
+    public Dictionary<Vector2, Dimension> GetDimensionType(){return dimensionType;}
+    public Dictionary<Vector2, DimensionTeleporter> GetDimensionTeleporterType(){return dimensionTeleporterType;}
+    public Dictionary<Vector2, DoorButton> GetDoorButtonType(){return doorButtonType;}
+    public Dictionary<Vector2, Door> GetDoorType(){return doorType;}
+    public GameObject GetPlayer(){return player;}
+
+    // Update is called once per frame
+    void Update()
+    {
+        WinUI.SetActive(false);
+        if(Input.GetKeyDown(KeyCode.R) && Score != pointType.Count/2){
+            ResetTheGame();
+        }
+        if(Score == pointType.Count/2){
+            WinUI.SetActive(true);
+        }
+    }
+
+    private void ResetTheGame() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+}
