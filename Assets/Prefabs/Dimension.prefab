@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2219689219153956036}
   m_Layer: 0
   m_Name: Dimension
-  m_TagString: Untagged
+  m_TagString: Dimension
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 221c855a122f83d4d8411add610104ec, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 66ef47d6dad939442a627c88db568a70, type: 3}
   m_Color: {r: 0.900022, g: 0.9433962, b: 0.04805973, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -105,3 +105,5 @@ MonoBehaviour:
   bottomTeleporter: {x: 0, y: 0}
   dimensionLeft: 0
   leftTeleporter: {x: 0, y: 0}
+  previousBaseCam: {fileID: 0}
+  targetBaseCam: {fileID: 0}

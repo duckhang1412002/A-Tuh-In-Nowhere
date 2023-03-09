@@ -28,11 +28,9 @@ public class Eye : MonoBehaviour {
         !Input.GetKeyDown(KeyCode.RightArrow)
         ){
             isNotMove = true;
-            Debug.Log("Check true");
         }else{
             isNotMove = false;
             isNotRunCoroutine = true;
-            Debug.Log("Check false");
             StopCoroutine(coroutine);
         }
 

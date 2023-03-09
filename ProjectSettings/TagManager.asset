@@ -7,6 +7,11 @@ TagManager:
   - Wall
   - PipePoint
   - Bridge
+  - Dimension
+  - DimensionTeleporter
+  - Door
+  - Button
+  - DoorButton
   layers:
   - Default
   - TransparentFX
