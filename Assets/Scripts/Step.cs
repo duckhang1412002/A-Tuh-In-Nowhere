@@ -32,6 +32,7 @@ public class Step : MonoBehaviour
     private Dictionary<Vector2, Door> doorType;
     private static float[] pipeRotation = { 0f, 90.0f, 180.0f, 270.0f };
     private float defaultZAxis = 6;
+    
     // Start is called before the first frame update
     void Start()
     {

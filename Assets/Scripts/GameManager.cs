@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         WinUI.SetActive(false);
-        if(Input.GetKeyDown(KeyCode.R) && Score != pointType.Count/2){
+        if(Input.GetKeyDown(KeyCode.R)){
             ResetTheGame();
         }
         if(Score == pointType.Count/2){
