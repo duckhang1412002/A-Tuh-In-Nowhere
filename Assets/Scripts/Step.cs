@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Step : MonoBehaviour
 {
-    [SerializeField] private GameObject gameManager;
+    private GameObject gameManager;
     [SerializeField] private float moveSteps = 4.0f;
     [SerializeField] private float moveSpeed = 20.0f;
     [SerializeField] private Sprite[] pipeSprites;
@@ -23,6 +24,7 @@ public class Step : MonoBehaviour
     private Vector2 entranceDimensionPosition;
 
     private List<string> path;
+    private List<GameObject> pipes;
     private Dictionary<Vector2, string> obstaclePosition;
     private Dictionary<Vector2, PipePoint> pointType;
     private Dictionary<Vector2, Bridge> bridgeType;
@@ -36,6 +38,7 @@ public class Step : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.FindGameObjectsWithTag("GameController")[0];
         gameManager.GetComponent<GameManager>().Start();
 
         player = gameManager.GetComponent<GameManager>().GetPlayer();
@@ -52,6 +55,7 @@ public class Step : MonoBehaviour
         doorButtonType = gameManager.GetComponent<GameManager>().GetDoorButtonType();
         doorType = gameManager.GetComponent<GameManager>().GetDoorType();
         path = gameManager.GetComponent<GameManager>().GetPath();
+        pipes = new List<GameObject>();
         
         handlePipeColor = "Default";
     }
@@ -165,6 +169,13 @@ public class Step : MonoBehaviour
             Debug.Log("Is end point --- " + handlePipeColor);
 
             body.GetComponent<ChangeColor>().ChangeSpriteColor(body, "Default");
+            
+            List<GameObject> pipeObjects = pipes.Where(p => p.name == "Pipe" + handlePipeColor).ToList();
+
+            foreach(GameObject pipe in pipeObjects){
+                pipe.GetComponent<ChangeColor>().StartPipeEffect(pipe, handlePipeColor);
+            }
+
             gameManager.GetComponent<GameManager>().Score++;
         }
     }
@@ -294,13 +305,15 @@ public class Step : MonoBehaviour
         GameObject pipeClone = new GameObject();
         pipeClone.AddComponent<SpriteRenderer>();
         pipeClone.AddComponent<ChangeColor>();
+        pipeClone.name = "Pipe" + handlePipeColor;
+        pipes.Add(pipeClone);
 
         SpriteRenderer spriteRenderer = pipeClone.GetComponent<SpriteRenderer>();
         Transform transform = pipeClone.GetComponent<Transform>();
         ChangeColor changeColor = pipeClone.GetComponent<ChangeColor>();
 
         changeColor.Start();
-        changeColor.ChangeSpriteColor(pipeClone, handlePipeColor);     
+        changeColor.ChangeSpriteColor(pipeClone, handlePipeColor);
         
         spriteRenderer.sprite = pipeSprites[pipeTypeIndex];       
         transform.Rotate(0f, 0f, pipeRotation[pipeRotationIndex]);
