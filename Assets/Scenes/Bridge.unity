@@ -1267,6 +1267,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1792622577, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1209439205509977788, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4603478249330170240, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -1360,6 +1368,11 @@ PrefabInstance:
 --- !u!1 &814795373 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4603478248789207273, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
+  m_PrefabInstance: {fileID: 814795372}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &814795374 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5616230808126871881, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
   m_PrefabInstance: {fileID: 814795372}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &841645171
@@ -2155,6 +2168,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1141200440}
+    - target: {fileID: 3900166683723103670, guid: bbe214a9758ea074083a6d859ff46fe9, type: 3}
+      propertyPath: PauseUI
+      value: 
+      objectReference: {fileID: 814795374}
+    - target: {fileID: 3900166683723103670, guid: bbe214a9758ea074083a6d859ff46fe9, type: 3}
+      propertyPath: GameOverUI
+      value: 
+      objectReference: {fileID: 814795373}
     - target: {fileID: 8326933572365210999, guid: bbe214a9758ea074083a6d859ff46fe9, type: 3}
       propertyPath: m_RootOrder
       value: 2

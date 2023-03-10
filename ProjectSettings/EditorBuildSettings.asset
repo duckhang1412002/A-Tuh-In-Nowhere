@@ -18,9 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Bridge.unity
     guid: 6c62d4929fd7f4b448828d6a1ffabc54
   - enabled: 1
-    path: Assets/Scenes/Dimension.unity
-    guid: 3ee1f3d265c93ab40b0e990377df2ade
-  - enabled: 1
     path: Assets/Scenes/Button.unity
     guid: a48c29c653bdd6c43baffc9de0a1f0b1
+  - enabled: 1
+    path: Assets/Scenes/Dimension.unity
+    guid: 3ee1f3d265c93ab40b0e990377df2ade
   m_configObjects: {}
