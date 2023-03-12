@@ -34,6 +34,7 @@ public class Step : MonoBehaviour
     private Dictionary<Vector2, Door> doorType;
     private static float[] pipeRotation = { 0f, 90.0f, 180.0f, 270.0f };
     private float defaultZAxis = 6;
+    private bool activatePipeEffect = false;
     
     // Start is called before the first frame update
     void Start()
@@ -78,6 +79,7 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Up", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Up");
             }
         }
@@ -97,6 +99,7 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Down", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Down");
             }
         }
@@ -116,6 +119,7 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Left", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Left");
             }
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
@@ -136,12 +140,25 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Right", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Right");
             }
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
 
         StepMove();
+    }
+
+    private void CheckPipeEffect(){
+        if(activatePipeEffect){
+            List<GameObject> pipeObjects = pipes.Where(p => p.name == "Pipe" + handlePipeColor).ToList();
+
+            foreach(GameObject pipe in pipeObjects){
+                pipe.GetComponent<ChangeColor>().StartPipeEffect(pipe, handlePipeColor);
+            }
+
+            activatePipeEffect = false;
+        }
     }
 
     void CheckPipeStartPoint(Vector2 targetPosition)
@@ -169,13 +186,7 @@ public class Step : MonoBehaviour
             Debug.Log("Is end point --- " + handlePipeColor);
 
             body.GetComponent<ChangeColor>().ChangeSpriteColor(body, "Default");
-            
-            List<GameObject> pipeObjects = pipes.Where(p => p.name == "Pipe" + handlePipeColor).ToList();
-
-            foreach(GameObject pipe in pipeObjects){
-                pipe.GetComponent<ChangeColor>().StartPipeEffect(pipe, handlePipeColor);
-            }
-
+            activatePipeEffect = true;                   
             gameManager.GetComponent<GameManager>().Score++;
         }
     }
