@@ -9,7 +9,10 @@ public class GameManager : MonoBehaviour
     private GameObject player;
 
     [SerializeField]
-    private GameObject WinUI;
+    private GameObject GameOverUI;
+
+    [SerializeField]
+    private GameObject PauseUI;
 
     private List<string> path;
     private Dictionary<Vector2, string> obstaclePosition;
@@ -27,6 +30,8 @@ public class GameManager : MonoBehaviour
     private GameObject[] dimensionTeleporters;
     private GameObject[] doors;
     private GameObject[] doorButtons;
+
+    private bool openPauseUI = false;
 
     public int Score{get; set;}
 
@@ -114,12 +119,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        WinUI.SetActive(false);
+        GameOverUI.SetActive(false);
         if(Input.GetKeyDown(KeyCode.R)){
             ResetTheGame();
         }
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            openPauseUI = !openPauseUI;
+            if(openPauseUI){
+                PauseUI.SetActive(true);
+            } else{
+                PauseUI.SetActive(false);
+            }
+        }
         if(Score == pointType.Count/2){
-            WinUI.SetActive(true);
+            GameOverUI.SetActive(true);
         }
     }
 
