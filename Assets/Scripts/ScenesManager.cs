@@ -8,4 +8,9 @@ public class ScenesManager : MonoBehaviour
     public void MoveToScene(int sceneID){
         SceneManager.LoadScene(sceneID);
     }
+
+    public void QuitGame() {
+        Application.Quit();
+    }
+
 }

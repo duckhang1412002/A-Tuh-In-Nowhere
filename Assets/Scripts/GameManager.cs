@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject PauseUI;
+    [SerializeField]
+    private GameObject GuideUI;
 
     private List<string> path;
     private Dictionary<Vector2, string> obstaclePosition;
@@ -30,8 +33,8 @@ public class GameManager : MonoBehaviour
     private GameObject[] dimensionTeleporters;
     private GameObject[] doors;
     private GameObject[] doorButtons;
-
     private bool openPauseUI = false;
+    private bool guideUI = true; 
 
     public int Score{get; set;}
 
@@ -119,6 +122,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         GameOverUI.SetActive(false);
         if(Input.GetKeyDown(KeyCode.R)){
             ResetTheGame();
@@ -131,6 +135,16 @@ public class GameManager : MonoBehaviour
                 PauseUI.SetActive(false);
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.G)){
+            guideUI = !guideUI;
+            if(guideUI){
+                GuideUI.SetActive(true);
+            } else{
+                GuideUI.SetActive(false);
+            }
+        }
+
         if(Score == pointType.Count/2){
             GameOverUI.SetActive(true);
         }
