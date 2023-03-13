@@ -9,7 +9,14 @@ public class Door : MonoBehaviour
 
     [SerializeField]
     private string doorOpenDirection;
-    public bool IsActive{get; set;}   
+
+    [SerializeField]
+    private bool isReverseDoor;
+
+    public bool IsActive{get; set;}  
+
+    public bool HasPipeAtDoorPosition{get; set;}
+
     [SerializeField]
     private float moveSpeed = 15f;
     private Vector2 previousPosition; 
@@ -19,7 +26,12 @@ public class Door : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        IsActive = false;
+        if(isReverseDoor)
+            IsActive = true;
+        else{
+            IsActive = false;
+        }
+
         previousPosition = this.transform.position;
 
         if(doorOpenDirection == "Up") targetPosition = new Vector2(previousPosition.x, previousPosition.y+4);
@@ -33,16 +45,33 @@ public class Door : MonoBehaviour
     {
         if(button.IsActive){
             openAxis = targetPosition;
-            this.IsActive = true;
-            Debug.Log(IsActive);
+            if(isReverseDoor){
+                this.IsActive = false;
+            } else{
+                this.IsActive = true;
+            }     
         } else {
             openAxis = previousPosition;
-            this.IsActive = false;
+            if(isReverseDoor){
+                this.IsActive = true;
+            } else{
+                this.IsActive = false;
+            }   
         }
         DoorTransition();
     }
 
-    void DoorTransition(){       
-        this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(openAxis.x, openAxis.y, 9), moveSpeed * Time.deltaTime);
+    void DoorTransition(){
+        if(!HasPipeAtDoorPosition){
+            this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(openAxis.x, openAxis.y, 9), moveSpeed * Time.deltaTime);            
+        }       
+    }
+
+    public Vector2 GetReverseDoorLocation(){
+        return new Vector2(targetPosition.x, targetPosition.y);
+    }
+
+    public bool CheckReverseDoor(){
+        return isReverseDoor;
     }
 }
