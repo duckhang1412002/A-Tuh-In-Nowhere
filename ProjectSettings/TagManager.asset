@@ -12,6 +12,7 @@ TagManager:
   - Door
   - Button
   - DoorButton
+  - Pool
   layers:
   - Default
   - TransparentFX

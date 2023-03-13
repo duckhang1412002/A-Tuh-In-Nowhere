@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<Vector2, DimensionTeleporter> dimensionTeleporterType;
     private Dictionary<Vector2, DoorButton> doorButtonType;
     private Dictionary<Vector2, Door> doorType;
+    private Dictionary<Vector2, WaterPool> poolType;
 
     private GameObject[] walls;
     private GameObject[] pipePoints;
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
     private GameObject[] dimensionTeleporters;
     private GameObject[] doors;
     private GameObject[] doorButtons;
+    private GameObject[] pools;
 
     private bool openPauseUI = false;
 
@@ -47,6 +49,7 @@ public class GameManager : MonoBehaviour
         dimensionTeleporterType = new Dictionary<Vector2, DimensionTeleporter>();
         doorButtonType = new Dictionary<Vector2, DoorButton>();
         doorType = new Dictionary<Vector2, Door>();
+        poolType = new Dictionary<Vector2, WaterPool>();
         path = new List<string>();
         path.Add("");
 
@@ -100,9 +103,23 @@ public class GameManager : MonoBehaviour
         doors = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject item in doors)
         {
-            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            Vector2 blockPosition;
+            if(item.GetComponent<Door>().CheckReverseDoor() == true){
+                blockPosition = new Vector2(item.GetComponent<Door>().GetReverseDoorLocation().x, item.GetComponent<Door>().GetReverseDoorLocation().y);
+            }
+            else{
+                blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            }
             obstaclePosition[blockPosition] = "Door";
             doorType[blockPosition] = item.GetComponent<Door>();
+        }
+
+        pools = GameObject.FindGameObjectsWithTag("Pool");
+        foreach (GameObject item in pools)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Pool";
+            poolType[blockPosition] = item.GetComponent<WaterPool>();
         }
     }
 
@@ -114,6 +131,7 @@ public class GameManager : MonoBehaviour
     public Dictionary<Vector2, DimensionTeleporter> GetDimensionTeleporterType(){return dimensionTeleporterType;}
     public Dictionary<Vector2, DoorButton> GetDoorButtonType(){return doorButtonType;}
     public Dictionary<Vector2, Door> GetDoorType(){return doorType;}
+    public Dictionary<Vector2, WaterPool> GetPoolType(){return poolType;}
     public GameObject GetPlayer(){return player;}
 
     // Update is called once per frame
