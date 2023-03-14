@@ -24,9 +24,9 @@ public class Door : MonoBehaviour
     private Vector2 openAxis;
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
-        if(isReverseDoor)
+        if(isReverseDoor)           
             IsActive = true;
         else{
             IsActive = false;
@@ -46,16 +46,16 @@ public class Door : MonoBehaviour
         if(button.IsActive){
             openAxis = targetPosition;
             if(isReverseDoor){
-                this.IsActive = false;
+                IsActive = false;
             } else{
-                this.IsActive = true;
+                IsActive = true;
             }     
         } else {
             openAxis = previousPosition;
             if(isReverseDoor){
-                this.IsActive = true;
+                IsActive = true;
             } else{
-                this.IsActive = false;
+                IsActive = false;
             }   
         }
         DoorTransition();
