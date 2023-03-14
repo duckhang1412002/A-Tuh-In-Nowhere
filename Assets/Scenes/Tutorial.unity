@@ -2427,11 +2427,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4737974460615664152, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: color
-      value: Purple
+      value: Yellow
       objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_Color.b
-      value: 0.8980392
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: m_Color.g
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_Color.r
@@ -2483,7 +2487,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664157, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_Name
-      value: PipePoint (5)
+      value: Pipe_End_Yellow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
@@ -3312,11 +3316,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4737974460615664152, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: color
-      value: Purple
+      value: Yellow
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_Color.b
-      value: 0.8944769
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
+      propertyPath: m_Color.g
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664154, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_Color.r
@@ -3368,7 +3380,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4737974460615664157, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
       propertyPath: m_Name
-      value: PipePoint (4)
+      value: Pipe_Start_Yellow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e607612a656d694bbe619d3d51c10d2, type: 3}
