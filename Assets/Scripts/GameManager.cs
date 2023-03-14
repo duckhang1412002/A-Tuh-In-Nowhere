@@ -9,7 +9,13 @@ public class GameManager : MonoBehaviour
     private GameObject player;
 
     [SerializeField]
-    private GameObject WinUI;
+    private GameObject GameOverUI;
+
+    [SerializeField]
+    private GameObject PauseUI;
+    
+    // [SerializeField]
+    // private GameObject GuideUI;
 
     private List<string> path;
     private Dictionary<Vector2, string> obstaclePosition;
@@ -19,6 +25,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<Vector2, DimensionTeleporter> dimensionTeleporterType;
     private Dictionary<Vector2, DoorButton> doorButtonType;
     private Dictionary<Vector2, Door> doorType;
+    private Dictionary<Vector2, WaterPool> poolType;
 
     private GameObject[] walls;
     private GameObject[] pipePoints;
@@ -27,6 +34,11 @@ public class GameManager : MonoBehaviour
     private GameObject[] dimensionTeleporters;
     private GameObject[] doors;
     private GameObject[] doorButtons;
+    private GameObject[] pools;
+
+    private bool openPauseUI = false;
+
+    private bool openGuideUI = true;
 
     public int Score{get; set;}
 
@@ -42,6 +54,7 @@ public class GameManager : MonoBehaviour
         dimensionTeleporterType = new Dictionary<Vector2, DimensionTeleporter>();
         doorButtonType = new Dictionary<Vector2, DoorButton>();
         doorType = new Dictionary<Vector2, Door>();
+        poolType = new Dictionary<Vector2, WaterPool>();
         path = new List<string>();
         path.Add("");
 
@@ -95,9 +108,25 @@ public class GameManager : MonoBehaviour
         doors = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject item in doors)
         {
-            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            Door door = item.GetComponent<Door>();
+            door.Start();
+            Vector2 blockPosition;
+            if(door.CheckReverseDoor() == true){
+                blockPosition = new Vector2(door.GetReverseDoorLocation().x, door.GetReverseDoorLocation().y);
+            }
+            else{
+                blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            }
             obstaclePosition[blockPosition] = "Door";
             doorType[blockPosition] = item.GetComponent<Door>();
+        }
+
+        pools = GameObject.FindGameObjectsWithTag("Pool");
+        foreach (GameObject item in pools)
+        {
+            Vector2 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
+            obstaclePosition[blockPosition] = "Pool";
+            poolType[blockPosition] = item.GetComponent<WaterPool>();
         }
     }
 
@@ -109,17 +138,35 @@ public class GameManager : MonoBehaviour
     public Dictionary<Vector2, DimensionTeleporter> GetDimensionTeleporterType(){return dimensionTeleporterType;}
     public Dictionary<Vector2, DoorButton> GetDoorButtonType(){return doorButtonType;}
     public Dictionary<Vector2, Door> GetDoorType(){return doorType;}
+    public Dictionary<Vector2, WaterPool> GetPoolType(){return poolType;}
     public GameObject GetPlayer(){return player;}
 
     // Update is called once per frame
     void Update()
     {
-        WinUI.SetActive(false);
+        GameOverUI.SetActive(false);
         if(Input.GetKeyDown(KeyCode.R)){
             ResetTheGame();
         }
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            openPauseUI = !openPauseUI;
+            if(openPauseUI){
+                PauseUI.SetActive(true);
+            } else{
+                PauseUI.SetActive(false);
+            }
+        }
+                
+        if(Input.GetKeyDown(KeyCode.G)){
+            openGuideUI = !openGuideUI;
+            // if(openGuideUI){
+            //     GuideUI.SetActive(true);
+            // } else{
+            //     GuideUI.SetActive(false);
+            // }
+        }
         if(Score == pointType.Count/2){
-            WinUI.SetActive(true);
+            GameOverUI.SetActive(true);
         }
     }
 

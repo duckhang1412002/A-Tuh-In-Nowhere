@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Step : MonoBehaviour
 {
-    [SerializeField] private GameObject gameManager;
+    private GameObject gameManager;
     [SerializeField] private float moveSteps = 4.0f;
     [SerializeField] private float moveSpeed = 20.0f;
     [SerializeField] private Sprite[] pipeSprites;
@@ -23,6 +24,7 @@ public class Step : MonoBehaviour
     private Vector2 entranceDimensionPosition;
 
     private List<string> path;
+    private List<GameObject> pipes;
     private Dictionary<Vector2, string> obstaclePosition;
     private Dictionary<Vector2, PipePoint> pointType;
     private Dictionary<Vector2, Bridge> bridgeType;
@@ -30,12 +32,16 @@ public class Step : MonoBehaviour
     private Dictionary<Vector2, DimensionTeleporter> dimensionTeleporterType;
     private Dictionary<Vector2, DoorButton> doorButtonType;
     private Dictionary<Vector2, Door> doorType;
+    private Dictionary<Vector2, WaterPool> poolType;
     private static float[] pipeRotation = { 0f, 90.0f, 180.0f, 270.0f };
     private float defaultZAxis = 6;
+    private bool activatePipeEffect = false;
+    private bool isStepOnPool = false;
     
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.FindGameObjectsWithTag("GameController")[0];
         gameManager.GetComponent<GameManager>().Start();
 
         player = gameManager.GetComponent<GameManager>().GetPlayer();
@@ -51,7 +57,9 @@ public class Step : MonoBehaviour
         dimensionTeleporterType = gameManager.GetComponent<GameManager>().GetDimensionTeleporterType();
         doorButtonType = gameManager.GetComponent<GameManager>().GetDoorButtonType();
         doorType = gameManager.GetComponent<GameManager>().GetDoorType();
+        poolType = gameManager.GetComponent<GameManager>().GetPoolType();
         path = gameManager.GetComponent<GameManager>().GetPath();
+        pipes = new List<GameObject>();
         
         handlePipeColor = "Default";
     }
@@ -74,6 +82,7 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Up", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Up");
             }
         }
@@ -93,6 +102,7 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Down", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Down");
             }
         }
@@ -112,6 +122,7 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Left", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Left");
             }
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
@@ -132,12 +143,55 @@ public class Step : MonoBehaviour
                 CheckPipeEndPoint(targetPosition);
                 if (isNotPickPipe && isAtPointPosition) GeneratePipe("Right", currentPosition, targetPosition);
                 CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
                 SetPreviousMove("Right");
             }
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         }
+        else if (isStepOnPool && enableMove)
+        {
+            moveSpeed = 25f;
+            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
+            if(GetPreviousMove() == "Left"){
+                tempTargetPosition = new Vector2(transform.position.x - moveSteps, transform.position.y);
+            }else if(GetPreviousMove() == "Right"){
+                tempTargetPosition = new Vector2(transform.position.x + moveSteps, transform.position.y);
+            }else if(GetPreviousMove() == "Up"){
+                tempTargetPosition = new Vector2(transform.position.x, transform.position.y + moveSteps);
+            }else if(GetPreviousMove() == "Down"){
+                tempTargetPosition = new Vector2(transform.position.x, transform.position.y - moveSteps);
+            }
+                
+            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, GetPreviousMove()))
+            {
+                currentPosition = this.transform.position;
+                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
+                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
+                    currentPosition = tempCurrentPosition;
+                
+                targetPosition = tempTargetPosition;
+                if (!isNotPickPipe) GeneratePipe(GetPreviousMove(), currentPosition, targetPosition);
+                CheckPipeEndPoint(targetPosition);
+                if (isNotPickPipe && isAtPointPosition) GeneratePipe(GetPreviousMove(), currentPosition, targetPosition);
+                CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
+                SetPreviousMove(GetPreviousMove());
+            }
+        }
 
         StepMove();
+    }
+
+    private void CheckPipeEffect(){
+        if(activatePipeEffect){
+            List<GameObject> pipeObjects = pipes.Where(p => p.name == "Pipe" + handlePipeColor).ToList();
+
+            foreach(GameObject pipe in pipeObjects){
+                pipe.GetComponent<ChangeColor>().StartPipeEffect(pipe, handlePipeColor);
+            }
+
+            activatePipeEffect = false;
+        }
     }
 
     void CheckPipeStartPoint(Vector2 targetPosition)
@@ -165,6 +219,7 @@ public class Step : MonoBehaviour
             Debug.Log("Is end point --- " + handlePipeColor);
 
             body.GetComponent<ChangeColor>().ChangeSpriteColor(body, "Default");
+            activatePipeEffect = true;                   
             gameManager.GetComponent<GameManager>().Score++;
         }
     }
@@ -294,13 +349,15 @@ public class Step : MonoBehaviour
         GameObject pipeClone = new GameObject();
         pipeClone.AddComponent<SpriteRenderer>();
         pipeClone.AddComponent<ChangeColor>();
+        pipeClone.name = "Pipe" + handlePipeColor;
+        pipes.Add(pipeClone);
 
         SpriteRenderer spriteRenderer = pipeClone.GetComponent<SpriteRenderer>();
         Transform transform = pipeClone.GetComponent<Transform>();
         ChangeColor changeColor = pipeClone.GetComponent<ChangeColor>();
 
         changeColor.Start();
-        changeColor.ChangeSpriteColor(pipeClone, handlePipeColor);     
+        changeColor.ChangeSpriteColor(pipeClone, handlePipeColor);
         
         spriteRenderer.sprite = pipeSprites[pipeTypeIndex];       
         transform.Rotate(0f, 0f, pipeRotation[pipeRotationIndex]);
@@ -332,7 +389,8 @@ public class Step : MonoBehaviour
     }
 
     private bool CanStepToPosition(Vector2 currentPosition, Vector2 targetPosition, string tempNextKey)
-    {     
+    {
+
         bool totalCheck = true; 
         if(obstaclePosition.ContainsKey(currentPosition) && obstaclePosition[currentPosition] == "Bridge"){
             bool isOnBridge = false;
@@ -366,14 +424,15 @@ public class Step : MonoBehaviour
         } 
         else if(obstaclePosition.ContainsKey(currentPosition) && obstaclePosition[currentPosition] == "DoorButton"){
             DoorButton button = doorButtonType[currentPosition];
-            Door door = button.GetDoor();
             button.IsActive = false;
             if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Wall")
                 button.IsActive = true;
             else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe)
                 button.IsActive = true;
-            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "PipePoint" && pointType[targetPosition].IsConnect == true)
-            button.IsActive = true;
+            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "PipePoint" && pointType[targetPosition].IsConnect == true && !isNotPickPipe)
+                button.IsActive = true;
+            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Door" && doorType[targetPosition].IsActive == false)
+                button.IsActive = true;
 
             if(!isNotPickPipe){
                 button.HasPipeOn = true;
@@ -390,11 +449,13 @@ public class Step : MonoBehaviour
            
             if(isOnBridge){
                 if(bridge.HasPipeOnBridge && !isNotPickPipe){
+                    StopStepOnPool();
                     return false;
                 }
                 defaultZAxis = 2;
             }else{
                 if(bridge.HasPipeUnderBridge && !isNotPickPipe){
+                    StopStepOnPool();
                     return false;
                 }
                 defaultZAxis = 5;
@@ -405,18 +466,22 @@ public class Step : MonoBehaviour
 
             if(tempNextKey == "Right" && dimension.GetTargetTeleporterList().ContainsKey("Left")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Left"];
-                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe){
+                    StopStepOnPool();
                     return false;
+                }                 
                 else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
-                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe)
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe){
+                        StopStepOnPool();
                         return false;
+                    }
                 }
 
                 tempCurrentPosition = player.transform.position;                
                 tempTargetPosition = entranceTeleporterPosition;
                 entranceDimensionPosition = dimension.transform.position;
                 player.transform.position = tempTargetPosition;
-                /*n*/
+                
                 if(!isNotPickPipe) {
                     Vector2 ladder = new Vector2(entranceTeleporterPosition.x-4,entranceTeleporterPosition.y);
                     RenderPipe(ladder, 0, 0);
@@ -424,18 +489,22 @@ public class Step : MonoBehaviour
             }
             else if(tempNextKey == "Left" && dimension.GetTargetTeleporterList().ContainsKey("Right")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Right"];
-                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe){
+                    StopStepOnPool();
                     return false;
+                }
                 else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
-                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe)
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe){
+                        StopStepOnPool();
                         return false;
+                    }
                 }
 
                 tempCurrentPosition = player.transform.position;
                 tempTargetPosition = dimension.GetTargetTeleporterList()["Right"];
                 entranceDimensionPosition = dimension.transform.position;
                 player.transform.position = tempTargetPosition; 
-                /*n*/
+                
                 if(!isNotPickPipe) {
                     Vector2 ladder = new Vector2(entranceTeleporterPosition.x+4,entranceTeleporterPosition.y);
                     RenderPipe(ladder, 0, 0);
@@ -443,18 +512,22 @@ public class Step : MonoBehaviour
             }
             else if(tempNextKey == "Up" && dimension.GetTargetTeleporterList().ContainsKey("Bottom")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Bottom"];
-                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
-                    return false;
-                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
-                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe)
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe){
+                        StopStepOnPool();
                         return false;
+                }
+                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe){
+                        StopStepOnPool();
+                        return false;
+                    }
                 }
 
                 tempCurrentPosition = player.transform.position;
                 tempTargetPosition = dimension.GetTargetTeleporterList()["Bottom"];
                 entranceDimensionPosition = dimension.transform.position;
                 player.transform.position = tempTargetPosition;
-                /*n*/
+                
                 if(!isNotPickPipe) {
                     Vector2 ladder = new Vector2(entranceTeleporterPosition.x,entranceTeleporterPosition.y-4);
                     RenderPipe(ladder, 0, 1);
@@ -462,18 +535,22 @@ public class Step : MonoBehaviour
             }
             else if(tempNextKey == "Down" && dimension.GetTargetTeleporterList().ContainsKey("Top")){
                 Vector2 entranceTeleporterPosition = dimension.GetTargetTeleporterList()["Top"];
-                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe)
-                    return false;
-                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
-                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe)
+                if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "Pipe" && !isNotPickPipe){
+                        StopStepOnPool();
                         return false;
+                }
+                else if(obstaclePosition.ContainsKey(entranceTeleporterPosition) && obstaclePosition[entranceTeleporterPosition] == "PipePoint"){
+                    if (pointType.ContainsKey(entranceTeleporterPosition) && handlePipeColor != pointType[entranceTeleporterPosition].GetColorType() && !isNotPickPipe){
+                        StopStepOnPool();
+                        return false;
+                    }
                 }
 
                 tempCurrentPosition = player.transform.position;               
                 tempTargetPosition = dimension.GetTargetTeleporterList()["Top"];  
                 entranceDimensionPosition = dimension.transform.position;              
                 player.transform.position = tempTargetPosition; 
-                /*n*/
+                
                 if(!isNotPickPipe) {
                     Vector2 ladder = new Vector2(entranceTeleporterPosition.x,entranceTeleporterPosition.y+4);
                     RenderPipe(ladder, 0, 1);
@@ -490,11 +567,15 @@ public class Step : MonoBehaviour
             Dimension dimension = dimensionType[dimensionTeleporter.getBaseDimension()];
             Vector2 previousBaseDimensionEntrance = dimension.GetPreviousTeleporterList()[targetPosition];
 
-            if(obstaclePosition.ContainsKey(previousBaseDimensionEntrance) && obstaclePosition[previousBaseDimensionEntrance] == "Pipe" && !isNotPickPipe)
+            if(obstaclePosition.ContainsKey(previousBaseDimensionEntrance) && obstaclePosition[previousBaseDimensionEntrance] == "Pipe" && !isNotPickPipe){
+                StopStepOnPool();
                 return false;
+            }
             else if(obstaclePosition.ContainsKey(previousBaseDimensionEntrance) && obstaclePosition[previousBaseDimensionEntrance] == "PipePoint"){
-                if (pointType.ContainsKey(previousBaseDimensionEntrance) && handlePipeColor != pointType[previousBaseDimensionEntrance].GetColorType() && !isNotPickPipe)
+                if (pointType.ContainsKey(previousBaseDimensionEntrance) && handlePipeColor != pointType[previousBaseDimensionEntrance].GetColorType() && !isNotPickPipe){
+                    StopStepOnPool();
                     return false;
+                }
             }
 
             tempTargetPosition = previousBaseDimensionEntrance;
@@ -503,7 +584,7 @@ public class Step : MonoBehaviour
             defaultZAxis = 6;
             dimension.SetPreviousBaseCamera();   
 
-            /*n*/
+            
             if(!isNotPickPipe && (tempNextKey == "Right" || tempNextKey == "Left")) {
                 Vector2 ladder = new Vector2(dimensionTeleporter.transform.position.x,dimensionTeleporter.transform.position.y);
                 RenderPipe(ladder, 0, 0);
@@ -514,9 +595,14 @@ public class Step : MonoBehaviour
         }  
         else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "DoorButton"){
             DoorButton button = doorButtonType[targetPosition];
-            Door door = button.GetDoor();
             button.IsActive = true;
-        }           
+        }
+        else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pool" 
+        || (poolType.ContainsKey(targetPosition) && isNotPickPipe)
+        ){
+            isStepOnPool = true;
+            return true;
+        }             
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe")
         {
             if (!isNotPickPipe) totalCheck = false;
@@ -533,10 +619,15 @@ public class Step : MonoBehaviour
         else if (obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Door")
         {   
             Door door = doorType[targetPosition];
-            if(!door.IsActive) return false;
+            if(!door.IsActive){
+                StopStepOnPool();
+                return false;
+            } else if(!isNotPickPipe){
+                door.HasPipeAtDoorPosition = true;
+            }
         } 
 
-           
+        if(!totalCheck) StopStepOnPool();          
         return totalCheck;
     }
 
@@ -561,5 +652,10 @@ public class Step : MonoBehaviour
     private void SetPreviousMove(string move)
     {
         path.Add(move);
+    }
+
+    private void StopStepOnPool(){
+        isStepOnPool = false;
+        moveSpeed = 20f;
     }
 }

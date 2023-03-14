@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Linq;
 using UnityEngine;
 
 public class ChangeColor : MonoBehaviour
@@ -12,10 +14,14 @@ public class ChangeColor : MonoBehaviour
     private Color COLOR_PURPLE = new Color(Divider(255f), Divider(102f), Divider(255f), 1);
     private Color COLOR_YELLOW = new Color(Divider(255f), Divider(255f), Divider(0), 1);
     private Color COLOR_ORANGE = new Color(Divider(255f), Divider(128f), Divider(0), 1);
-    private SpriteRenderer spriteRenderer; 
+    private SpriteRenderer spriteRenderer;
+    private IEnumerator coroutine = null;
 
     Dictionary<string, Color> colorConvertMap = new Dictionary<string, Color>();
 
+    public ChangeColor(){
+
+    }
     // Start is called before the first frame update
     public void Start()
     {
@@ -36,5 +42,21 @@ public class ChangeColor : MonoBehaviour
 
     private static float Divider(float x){
         return x/255f;
+    }
+
+    public void StartPipeEffect(GameObject pipeObject, string pipeColor){
+        coroutine = PipeEffect(pipeObject,pipeColor);
+        StartCoroutine(coroutine);
+    }
+
+    public IEnumerator PipeEffect(GameObject pipeObject, string pipeColor){
+        for(int i=0; i<2; i++){
+            ChangeSpriteColor(pipeObject, "Default");
+            yield return new WaitForSeconds(0.1f);
+            ChangeSpriteColor(pipeObject, pipeColor);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        StopCoroutine(coroutine); 
     }
 }
