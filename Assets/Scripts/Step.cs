@@ -424,7 +424,6 @@ public class Step : MonoBehaviour
         } 
         else if(obstaclePosition.ContainsKey(currentPosition) && obstaclePosition[currentPosition] == "DoorButton"){
             DoorButton button = doorButtonType[currentPosition];
-            Door door = button.GetDoor();
             button.IsActive = false;
             if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Wall")
                 button.IsActive = true;
@@ -596,7 +595,6 @@ public class Step : MonoBehaviour
         }  
         else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "DoorButton"){
             DoorButton button = doorButtonType[targetPosition];
-            Door door = button.GetDoor();
             button.IsActive = true;
         }
         else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pool" 
