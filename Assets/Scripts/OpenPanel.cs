@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class OpenPanel : MonoBehaviour
 {
-    public GameObject Panel;
+    public GameObject panel;
     public void openPanel() {
-        if (Panel != null)
+        if (panel != null)
         {
-            bool isActive = Panel.activeSelf;
-            Panel.SetActive(!isActive);
+            bool isActive = panel.activeSelf;
+            panel.SetActive(!isActive);
         }
     }
 }
