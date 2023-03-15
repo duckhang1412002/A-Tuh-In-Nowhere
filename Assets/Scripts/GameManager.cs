@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject PauseUI;
+    
+    // [SerializeField]
+    // private GameObject GuideUI;
 
     private List<string> path;
     private Dictionary<Vector2, string> obstaclePosition;
@@ -34,6 +37,8 @@ public class GameManager : MonoBehaviour
     private GameObject[] pools;
 
     private bool openPauseUI = false;
+
+    private bool openGuideUI = true;
 
     public int Score{get; set;}
 
@@ -103,9 +108,11 @@ public class GameManager : MonoBehaviour
         doors = GameObject.FindGameObjectsWithTag("Door");
         foreach (GameObject item in doors)
         {
+            Door door = item.GetComponent<Door>();
+            door.Start();
             Vector2 blockPosition;
-            if(item.GetComponent<Door>().CheckReverseDoor() == true){
-                blockPosition = new Vector2(item.GetComponent<Door>().GetReverseDoorLocation().x, item.GetComponent<Door>().GetReverseDoorLocation().y);
+            if(door.CheckReverseDoor() == true){
+                blockPosition = new Vector2(door.GetReverseDoorLocation().x, door.GetReverseDoorLocation().y);
             }
             else{
                 blockPosition = new Vector2(item.GetComponent<Transform>().position.x, item.GetComponent<Transform>().position.y);
@@ -148,6 +155,15 @@ public class GameManager : MonoBehaviour
             } else{
                 PauseUI.SetActive(false);
             }
+        }
+                
+        if(Input.GetKeyDown(KeyCode.G)){
+            openGuideUI = !openGuideUI;
+            // if(openGuideUI){
+            //     GuideUI.SetActive(true);
+            // } else{
+            //     GuideUI.SetActive(false);
+            // }
         }
         if(Score == pointType.Count/2){
             GameOverUI.SetActive(true);
