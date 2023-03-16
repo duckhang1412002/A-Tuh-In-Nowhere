@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     private bool openPauseUI = false;
 
-    private bool openGuideUI = true;
+    private bool openGuideUI = false;
 
     public int Score{get; set;}
 
