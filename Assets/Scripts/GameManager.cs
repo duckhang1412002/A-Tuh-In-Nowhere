@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject PauseUI;
     
-    // [SerializeField]
-    // private GameObject GuideUI;
+    [SerializeField]
+    private GameObject GuideUI;
 
     private List<string> path;
     private Dictionary<Vector2, string> obstaclePosition;
@@ -159,11 +159,11 @@ public class GameManager : MonoBehaviour
                 
         if(Input.GetKeyDown(KeyCode.G)){
             openGuideUI = !openGuideUI;
-            // if(openGuideUI){
-            //     GuideUI.SetActive(true);
-            // } else{
-            //     GuideUI.SetActive(false);
-            // }
+            if(openGuideUI){
+                GuideUI.SetActive(true);
+            } else{
+                GuideUI.SetActive(false);
+            }
         }
         if(Score == pointType.Count/2){
             GameOverUI.SetActive(true);
