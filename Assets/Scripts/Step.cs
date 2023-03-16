@@ -429,7 +429,7 @@ public class Step : MonoBehaviour
                 button.IsActive = true;
             else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Pipe" && !isNotPickPipe)
                 button.IsActive = true;
-            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "PipePoint" && pointType[targetPosition].IsConnect == true)
+            else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "PipePoint" && pointType[targetPosition].IsConnect == true && !isNotPickPipe)
                 button.IsActive = true;
             else if(obstaclePosition.ContainsKey(targetPosition) && obstaclePosition[targetPosition] == "Door" && doorType[targetPosition].IsActive == false)
                 button.IsActive = true;
