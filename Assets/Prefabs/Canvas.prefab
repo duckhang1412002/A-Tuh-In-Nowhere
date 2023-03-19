@@ -124,8 +124,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1644460265}
         m_TargetAssemblyTypeName: ScenesManager, Assembly-CSharp
-        m_MethodName: MoveToScene
-        m_Mode: 3
+        m_MethodName: BackToLevelScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -338,8 +338,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 782574694}
         m_TargetAssemblyTypeName: ScenesManager, Assembly-CSharp
-        m_MethodName: MoveToScene
-        m_Mode: 3
+        m_MethodName: MoveToNextScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -484,8 +484,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 236436089}
         m_TargetAssemblyTypeName: ScenesManager, Assembly-CSharp
-        m_MethodName: MoveToScene
-        m_Mode: 3
+        m_MethodName: ReloadThisScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -630,8 +630,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3551110779436187917}
         m_TargetAssemblyTypeName: ScenesManager, Assembly-CSharp
-        m_MethodName: MoveToScene
-        m_Mode: 3
+        m_MethodName: ReloadThisScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -776,8 +776,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2027148450994087289}
         m_TargetAssemblyTypeName: ScenesManager, Assembly-CSharp
-        m_MethodName: MoveToScene
-        m_Mode: 3
+        m_MethodName: BackToLevelScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1153,6 +1153,14 @@ PrefabInstance:
     - target: {fileID: 5472493710746518277, guid: 614f4f57b97f1a6428fc5e9fff49cac3, type: 3}
       propertyPath: m_Name
       value: GuideUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 5472493712252025250, guid: 614f4f57b97f1a6428fc5e9fff49cac3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5472493712252025250, guid: 614f4f57b97f1a6428fc5e9fff49cac3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 614f4f57b97f1a6428fc5e9fff49cac3, type: 3}
