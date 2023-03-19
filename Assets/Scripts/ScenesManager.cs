@@ -10,7 +10,23 @@ public class ScenesManager : MonoBehaviour
     }
 
     public void QuitGame() {
+        UnityEditor.EditorApplication.isPlaying = false;
         Application.Quit();
     }
 
+    public void MoveToNextScene(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    public void BackToHomeScene(){
+        SceneManager.LoadScene(0);
+    }
+
+    public void BackToLevelScene(){
+        SceneManager.LoadScene(1);
+    }
+
+    public void ReloadThisScene(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
