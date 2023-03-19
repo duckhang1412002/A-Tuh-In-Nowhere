@@ -13,6 +13,7 @@ public class Step : MonoBehaviour
     [SerializeField] private GameObject body;
 
     private bool enableMove = true;
+    private bool isPauseGame = false;
     private bool isNotPickPipe = true;
     private bool isAtPointPosition = false;
     private string handlePipeColor;
@@ -66,7 +67,11 @@ public class Step : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow) && enableMove)
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            isPauseGame = !isPauseGame;            
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) && enableMove && !isPauseGame)
         {
             tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
             tempTargetPosition = new Vector2(transform.position.x, transform.position.y + moveSteps);
@@ -86,7 +91,7 @@ public class Step : MonoBehaviour
                 SetPreviousMove("Up");
             }
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && enableMove)
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && enableMove && !isPauseGame)
         {
             tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
             tempTargetPosition = new Vector2(transform.position.x, transform.position.y - moveSteps);
@@ -106,7 +111,7 @@ public class Step : MonoBehaviour
                 SetPreviousMove("Down");
             }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && enableMove)
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && enableMove && !isPauseGame)
         {
             tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
             tempTargetPosition = new Vector2(transform.position.x - moveSteps, transform.position.y);
@@ -127,7 +132,7 @@ public class Step : MonoBehaviour
             }
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && enableMove)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && enableMove && !isPauseGame)
         {
             tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
             tempTargetPosition = new Vector2(transform.position.x + moveSteps, transform.position.y);

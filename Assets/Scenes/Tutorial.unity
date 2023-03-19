@@ -254,6 +254,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 470651064499041501, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 2800000, guid: 3dd507625a18a5849a752d296a5a722e, type: 3}
+    - target: {fileID: 470651064499041502, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -58.9245
+      objectReference: {fileID: 0}
+    - target: {fileID: 470651064499041502, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -29.4622
+      objectReference: {fileID: 0}
     - target: {fileID: 4603478249330170240, guid: aea27c313f2269643a8edaf1a9c72bc4, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -798,7 +810,6 @@ GameObject:
   m_Component:
   - component: {fileID: 752953188}
   - component: {fileID: 752953187}
-  - component: {fileID: 752953186}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -806,14 +817,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &752953186
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 752953185}
-  m_Enabled: 1
 --- !u!20 &752953187
 Camera:
   m_ObjectHideFlags: 0
