@@ -665,6 +665,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11bd1c828100d134d8f2513dfec441d2, type: 3}
+--- !u!1 &345511435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2173959197804998549, guid: 11bd1c828100d134d8f2513dfec441d2, type: 3}
+  m_PrefabInstance: {fileID: 345511434}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &362758867
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3842,11 +3847,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01c69740b41942644966193589fc3d0c, type: 3}
---- !u!1 &1366271396 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2173959197173331477, guid: 11bd1c828100d134d8f2513dfec441d2, type: 3}
-  m_PrefabInstance: {fileID: 345511434}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1429378056 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6775942333818619840, guid: 01c69740b41942644966193589fc3d0c, type: 3}
@@ -5335,7 +5335,7 @@ PrefabInstance:
     - target: {fileID: 3900166683723103670, guid: bbe214a9758ea074083a6d859ff46fe9, type: 3}
       propertyPath: GuideUI
       value: 
-      objectReference: {fileID: 1366271396}
+      objectReference: {fileID: 345511435}
     - target: {fileID: 3900166683723103670, guid: bbe214a9758ea074083a6d859ff46fe9, type: 3}
       propertyPath: PauseUI
       value: 
