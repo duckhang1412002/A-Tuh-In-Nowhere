@@ -71,7 +71,37 @@ public class Step : MonoBehaviour
             isPauseGame = !isPauseGame;            
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && enableMove && !isPauseGame)
+        if (isStepOnPool && enableMove)
+        {
+            moveSpeed = 25f;
+            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
+            if(GetPreviousMove() == "Left"){
+                tempTargetPosition = new Vector2(transform.position.x - moveSteps, transform.position.y);
+            }else if(GetPreviousMove() == "Right"){
+                tempTargetPosition = new Vector2(transform.position.x + moveSteps, transform.position.y);
+            }else if(GetPreviousMove() == "Up"){
+                tempTargetPosition = new Vector2(transform.position.x, transform.position.y + moveSteps);
+            }else if(GetPreviousMove() == "Down"){
+                tempTargetPosition = new Vector2(transform.position.x, transform.position.y - moveSteps);
+            }
+                
+            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, GetPreviousMove()))
+            {
+                currentPosition = this.transform.position;
+                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
+                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
+                    currentPosition = tempCurrentPosition;
+                
+                targetPosition = tempTargetPosition;
+                if (!isNotPickPipe) GeneratePipe(GetPreviousMove(), currentPosition, targetPosition);
+                CheckPipeEndPoint(targetPosition);
+                if (isNotPickPipe && isAtPointPosition) GeneratePipe(GetPreviousMove(), currentPosition, targetPosition);
+                CheckPipeStartPoint(targetPosition);
+                CheckPipeEffect();
+                SetPreviousMove(GetPreviousMove());
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && enableMove && !isPauseGame)
         {
             tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
             tempTargetPosition = new Vector2(transform.position.x, transform.position.y + moveSteps);
@@ -152,37 +182,7 @@ public class Step : MonoBehaviour
                 SetPreviousMove("Right");
             }
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-        }
-        else if (isStepOnPool && enableMove)
-        {
-            moveSpeed = 25f;
-            tempCurrentPosition = new Vector2(transform.position.x, transform.position.y);
-            if(GetPreviousMove() == "Left"){
-                tempTargetPosition = new Vector2(transform.position.x - moveSteps, transform.position.y);
-            }else if(GetPreviousMove() == "Right"){
-                tempTargetPosition = new Vector2(transform.position.x + moveSteps, transform.position.y);
-            }else if(GetPreviousMove() == "Up"){
-                tempTargetPosition = new Vector2(transform.position.x, transform.position.y + moveSteps);
-            }else if(GetPreviousMove() == "Down"){
-                tempTargetPosition = new Vector2(transform.position.x, transform.position.y - moveSteps);
-            }
-                
-            if (CanStepToPosition(tempCurrentPosition, tempTargetPosition, GetPreviousMove()))
-            {
-                currentPosition = this.transform.position;
-                if((obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "Dimension")
-                || (obstaclePosition.ContainsKey(entranceDimensionPosition) && obstaclePosition[entranceDimensionPosition] == "DimensionTeleporter"))
-                    currentPosition = tempCurrentPosition;
-                
-                targetPosition = tempTargetPosition;
-                if (!isNotPickPipe) GeneratePipe(GetPreviousMove(), currentPosition, targetPosition);
-                CheckPipeEndPoint(targetPosition);
-                if (isNotPickPipe && isAtPointPosition) GeneratePipe(GetPreviousMove(), currentPosition, targetPosition);
-                CheckPipeStartPoint(targetPosition);
-                CheckPipeEffect();
-                SetPreviousMove(GetPreviousMove());
-            }
-        }
+        }        
 
         StepMove();
     }
