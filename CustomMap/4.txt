@@ -1,0 +1,14 @@
+1
+8 16
+Null Null Null Null Null Wall Wall Wall Wall Null Null Null Null Null Null Null
+Null Null Wall Wall Wall Ground Ground Ground Ground Wall Null Wall Wall Wall Wall Null
+Null Wall Ground Ground Ground Ground Wall DoorButton:1 Wall Ground Wall Ground Ground Ground Socket_Green Wall
+Null Wall H_Door:1:Left Wall Socket_Blue Ground Wall H_Bridge Ground Socket_Red Ground H_Bridge Ground Ground Socket_Red Wall
+Wall Ground Ground Wall Ground Ground Ground Ground Ground Ground Ground Ground Wall H_Door:0:Left Wall Wall
+Wall Ground Ground Wall Ground Ground Ground Wall Ground Ground Wall Wall Socket_Yellow PlayerM:0 Ground Wall
+Null Wall Socket_Green Wall Socket_Blue Wall Ground Ground Ground Wall Null Wall Ground Socket_Yellow DoorButton:0 Wall
+Null Null Wall Null Wall Null Wall Wall Wall Null Null Null Wall Wall Wall Wall
+---DoorButton---
+2
+0 0
+1 1

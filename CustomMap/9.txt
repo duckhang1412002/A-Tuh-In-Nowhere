@@ -1,0 +1,22 @@
+1
+11 11
+Null Wall Wall Wall Wall Wall Wall Wall Wall Wall Null
+Wall Ground Ground V_Door_Reverse:1:Up Ground DoorButton:1 Ground V_Door_Reverse:5:Down Ground Socket_Blue Wall
+Wall DoorButton:2 Socket_Green Wall Wall Ground Wall Wall Wall DoorButton:4 Wall
+Wall Ice Wall Socket_Orange Ground H_Bridge Ground Socket_Orange Wall Ground Wall
+Wall Ground Socket_Green Wall Wall Ground Wall H_Door:2:Left Wall Ground Wall
+Wall Ground Wall Wall Socket_Blue PlayerM:0 Ground Ground V_Door:0:Up Ground Wall
+Wall Socket_Red Ground Wall Socket_Pink Ground Wall H_Door:3:Left Wall Socket_Purple Wall
+Wall H_Door_Reverse:6:Left Ground Wall Wall Ground Wall Ground Wall H_Door_Reverse:4:Left Wall
+Wall DoorButton:3 Ground Wall Socket_Yellow H_Bridge V_Bridge Socket_Yellow Wall DoorButton:5 Wall
+Wall Socket_Red Ground Wall Wall DoorButton:0 Socket_Pink Wall Socket_Purple Ground Wall
+Null Wall Wall Wall Wall Wall Wall Wall Wall Wall Null
+---DoorButton---
+7
+0 0
+1 1
+1 2
+2 3
+3 4
+4 5
+5 6

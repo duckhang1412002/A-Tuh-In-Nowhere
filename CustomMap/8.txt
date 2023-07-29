@@ -1,0 +1,22 @@
+2
+10 14
+Null Null Null Null Null Null Null Wall Wall Wall Wall Wall Wall Null
+Null Null Null Wall Wall Wall Wall Ground Ice Ground Ground Ice Ground Wall
+Null Null Wall Ground Ice V_Door_Reverse:1:Up Ice Ice Wall Ice Wall Ground Ice Wall
+Null Null Wall Ground Ice Ground Ice H_Bridge Ice Ice Ground Ice Ice Wall
+Wall Wall Ground Ice Ice Ice Ice Ice Wall Ice Ice Ground Wall Wall
+Wall PlayerM:0 Ground Ground Ice Ground Wall Ice Ice DimensionIn:1 Ground Ground Ice Wall
+Null Wall Ground Ground Wall H_Door:0:Left Ground Ice Ice Ground Ground Ice Ice Wall
+Null Null Wall Wall Wall Ice Ground Ice Ice Wall Ice Ground Ice Wall
+Null Null Null Null Wall DoorButton:0 Ice Ground Ice Ice Socket_Green Wall Ice Wall
+Null Null Null Null Null Wall Wall Wall Wall Wall Wall Null Wall Null
+5 3
+Wall DimensionOut:Top Wall
+Wall Ground Wall
+Wall Socket_Green Wall
+Wall Ground Wall
+Wall DimensionOut:Bottom Wall
+---DoorButton---
+2
+0 0
+0 1

@@ -1,0 +1,42 @@
+6
+5 7
+Wall Wall Wall Wall Wall Wall Wall
+Wall Wall Wall Ground Wall Wall Wall
+DimensionOut:Left Ground V_Door:0:Up PlayerM:0 V_Door:1:Down Ground DimensionOut:Right
+Wall Wall Wall Ground Wall Wall Wall
+Wall Wall Wall Wall Wall Wall Wall
+5 8
+Wall Wall Wall Wall Wall Wall DimensionOut:Top Wall
+Wall Ground Ground Ground Wall Wall Ground Wall
+Wall H_Door:2:Left Wall Ground Wall Wall H_Door:5:Right Wall
+DimensionIn:4 Ground Wall Ground DimensionIn:0 Ground Ground DimensionIn:3
+Wall Wall Wall Wall Wall Wall Wall Wall
+7 5
+Wall Wall Wall Wall Wall
+Wall DoorButton:0 PlayerF:1 DoorButton:1 Wall
+Wall DoorButton:2 Ground DoorButton:3 Wall
+Wall Wall H_Door:6:Left Wall Wall
+Wall Socket_Red Ground Socket_Red Wall
+Wall Ground Ground Ground Wall
+Wall Wall DimensionIn:1 Wall Wall
+4 6
+Wall Wall Wall Wall Wall Wall
+DimensionOut:Left Ground Socket_Green V_Door:3:Up DoorButton:4 Wall
+Wall Wall Wall Wall Socket_Green Wall
+Null Null Null Wall Wall Wall
+4 6
+Wall Wall Wall Wall Wall Wall
+Wall Socket_Yellow V_Door:4:Up Ground DoorButton:5 Wall
+Wall Wall Wall Socket_Yellow Ground DimensionOut:Right
+Null Null Null Wall Wall Wall
+1 1
+DoorButton:6
+---DoorButton---
+7
+0 0
+1 1
+2 2
+3 4
+4 5
+5 3
+6 6

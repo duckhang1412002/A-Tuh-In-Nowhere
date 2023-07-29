@@ -5,46 +5,23 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: 0175e82583ea69e48b2da902f21c617b
+    path: Assets/Scenes/Login.unity
+    guid: 6d0c9aef31e783344aaaffd0559ff737
   - enabled: 1
-    path: Assets/Scenes/LevelMenu.unity
-    guid: 0d0948035a6f0834b904c54c1a8da6e3
+    path: Assets/Scenes/PlayMode.unity
+    guid: 89b34736c8207fd41b2b0a48754680bd
   - enabled: 1
-    path: Assets/Scenes/Tutorial.unity
-    guid: 92fa7f85a75efd44a9696be3cf0db1ef
+    path: Assets/Scenes/Map.unity
+    guid: 7626c5502f7677645a7c59b01492d291
   - enabled: 1
-    path: Assets/Scenes/Level_1.unity
-    guid: b49946dd51d9250449f7a0cbef937f1e
+    path: Assets/Scenes/Loading.unity
+    guid: 05f09e110c855334daeccd3c8da41f38
   - enabled: 1
-    path: Assets/Scenes/Level_2.unity
-    guid: 643bf8eeefb3dda418e35920016fe146
+    path: Assets/Scenes/Lobby.unity
+    guid: 6ef0c4e560013534eb0a8503703769f6
   - enabled: 1
-    path: Assets/Scenes/Level_3.unity
-    guid: cac32eb227a8de441b0912d4cc034f19
-  - enabled: 1
-    path: Assets/Scenes/Level_4.unity
-    guid: bc7cf6570e161074d80b5028d06f2578
-  - enabled: 1
-    path: Assets/Scenes/Level_5.unity
-    guid: 3ee1f3d265c93ab40b0e990377df2ade
-  - enabled: 1
-    path: Assets/Scenes/Level_6.unity
-    guid: 6998c5f66111f9c4898e34ef34a6a883
-  - enabled: 1
-    path: Assets/Scenes/Level_7.unity
-    guid: 571247510863f2f48ad64a31ec1ea879
-  - enabled: 1
-    path: Assets/Scenes/Level_8.unity
-    guid: f4107d28ca95d4049af17fb5ada874a3
-  - enabled: 1
-    path: Assets/Scenes/Level_9.unity
-    guid: 643a33a4df663d442bbf881c32d731f4
-  - enabled: 1
-    path: Assets/Scenes/Level_10.unity
-    guid: 48628a5149a280543a6671fb0af02f1d
-  m_configObjects: {}
+    path: Assets/Scenes/Game.unity
+    guid: c8bc91634a50d5d438c23817cc91d6de
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: a74a75c3603291e4893a41163f4ca66c, type: 2}

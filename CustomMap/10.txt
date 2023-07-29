@@ -1,0 +1,24 @@
+2
+9 12
+Null Null Null Wall DimensionOut:Top Wall Null Null Null Null Null Null
+Null Null Wall Wall Ground Wall Null Null Null Null Null Null
+Null Null Wall Socket_Green Ground Wall Null Null Wall Wall Wall Wall
+Wall Wall Wall Wall Ground Wall Wall Wall Socket_Red Ground Socket_Red Wall
+DimensionOut:Left Ground Ice Ground Ground Ground Ground V_Door_Reverse:2:Up Ground Ground Ground Wall
+Wall Wall Wall Wall Wall H_Door:1:Left H_Door:0:Right Wall Wall Wall Wall Wall
+Null Wall Socket_Yellow Ground Ground PlayerM:0 Ground Ground Ground Socket_Yellow Wall Null
+Null Null Wall Ground Ground Ground Ground Ground Socket_Green Wall Null Null
+Null Null Null Wall Wall DimensionOut:Bottom Wall Wall Wall Null Null Null
+7 9
+Null Null Wall Wall Wall Wall Wall Null Null
+Null Wall Wall Ground DoorButton:0 Ground Wall Wall Null
+Wall Wall Socket_Orange Ground Ground Ground Ground Wall Wall
+Wall Ground Ground Ground DimensionIn:0 Ground Ground Ground Wall
+Wall Wall Ground Ground Ground Ground Socket_Orange Wall Wall
+Null Wall Wall Ground Ground Ground Wall Wall Null
+Null Null Wall Wall Wall Wall Wall Null Null
+---DoorButton---
+3
+0 0
+0 1
+0 2

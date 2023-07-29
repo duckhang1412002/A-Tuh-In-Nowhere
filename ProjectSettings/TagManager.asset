@@ -4,15 +4,18 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Wall
-  - PipePoint
-  - Bridge
-  - Dimension
-  - DimensionTeleporter
   - Door
-  - Button
-  - DoorButton
-  - Pool
+  - Ground
+  - Teleporter
+  - Wire
+  - Socket
+  - SingleMode
+  - CoopMode
+  - Wall
+  - Escalator
+  - Wire
+  - DimensionIn
+  - EscButton
   layers:
   - Default
   - TransparentFX
@@ -20,7 +23,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Brick
   - 
   - 
   - 
@@ -49,4 +52,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: New Layer 1
+    uniqueID: 741708845
     locked: 0
