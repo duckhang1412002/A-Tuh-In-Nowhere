@@ -522,6 +522,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 1
   moveSpeed: 5
+  playerScript: {fileID: 0}
+  otherPlayerScript: {fileID: 0}
   view: {fileID: 110056011811881705}
 --- !u!114 &1925605195654088238
 MonoBehaviour:

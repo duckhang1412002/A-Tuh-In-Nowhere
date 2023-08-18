@@ -10,12 +10,12 @@ using UnityEngine;
 public class Step : MonoBehaviourPun
 {
     private static GameManager gameManager;
-    private static Wire wireSpawner;
+    private static Wire wireSpawner; 
     bool totalCheck = true;
     [SerializeField] private float moveSteps = 1.0f;
     [SerializeField] private float moveSpeed = 5.0f;
     private GameObject player;
-    private Player playerScript, otherPlayerScript;
+    public Player playerScript, otherPlayerScript;
     private bool enableMove = true;
     private bool isPauseGame = false;
     private bool activatePipeEffect = false;
@@ -32,10 +32,12 @@ public class Step : MonoBehaviourPun
     private PhotonView view;
 
     private int photonViewID;
+    private RPCManager RPC;
 
     // Start is called before the first frame update
     void Start()
     {
+        RPC = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         wireSpawner = GameObject.Find("WireSpawner").GetComponent<Wire>();
         Debug.Log(wireSpawner + " is found!");
         photonViewID = PhotonNetwork.LocalPlayer.ActorNumber;
@@ -105,39 +107,14 @@ public class Step : MonoBehaviourPun
         }
         targetP.PreviousMove = targetPreviousMove;
     }
-
-    [PunRPC]
-    private void GenerateWire(int mapIndex, int xAxis, int yAxis, string type, int photonTargetID)
-    {
-        Player targetP = playerScript;
-        if (photonTargetID != photonViewID)
-        {
-            if (photonTargetID == 1) targetP = gameManager.PlayerM.GetComponent<Player>();
-            else targetP = gameManager.PlayerF.GetComponent<Player>();
-        }
-        if (type == "Bridge" && !targetP.IsNotPickWire)
-        {
-            wireSpawner.GetComponent<Wire>().wireZAxis = gameManager.PlayGridList[mapIndex][xAxis, yAxis].GetComponent<Bridge>().GetZAxisWire(targetP.PreviousMove);
-            GameObject w = wireSpawner.GenerateWire(targetP);
-            wireSpawner.GetComponent<Wire>().wireZAxis = 7f;       
-        }
-        else if (type == "Wire" && !targetP.IsNotPickWire || targetP.IsAtSocket)
-        {
-            GameObject w = wireSpawner.GenerateWire(targetP);
-            Vector2 wirePosition = new Vector2(w.transform.position.x, w.transform.position.y);
-            gameManager.WireMap[wirePosition] = true;
-        }
-        else if (type == "Dimension" && !targetP.IsNotPickWire)
-        {
-            int wireRotation = (targetP.TempNextKey == "Up" || targetP.TempNextKey == "Down") ? 1 : 0;
-
-            Vector2 renderPosition = gameManager.PlayGridList[mapIndex][xAxis, yAxis].transform.position;
-            GameObject w = wireSpawner.RenderWire(renderPosition, 0, wireRotation, targetP.HandleWireColor);
-        }
-    }
-
     private void Update()
     {
+        currentMap = (int)playerScript.CurrentPosition.x / 100;
+        xCurrent = (int)(playerScript.CurrentPosition.x % 100);
+        yCurrent = (int)(playerScript.CurrentPosition.y);
+        xTarget = (int)(playerScript.TargetPosition.x % 100);
+        yTarget = (int)(playerScript.TargetPosition.y);
+
         if (view.IsMine && player != null)
         {
             //check player move
@@ -280,7 +257,7 @@ public class Step : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
+/*    [PunRPC]
     private void UpdateLocation(int photonTargetID)
     {
         Player targetP = playerScript;
@@ -309,7 +286,7 @@ public class Step : MonoBehaviourPun
             xTarget = (int)(playerScript.TargetPosition.x % 100);
             yTarget = (int)(playerScript.TargetPosition.y);
         }
-    }
+    }*/
 
     [PunRPC]
     private void DimensionOutUpdateLocation(float tempTargetPositionX, float tempTargetPositionY, float objX, float objY, int photonTargetID){
@@ -352,11 +329,13 @@ public class Step : MonoBehaviourPun
 
         if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
         {
-            view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+            //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+            RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
         }
         else
         {
-            view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+            //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+            RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
         }
         currentMap = tempTargetMap;       
         }       
@@ -408,11 +387,13 @@ public class Step : MonoBehaviourPun
 
             if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
             {
-                view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
             }
             else
             {
-                view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
             }           
             currentMap = tempTargetMap;
         }
@@ -565,12 +546,14 @@ public class Step : MonoBehaviourPun
                     if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
                     {
                         //GenerateWire(currentMap, xCurrent, yCurrent, "Bridge", null);
-                        view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                        //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                        RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
                     }
                     else
                     {
                         //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                        view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                        //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                        RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                     }
 
                     if (gameManager.PlayGridList[tempCurrentMap][xTarget, yTarget].tag == "Socket")
@@ -581,7 +564,8 @@ public class Step : MonoBehaviourPun
                             //socket.ChangePlayerAttrEndPoint(playerScript);
                             view.RPC("CallChangePlayerAttrEndPoint", RpcTarget.All, currentMap, xTarget, yTarget, photonViewID);
                             //GenerateWire(tempCurrentMap, xCurrent, yCurrent, "Wire", null);
-                            view.RPC("GenerateWire", RpcTarget.All, tempCurrentMap, xTarget, yTarget, "Wire", photonViewID);
+                            //view.RPC("GenerateWire", RpcTarget.All, tempCurrentMap, xTarget, yTarget, "Wire", photonViewID);
+                            RPC.CallGenerateWire(tempCurrentMap, xTarget, yTarget, "Wire", photonViewID);
                             view.RPC("CallPlusScore", RpcTarget.All);
                         }
                         else if (socket.CheckSocketStartPoint(playerScript))
@@ -637,7 +621,8 @@ public class Step : MonoBehaviourPun
             if (totalCheck)
             {           
                 view.RPC("DimensionOutUpdateLocation", RpcTarget.All, tempTargetPosition.x, tempTargetPosition.y, dIn.transform.position.x, dIn.transform.position.y, photonViewID);
-                view.RPC("GenerateWire", RpcTarget.All, objCurrentMap, objX, objY, "Dimension", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, objCurrentMap, objX, objY, "Dimension", photonViewID);
+                RPC.CallGenerateWire(objCurrentMap, objX, objY, "Dimension", photonViewID);
                 view.RPC("SetPreviousMove", RpcTarget.All, photonViewID, tempNextKey);    
             }
             else{
@@ -652,16 +637,19 @@ public class Step : MonoBehaviourPun
             view.RPC("CallBridgeCheckNextStep", RpcTarget.All, currentMap, xTarget, yTarget, photonViewID);
             if (totalCheck)
             {
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
                 if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
                 {
                     //GenerateWire(currentMap, xCurrent, yCurrent, "Bridge", null);
-                    view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                    //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                    RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
                 }
                 else
                 {
                     //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                    view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                    //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                    RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                 }
 
                 this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, playerScript.DefaultZAxis);
@@ -676,26 +664,31 @@ public class Step : MonoBehaviourPun
             if (playerScript.IsNotPickWire && socket.IsConnect)
             {
                 totalCheck = true;
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
             }
             else if (socket.CheckSocketEndPoint(playerScript))
             {
                 totalCheck = true;
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
                 if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
                 {
                     //GenerateWire(currentMap, xCurrent, yCurrent, "Bridge", null);
-                    view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                    //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                    RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
                 }
                 else
                 {
                     //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                    view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                    //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                    RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                 }
                 //socket.ChangePlayerAttrEndPoint(playerScript);
                 view.RPC("CallChangePlayerAttrEndPoint", RpcTarget.All, currentMap, xTarget, yTarget, photonViewID);
                 //GenerateWire(currentMap, xTarget, yTarget, "Wire", null);
-                view.RPC("GenerateWire", RpcTarget.All, currentMap, xTarget, yTarget, "Wire", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, currentMap, xTarget, yTarget, "Wire", photonViewID);
+                RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                 view.RPC("CallPlusScore", RpcTarget.All);
             }
             else if (socket.CheckSocketStartPoint(playerScript))
@@ -703,7 +696,8 @@ public class Step : MonoBehaviourPun
                 totalCheck = true;
                 //socket.ChangePlayerAttrStartPoint(playerScript);
                 view.RPC("CallChangePlayerAttrStartPoint", RpcTarget.All, currentMap, xTarget, yTarget, photonViewID);
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
             }
         }
         else if (gameManager.PlayGridList[currentMap][xTarget, yTarget].tag == "Wall")
@@ -719,9 +713,11 @@ public class Step : MonoBehaviourPun
             view.RPC("CallDoorButtonCheckNextStep", RpcTarget.All, currentMap, xTarget, yTarget, photonViewID);
             if (totalCheck)
             {
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
                 //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
             }
         }
         else if (gameManager.PlayGridList[currentMap][xTarget, yTarget].tag == "Ice")
@@ -733,9 +729,11 @@ public class Step : MonoBehaviourPun
             {
                 moveSpeed = 7f;
                 isStepOnIce = true;
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
                 //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
             }
         }
         else if (gameManager.WireMap.ContainsKey(targetPosition) && !playerScript.IsNotPickWire)
@@ -756,9 +754,11 @@ public class Step : MonoBehaviourPun
 
             if (totalCheck)
             {
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
                 //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
             }
         }
         else if (gameManager.PlayGridList[currentMap][xTarget, yTarget].tag == "Teleporter")
@@ -789,12 +789,14 @@ public class Step : MonoBehaviourPun
                     if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
                     {
                         //GenerateWire(currentMap, xCurrent, yCurrent, "Bridge", null);
-                        view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                        //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                        RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
                     }
                     else
                     {
                         //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                        view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                        //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                        RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                     }
 
                     if (gameManager.PlayGridList[tempCurrentMap][xTarget, yTarget].tag == "Socket")
@@ -805,7 +807,8 @@ public class Step : MonoBehaviourPun
                             //socket.ChangePlayerAttrEndPoint(playerScript);
                             view.RPC("CallChangePlayerAttrEndPoint", RpcTarget.All, currentMap, xTarget, yTarget, photonViewID);
                             //GenerateWire(tempCurrentMap, xCurrent, yCurrent, "Wire", null);
-                            view.RPC("GenerateWire", RpcTarget.All, tempCurrentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                            //view.RPC("GenerateWire", RpcTarget.All, tempCurrentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                            RPC.CallGenerateWire(tempCurrentMap, xCurrent, yCurrent, "Wire", photonViewID);
                             view.RPC("CallPlusScore", RpcTarget.All);
                         }
                         else if (socket.CheckSocketStartPoint(playerScript))
@@ -817,16 +820,19 @@ public class Step : MonoBehaviourPun
                 }
                 else
                 {
-                    view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                    //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                    RPC.CallUpdateLocation(photonViewID);
                     if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
                     {
                         //GenerateWire(currentMap, xCurrent, yCurrent, "Bridge", null);
-                        view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                        //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                        RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
                     }
                     else
                     {
                         //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                        view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                        //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                        RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                     }
                 }
             }
@@ -835,16 +841,19 @@ public class Step : MonoBehaviourPun
         {
             if (totalCheck)
             {
-                view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                //view.RPC("UpdateLocation", RpcTarget.All, photonViewID);
+                RPC.CallUpdateLocation(photonViewID);
                 if (gameManager.PlayGridList[currentMap][xCurrent, yCurrent].tag == "Bridge")
                 {
                     //GenerateWire(currentMap, xCurrent, yCurrent, "Bridge", null);
-                    view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                    //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
+                    RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Bridge", photonViewID);
                 }
                 else
                 {
                     //GenerateWire(currentMap, xCurrent, yCurrent, "Wire", null);
-                    view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                    //view.RPC("GenerateWire", RpcTarget.All, currentMap, xCurrent, yCurrent, "Wire", photonViewID);
+                    RPC.CallGenerateWire(currentMap, xCurrent, yCurrent, "Wire", photonViewID);
                 }               
             }
         }

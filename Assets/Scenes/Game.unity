@@ -342,7 +342,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -818, y: -155.99998}
+  m_AnchoredPosition: {x: -818, y: -155.99997}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &713778159
@@ -1036,7 +1036,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7217956592353384651, guid: aaacbbfb11696d647a37222ff743b2aa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -59.796654
+      value: -59.79666
       objectReference: {fileID: 0}
     - target: {fileID: 7217956592423060924, guid: aaacbbfb11696d647a37222ff743b2aa, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1060,7 +1060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7217956592423060924, guid: aaacbbfb11696d647a37222ff743b2aa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -59.796654
+      value: -59.79666
       objectReference: {fileID: 0}
     - target: {fileID: 7217956592514825885, guid: aaacbbfb11696d647a37222ff743b2aa, type: 3}
       propertyPath: m_IsActive
@@ -1088,7 +1088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7217956592709272715, guid: aaacbbfb11696d647a37222ff743b2aa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -59.796654
+      value: -59.79666
       objectReference: {fileID: 0}
     - target: {fileID: 8365956842852394621, guid: aaacbbfb11696d647a37222ff743b2aa, type: 3}
       propertyPath: m_IsActive
@@ -1597,3 +1597,15 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2074989392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074989390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 022e3aefb4c91164a8535aa53ecbdd3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
