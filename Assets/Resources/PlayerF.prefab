@@ -484,6 +484,7 @@ GameObject:
   - component: {fileID: 3860473415059805866}
   - component: {fileID: 110056011811881705}
   - component: {fileID: 6907405160804493834}
+  - component: {fileID: -4804162023725420952}
   m_Layer: 0
   m_Name: PlayerF
   m_TagString: Player
@@ -522,8 +523,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 1
   moveSpeed: 5
-  playerScript: {fileID: 0}
-  otherPlayerScript: {fileID: 0}
   view: {fileID: 110056011811881705}
 --- !u!114 &1925605195654088238
 MonoBehaviour:
@@ -572,6 +571,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 1
   ObservedComponents:
+  - {fileID: 3860473415059805866}
   - {fileID: 6907405160804493834}
   sceneViewId: 0
   InstantiationId: 0
@@ -609,6 +609,20 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 180
     InterpolateLerpSpeed: 0
+--- !u!114 &-4804162023725420952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8749076344735605972}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43921d51b0bc8064582e77aca363847f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSteps: 1
+  moveSpeed: 5
 --- !u!1 &8749076344877536312
 GameObject:
   m_ObjectHideFlags: 0

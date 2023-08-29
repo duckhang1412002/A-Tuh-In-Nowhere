@@ -8,6 +8,7 @@ public class Socket : MonoBehaviour
     public string Color { get; set; }
 
     public bool IsConnect { get; set; }
+    public bool IsEndPoint { get; set; }
 
     void Start()
     {
@@ -16,7 +17,7 @@ public class Socket : MonoBehaviour
 
     public bool CheckSocketStartPoint(Player player)
     {
-        if (this.IsConnect == false && player.IsNotPickWire)
+        if (this.IsConnect == false && !player.IsHandleWire)
             return true;
         else
             return false;
@@ -28,6 +29,35 @@ public class Socket : MonoBehaviour
             return true;
         else
             return false;
+    }
+
+    public void ChangePlayerColor(Player player)
+    {
+        player.IsNotPickWire = player.HandleWireColor == this.Color ? true : false;
+        this.IsConnect = true;
+        player.IsHandleWire = player.HandleWireColor == this.Color ? false : true;
+        if (player.HandleWireColor == this.Color) //endpoint
+        {
+            player.IsHandleWire = false;
+            player.HandleWireSteps = -1;
+            player.HandleWireColor = "Default";
+            this.IsEndPoint = true;
+        } else
+        {
+            player.IsHandleWire = true;
+            player.HandleWireSteps = 0;
+            player.HandleWireColor = this.Color;
+        }
+
+        player.IsAtSocket = true;
+        //Default
+        // Accessing the child object by name
+        Transform childTransform = player.transform.Find("WholePlayerObject").transform.Find("Body");
+        if (childTransform != null)
+        {
+            GameObject body = childTransform.gameObject;
+            body.GetComponent<ChangeColor>().ChangeSpriteColor(body, player.HandleWireColor);
+        }
     }
 
     public void ChangePlayerAttrStartPoint(Player player)
@@ -46,8 +76,6 @@ public class Socket : MonoBehaviour
             body.GetComponent<ChangeColor>().ChangeSpriteColor(body, player.HandleWireColor);
         }
     }
-
-
 
 
     public void ChangePlayerAttrEndPoint(Player player)

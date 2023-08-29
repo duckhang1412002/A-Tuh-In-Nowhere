@@ -445,11 +445,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         PlayGridList = MapGridList;
         if (PlayerM != null)
         {
-            PlayerM.GetComponent<Step>().enabled = true;
+            //PlayerM.GetComponent<Step>().enabled = true;
+            PlayerM.GetComponent<MoveController>().enabled = true;
         }
         else
         {
-            PlayerF.GetComponent<Step>().enabled = true;
+            //PlayerF.GetComponent<Step>().enabled = true;
+            PlayerF.GetComponent<MoveController>().enabled = true;
         }
     }
 

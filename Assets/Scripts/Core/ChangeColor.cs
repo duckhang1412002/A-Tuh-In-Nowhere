@@ -43,14 +43,6 @@ public class ChangeColor : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
-/*        colorConvertMap["Default"] = COLOR_DEFAULT;
-        colorConvertMap["Red"] = COLOR_RED;
-        colorConvertMap["Green"] = COLOR_GREEN;
-        colorConvertMap["Blue"] = COLOR_BLUE;
-        colorConvertMap["Pink"] = COLOR_PINK;
-        colorConvertMap["Purple"] = COLOR_PURPLE;
-        colorConvertMap["Yellow"] = COLOR_YELLOW;
-        colorConvertMap["Orange"] = COLOR_ORANGE;*/
     }
 
     public void ChangeSpriteColor(GameObject gameObject, string changedColor){

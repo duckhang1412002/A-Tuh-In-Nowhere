@@ -67,6 +67,14 @@ MonoBehaviour:
   - CallPlusScore
   - CallScene
   - CallLeaveRoom
+  - SetCurrentPosition
+  - SetTargetPosition
+  - SetTempCurrentPosition
+  - SetTempTargetPosition
+  - RenderWire
+  - SetPreviousPosition
+  - AddScore
+  - ChangePlayerColor
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

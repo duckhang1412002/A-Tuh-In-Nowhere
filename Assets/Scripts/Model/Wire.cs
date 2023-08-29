@@ -145,6 +145,30 @@ public class Wire : MonoBehaviour
         return wire;
     }
 
+    //new Vector 3
+    public GameObject RenderWire(Vector3 renderPosition, int pipeTypeIndex, int wireRotationIndex, string handleWireColor)
+    {
+        // Optionally, you can specify a position and rotation for the instance
+        //wireClone = Instantiate(wireInstance, renderPosition, Quaternion.identity);
+        wireClone = PhotonNetwork.Instantiate(wireInstance.name, renderPosition, Quaternion.identity);
+        wireClone.name = "Wire" + handleWireColor;
+
+        SpriteRenderer spriteRenderer = wireClone.GetComponent<SpriteRenderer>();
+        Transform transform = wireClone.GetComponent<Transform>();
+        ChangeColor changeColor = wireClone.GetComponent<ChangeColor>();
+
+        changeColor.Start();
+        changeColor.ChangeSpriteColor(wireClone, handleWireColor);
+
+        spriteRenderer.sprite = wireSprites[pipeTypeIndex];
+        transform.Rotate(0f, 0f, wireRotation[wireRotationIndex]);
+
+        transform.position = new Vector3(renderPosition.x, renderPosition.y, renderPosition.z);
+
+        return wireClone;
+    }
+
+    //Vector 2
     public GameObject RenderWire(Vector2 renderPosition, int pipeTypeIndex, int wireRotationIndex, string handleWireColor)
     {
         // Optionally, you can specify a position and rotation for the instance

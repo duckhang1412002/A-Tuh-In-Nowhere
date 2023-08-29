@@ -10,6 +10,7 @@ public class Bridge : MonoBehaviour
     public bool HasPlayerOnBridge {get; set; }
     public bool HasPlayerUnderBridge {get; set; }
     ChangeColor color;
+    private GameManager gameManager;
 
     void Start()
     {
@@ -18,14 +19,34 @@ public class Bridge : MonoBehaviour
         HasPlayerOnBridge = false;
         HasPlayerUnderBridge = false;
         color = new ChangeColor();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     void Update(){
-        if(HasPlayerUnderBridge){    
-            color.ChangeSpriteColor(this.gameObject, "Opacity");
-        } else{
-            color.ChangeSpriteColor(this.gameObject, "Default");
+        if (color != null)
+        {
+            if (HasPlayerUnderBridge)
+            {
+                color.ChangeSpriteColor(this.gameObject, "Opacity");
+            }
+            else
+            {
+                color.ChangeSpriteColor(this.gameObject, "Default");
+            }
         }
+        GameObject playerM = gameManager.PlayerM;
+        GameObject playerF = gameManager.PlayerF;
+        if (playerM != null && playerM.transform.position == this.transform.position)
+        {
+            Debug.Log("Found PlayerM at bridge!");
+            this.HasPlayerUnderBridge = playerM.transform.position.z == 5f;
+            this.HasPlayerOnBridge = playerM.transform.position.z == 2f;
+        } else if (playerF != null && playerF.transform.position == this.transform.position)
+        {
+            this.HasPlayerUnderBridge = playerF.transform.position.z == 5f;
+            this.HasPlayerOnBridge = playerF.transform.position.z == 2f;
+        }
+        
     }
 
     public bool IsVertical()
@@ -139,5 +160,19 @@ public class Bridge : MonoBehaviour
         }
 
         return wireZAxis;
+    }
+
+    public float GetZAxisToMove(Player player, Vector2 moveDirection)
+    {
+        if (this.IsVertical())
+        {
+            if (moveDirection == Vector2.up || moveDirection == Vector2.down && !HasWireOnBridge && !HasPlayerOnBridge) return 2f;
+            if (moveDirection == Vector2.left || moveDirection == Vector2.right && !HasWireUnderBridge && !HasPlayerUnderBridge) return 5f;
+        } else if (this.IsHorizontal())
+        {
+            if (moveDirection == Vector2.up || moveDirection == Vector2.down && !HasWireUnderBridge && !HasPlayerUnderBridge) return 5f;
+            if (moveDirection == Vector2.left || moveDirection == Vector2.right && !HasWireOnBridge && !HasPlayerOnBridge) return 2f;
+        }
+        return -1f;
     }
 }
