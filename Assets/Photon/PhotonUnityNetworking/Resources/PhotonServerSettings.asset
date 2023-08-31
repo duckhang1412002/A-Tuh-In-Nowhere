@@ -75,6 +75,8 @@ MonoBehaviour:
   - SetPreviousPosition
   - AddScore
   - ChangePlayerColor
+  - UpdateMapWire
+  - UpdateDefaultZAxis
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

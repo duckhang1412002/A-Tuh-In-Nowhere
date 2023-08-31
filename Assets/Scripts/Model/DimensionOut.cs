@@ -1,6 +1,9 @@
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using WebSocketSharp;
 
 public class DimensionOut : MonoBehaviour
 {
@@ -9,6 +12,30 @@ public class DimensionOut : MonoBehaviour
 
     private static float[] dimensionOutRotation = { 0f, 90.0f, 180.0f, 270.0f };
 
+    public Vector2 GetExitPosition(Vector2 moveDirection)
+    {
+        Vector2 exitPosition = Vector2.zero;
+        if (this.BaseDimension != null)
+        {
+            if (moveDirection == Vector2.left)
+            {
+                exitPosition = new Vector3(BaseDimension.transform.position.x - 1, BaseDimension.transform.position.y);
+            }
+            else if (moveDirection == Vector2.down)
+            {
+                exitPosition = new Vector3(BaseDimension.transform.position.x, BaseDimension.transform.position.y - 1);
+            }
+            else if (moveDirection == Vector2.right)
+            {
+                exitPosition = new Vector3(BaseDimension.transform.position.x + 1, BaseDimension.transform.position.y);
+            }
+            else if (moveDirection == Vector2.up)
+            {
+                exitPosition = new Vector3(BaseDimension.transform.position.x, BaseDimension.transform.position.y + 1);
+            }
+        }
+        return exitPosition;
+    }
     public Vector3 GetNextPosition(Player player)
     {
         Vector3 exitPosition = new Vector3();

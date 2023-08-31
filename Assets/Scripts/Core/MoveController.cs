@@ -24,6 +24,9 @@ public class MoveController : MonoBehaviourPun
     private int photonViewID;
     private bool isPauseGame, enableMove, isMoving;
 
+    DimensionIn dimensionIn;
+    DimensionOut dimensionOut;
+
     private bool allowInput = true;
     private float inputDelay = 0.35f;
     private float inputDelayTimer = 0.0f;
@@ -31,6 +34,8 @@ public class MoveController : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
+        dimensionIn = null;
+        dimensionOut = null;
         isPauseGame = isMoving = false;
         enableMove = true;
         wireSpawner = GameObject.Find("WireSpawner").GetComponent<Wire>();
@@ -71,11 +76,29 @@ public class MoveController : MonoBehaviourPun
 
         if (player.transform.position == newTargetPosition && !enableMove)
         {
-            enableMove = true; // Re-enable movement once the target position is reached
+            if (!isMoving) enableMove = true; // Re-enable movement once the target position is reached
             if (player.IsHandleWire || player.IsAtSocket) RenderWire();
             player.PreviousPosition = player.CurrentPosition;
             player.CurrentPosition = newTargetPosition;
+            if (dimensionIn != null || dimensionOut != null)
+            {
+                TeleportPlayer();
+            }
         }
+    }
+
+    private void TeleportPlayer()
+    {
+        if (dimensionIn != null)
+        {
+            player.transform.position = dimensionIn.GetEntrancePosition(player.PreviousDirection);
+            dimensionIn = null;
+        } else
+        {
+            player.transform.position = dimensionOut.GetExitPosition(player.PreviousDirection);
+            dimensionOut = null;
+        }
+        player.PreviousPosition = player.CurrentPosition = player.TargetPosition = player.transform.position;
     }
 
     private void RenderWire()
@@ -199,7 +222,7 @@ public class MoveController : MonoBehaviourPun
                 allowInput = true; // Enable input after the delay
             }
         }
-        if (enableMove && allowInput)
+        else if (enableMove && allowInput)
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
             GameObject item = GetItemAtPosition(player.CurrentPosition);
@@ -247,6 +270,18 @@ public class MoveController : MonoBehaviourPun
                 allowInput = false; // Disable input for the delay periods
             }
         }
+        else if (isMoving) //case dashing in the same direction
+        {
+            Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
+            //check if the next position is valid to move in or else it will return here
+            if (!IsPositionValid(newPosition, player.PreviousDirection))
+            {
+                isMoving = false;
+                return;
+            }
+            player.PreviousDirection = player.PreviousDirection;
+            player.TargetPosition = newPosition;
+        }
         MovePlayer();
     }
 
@@ -255,7 +290,7 @@ public class MoveController : MonoBehaviourPun
         int map = (int)pos.x / 100;
         int n = gameManager.PlayGridList[map].GetLength(0);
         int m = gameManager.PlayGridList[map].GetLength(1);
-        int x = (int)pos.x;
+        int x = (int)pos.x % 100;
         int y = (int)pos.y;
         if (x < 0 || x >= n || y < 0 || y >= m) return null;
         return gameManager.PlayGridList[map][x, y];
@@ -266,7 +301,7 @@ public class MoveController : MonoBehaviourPun
         GameObject item = GetItemAtPosition(targetPos);
         if (item == null || item.tag == null) return false;
         string itemTag = item.tag;
-
+        Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
 
@@ -284,13 +319,41 @@ public class MoveController : MonoBehaviourPun
                     rpcManager.CallAddScore();
                     return true;
                 }
-                return true;
+                return !player.IsHandleWire;
             case "Bridge":
                 Bridge bridge = item.GetComponent<Bridge>();
                 float newZ = bridge.GetZAxisToMove(player, moveDirection);
                 if (newZ == -1f) return false;
                 rpcManager.CallUpdateDefaultZAxis(photonViewID, newZ);
                 return true;
+            case "Ice":
+                //wrong render
+                isMoving = true;
+                return true;
+            case "DimensionIn":
+                DimensionIn dIn = item.GetComponent<DimensionIn>();
+                Vector2 teleportPos = dIn.GetEntrancePosition(moveDirection);
+                if (teleportPos == Vector2.zero) return false;
+                Debug.Log("I'm going in: " + teleportPos);
+                GameObject itemIn = GetItemAtPosition(teleportPos);
+                if (!(gameManager.WireMap.ContainsKey(teleportPos) && player.IsHandleWire && itemIn.tag != "Bridge"))
+                {
+                    dimensionIn = dIn;
+                    Debug.Log("I can go in now!");
+                    return true;
+                }
+                return false;
+            case "DimensionOut":
+                DimensionOut dOut = item.GetComponent<DimensionOut>();
+                Vector2 telePos = dOut.GetExitPosition(moveDirection);
+                if (telePos == Vector2.zero) return false;
+                GameObject itemOut = GetItemAtPosition(telePos);
+                if (!(gameManager.WireMap.ContainsKey(telePos) && player.IsHandleWire && itemOut.tag != "Bridge"))
+                {
+                    dimensionOut = dOut;
+                    return true;
+                }
+                return false;
             default: //just ground
                 break;
         }

@@ -1,3 +1,4 @@
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +9,10 @@ public class DimensionIn : MonoBehaviour
     public GameObject exitTop { get; set; }
     public GameObject exitRight { get; set; }
     public GameObject exitBottom { get; set; }
-    public GameObject exitLeft {get;set;}
+    public GameObject exitLeft { get; set; }
 
     private Sprite[] dimensionInSprites;
-    private static float[] dimensionInRotation = { 0f, 90.0f, 180.0f, 270.0f };   
+    private static float[] dimensionInRotation = { 0f, 90.0f, 180.0f, 270.0f };
 
     public void Start()
     {
@@ -20,7 +21,30 @@ public class DimensionIn : MonoBehaviour
         dimensionInSprites[1] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-2");
         dimensionInSprites[2] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-3");
         dimensionInSprites[3] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-4");
-        dimensionInSprites[4] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-5");  
+        dimensionInSprites[4] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-5");
+    }
+
+    public Vector2 GetEntrancePosition(Vector2 moveDirection)
+    {
+        Vector2 entrancePosition = Vector2.zero;
+        if (moveDirection == Vector2.right && HasLeft())
+        {
+            entrancePosition = new Vector3(exitLeft.transform.position.x + 1, exitLeft.transform.position.y);
+        }
+        else if (moveDirection == Vector2.down && HasTop())
+        {
+            entrancePosition = new Vector3(exitTop.transform.position.x, exitTop.transform.position.y - 1);
+        }
+        else if (moveDirection == Vector2.left && HasRight())
+        {
+            entrancePosition = new Vector3(exitRight.transform.position.x - 1, exitRight.transform.position.y);
+        }
+        else if (moveDirection == Vector2.up && HasBottom())
+        {
+            entrancePosition = new Vector3(exitBottom.transform.position.x, exitBottom.transform.position.y + 1);
+        }
+
+        return entrancePosition;
     }
 
     public Vector3 GetNextPosition(Player player)
