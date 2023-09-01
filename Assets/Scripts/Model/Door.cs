@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     public int ID { get; set; }
+    private GameManager gameManager;
 
     public DoorButton Button { get; set; }
 
@@ -26,6 +28,7 @@ public class Door : MonoBehaviour
     public void Start()
     {
         HasPlayerAtDoorPosition = false;
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     public void Init()
@@ -70,6 +73,18 @@ public class Door : MonoBehaviour
                 IsActive = isReverseDoor;
             }  
         }
+        GameObject playerM = gameManager.PlayerM;
+        GameObject playerF = gameManager.PlayerF;
+        if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
+        {
+            HasPlayerAtDoorPosition = true;
+        }
+        else if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
+        {
+            HasPlayerAtDoorPosition = true;
+        }
+        else HasPlayerAtDoorPosition = false;
+        HasPipeAtDoorPosition = gameManager.WireMap.ContainsKey(this.transform.position);
         DoorTransition();
 
         
@@ -110,5 +125,10 @@ public class Door : MonoBehaviour
         }
 
         return totalCheck;
+    }
+
+    public bool IsValidPosition()
+    {
+        return this.IsActive;
     }
 }

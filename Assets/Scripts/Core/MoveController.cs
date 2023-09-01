@@ -354,6 +354,12 @@ public class MoveController : MonoBehaviourPun
                     return true;
                 }
                 return false;
+            case "Door":
+                Door door = item.GetComponent<Door>();
+                return (door.IsValidPosition());
+            case "DoorButton":
+                DoorButton doorButton= item.GetComponent<DoorButton>();
+                return true;
             default: //just ground
                 break;
         }

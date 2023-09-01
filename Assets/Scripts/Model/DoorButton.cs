@@ -1,3 +1,4 @@
+using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,12 +14,14 @@ public class DoorButton : MonoBehaviour
     private Sprite enableButton;
     public bool IsActive{get; set;}
     public bool HasPipeOn{get; set;}
+    private GameManager gameManager;
     // Start is called before the first frame update
     public void Start()
     {
         IsActive = false;
         HasPipeOn = false;
         this.GetComponent<SpriteRenderer>().sprite = unableButton;
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -27,10 +30,24 @@ public class DoorButton : MonoBehaviour
         if(HasPipeOn){
             IsActive = true;          
         }
+        GameObject playerM = gameManager.PlayerM;
+        GameObject playerF = gameManager.PlayerF;
+        if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
+        {
+            IsActive = true;
+        }
+        else if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
+        {
+            IsActive = true;
+        }
+        else IsActive = gameManager.WireMap.ContainsKey(this.transform.position);
 
-        if(IsActive){
+        if (IsActive)
+        {
             this.GetComponent<SpriteRenderer>().sprite = enableButton;
-        } else{
+        }
+        else
+        {
             this.GetComponent<SpriteRenderer>().sprite = unableButton;
         }
     }
@@ -62,7 +79,7 @@ public class DoorButton : MonoBehaviour
         if(this.HasPipeOn && !player.IsNotPickWire) 
             return false;
         else{
-            if(!player.IsNotPickWire) this.HasPipeOn = true;
+            if(!player.IsNotPickWire || player.IsHandleWire) this.HasPipeOn = true;
             return true;
         }          
     }
