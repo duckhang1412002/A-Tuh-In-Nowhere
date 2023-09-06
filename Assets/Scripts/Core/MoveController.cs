@@ -28,7 +28,7 @@ public class MoveController : MonoBehaviourPun
     DimensionOut dimensionOut;
 
     private bool allowInput = true;
-    private float inputDelay = 0.35f;
+    private float inputDelay = 0.3f;
     private float inputDelayTimer = 0.0f;
 
     // Start is called before the first frame update
@@ -44,13 +44,6 @@ public class MoveController : MonoBehaviourPun
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
         Debug.Log("Player : " + player);
-
-        /*
-                    currentMap = (int)playerScript.CurrentPosition.x / 100;
-                    xCurrent = (int)(playerScript.CurrentPosition.x % 100);
-                    yCurrent = (int)(playerScript.CurrentPosition.y);
-                    xTarget = (int)(playerScript.TargetPosition.x % 100);
-                    yTarget = (int)(playerScript.TargetPosition.y);*/
     }
 
     private Player GetTargetPlayer(int photonTargetID)
@@ -76,7 +69,8 @@ public class MoveController : MonoBehaviourPun
 
         if (player.transform.position == newTargetPosition && !enableMove)
         {
-            if (!isMoving) enableMove = true; // Re-enable movement once the target position is reached
+            Debug.Log("Test call: " + player.transform.position + " == " + newTargetPosition);
+            enableMove = true; // Re-enable movement once the target position is reached
             if (player.IsHandleWire || player.IsAtSocket) RenderWire();
             player.PreviousPosition = player.CurrentPosition;
             player.CurrentPosition = newTargetPosition;
@@ -98,12 +92,25 @@ public class MoveController : MonoBehaviourPun
             player.transform.position = dimensionOut.GetExitPosition(player.PreviousDirection);
             dimensionOut = null;
         }
-        player.PreviousPosition = player.CurrentPosition = player.TargetPosition = player.transform.position;
+        /* !!!!! CHECK HERE !!!!! */
+        player.PreviousPosition = CalculatePrevious(player.transform.position, player.PreviousDirection);
+        player.CurrentPosition = player.TargetPosition = player.transform.position;
+        //player.PreviousPosition = player.CurrentPosition = player.TargetPosition = player.transform.position;
+    }
+
+    private Vector2 CalculatePrevious(Vector2 pos, Vector2 dir)
+    {
+        if (dir == Vector2.up) return new Vector2(pos.x, pos.y - 1);
+        if (dir == Vector2.down) return new Vector2(pos.x, pos.y + 1);
+        if (dir == Vector2.left) return new Vector2(pos.x+1, pos.y);
+        return new Vector2(pos.x-1, pos.y);
     }
 
     private void RenderWire()
     {
+
         if (player.PreviousDirection == Vector2.zero) return;
+        Debug.Log("Wire is rendering at " + player.transform.position);
         player.IsAtSocket = false;
         string wireColor = player.HandleWireColor;
         Vector2 renderPosition = player.CurrentPosition;
@@ -142,19 +149,19 @@ public class MoveController : MonoBehaviourPun
         }
 
         spriteIndex = 0; // Default to straight wire sprite
-        if (offset == new Vector2(0, 2)) //up
+        if (offset == new Vector2(0, 2) || offset == Vector2.up) //up
         {
             rotationIndex = 1;
         }
-        else if (offset == new Vector2(0, -2)) //down
+        else if (offset == new Vector2(0, -2) || offset == Vector2.down) //down
         {
             rotationIndex = 3;
         }
-        else if (offset == new Vector2(-2, 0)) //left
+        else if (offset == new Vector2(-2, 0) || offset == Vector2.left) //left
         {
             rotationIndex = 0; 
         }
-        else if (offset == new Vector2(2, 0)) //right
+        else if (offset == new Vector2(2, 0) || offset == Vector2.right) //right
         {
             rotationIndex = 2;
         }
@@ -176,7 +183,7 @@ public class MoveController : MonoBehaviourPun
             }
             else
             {
-                Debug.Log("I can not render!");
+                Debug.Log("I can not render!" + offset + " - " + offsetPrev + " - " + offsetNext);
             }
         }
 
@@ -208,6 +215,7 @@ public class MoveController : MonoBehaviourPun
             GameObject newWire = rpcManager.CallRenderWire(renderPosition, player.DefaultZAxis+1, spriteIndex, rotationIndex, wireColor);
         }    
         ++player.HandleWireSteps; //increase steps
+        Debug.Log("Step: " + player.HandleWireSteps);
     }
 
     private void Update()
@@ -222,7 +230,7 @@ public class MoveController : MonoBehaviourPun
                 allowInput = true; // Enable input after the delay
             }
         }
-        else if (enableMove && allowInput)
+        else if (enableMove && allowInput && !isMoving)
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
             GameObject item = GetItemAtPosition(player.CurrentPosition);
@@ -279,6 +287,7 @@ public class MoveController : MonoBehaviourPun
                 isMoving = false;
                 return;
             }
+            enableMove = false;
             player.PreviousDirection = player.PreviousDirection;
             player.TargetPosition = newPosition;
         }

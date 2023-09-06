@@ -28,7 +28,7 @@ public class RPCManager : MonoBehaviourPunCallbacks
         int map = (int)pos.x / 100;
         int n = gameManager.PlayGridList[map].GetLength(0);
         int m = gameManager.PlayGridList[map].GetLength(1);
-        int x = (int)pos.x;
+        int x = (int)pos.x % 100;
         int y = (int)pos.y;
         if (x < 0 || x >= n || y < 0 || y >= m) return null;
         return gameManager.PlayGridList[map][x, y];

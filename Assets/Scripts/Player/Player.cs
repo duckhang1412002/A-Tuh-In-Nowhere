@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviourPun, IPunObservable
+public class Player : MonoBehaviourPun
 {
     public int ID { get; set; }
     public string HandleWireColor{get; set;}
@@ -102,27 +102,6 @@ public class Player : MonoBehaviourPun, IPunObservable
         tempTargetPos = new Vector2(x, y);
     }
 
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            // Sending data to network
-            stream.SendNext(CurrentPosition);
-            stream.SendNext(TargetPosition);
-            stream.SendNext(TempCurrentPosition);
-            stream.SendNext(TempTargetPosition);
-        }
-        else
-        {
-            // Receiving data from network
-            CurrentPosition = (Vector2)stream.ReceiveNext();
-            TargetPosition = (Vector2)stream.ReceiveNext();
-            TempCurrentPosition = (Vector2)stream.ReceiveNext();
-            TempTargetPosition = (Vector2)stream.ReceiveNext();
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -144,5 +123,29 @@ public class Player : MonoBehaviourPun, IPunObservable
     void Update()
     {
        
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // Serialize data to send over the network
+            stream.SendNext(CurrentPosition);
+            stream.SendNext(PreviousPosition);
+            stream.SendNext(TargetPosition);
+            stream.SendNext(TempCurrentPosition);
+            stream.SendNext(TempTargetPosition);
+            // Serialize other properties if needed...
+        }
+        else
+        {
+            // Deserialize data received from the network
+            CurrentPosition = (Vector2)stream.ReceiveNext();
+            PreviousPosition = (Vector2)stream.ReceiveNext();
+            TargetPosition = (Vector2)stream.ReceiveNext();
+            TempCurrentPosition = (Vector2)stream.ReceiveNext();
+            TempTargetPosition = (Vector2)stream.ReceiveNext();
+            // Deserialize other properties if needed...
+        }
     }
 }

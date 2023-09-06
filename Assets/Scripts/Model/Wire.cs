@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class Wire : MonoBehaviour
     private Sprite[] wireSprites;
     private GameObject wireInstance;
     private GameObject wireClone;
+    private GameManager gameManager;
 
     // Start is called before the first frame update
     public void Start()
@@ -21,7 +23,7 @@ public class Wire : MonoBehaviour
         wireSprites[0] = Resources.Load<Sprite>("Sprites/Wire/straight");
         wireSprites[1] = Resources.Load<Sprite>("Sprites/Wire/curve");
         wireSprites[2] = Resources.Load<Sprite>("Sprites/Wire/cap");
-        GameManager gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         wireInstance = gameManager.GetPrefabByName("Wire");
     }
 
@@ -150,7 +152,10 @@ public class Wire : MonoBehaviour
     {
         // Optionally, you can specify a position and rotation for the instance
         //wireClone = Instantiate(wireInstance, renderPosition, Quaternion.identity);
-        wireClone = PhotonNetwork.Instantiate(wireInstance.name, renderPosition, Quaternion.identity);
+        wireClone = gameManager.InstantiatePrefab("Wire", (int)renderPosition.x, (int)renderPosition.y);
+        //GameObject wireInstantiated = Instantiate("Wire", renderPosition, Quaternion.identity) as GameObject;
+        //wireClone = PhotonNetwork.Instantiate(wireInstance.name, renderPosition, Quaternion.identity);
+        Debug.Log("Rendered a wire");
         wireClone.name = "Wire" + handleWireColor;
 
         SpriteRenderer spriteRenderer = wireClone.GetComponent<SpriteRenderer>();

@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-    private GameObject InstantiatePrefab(string prefabName, int x, int y)
+    public GameObject InstantiatePrefab(string prefabName, int x, int y)
     {
         GameObject prefab = prefabList.FirstOrDefault(o => o.name == prefabName);
         Quaternion rotation = prefab.transform.rotation;
