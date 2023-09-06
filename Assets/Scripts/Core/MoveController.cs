@@ -46,21 +46,6 @@ public class MoveController : MonoBehaviourPun
         Debug.Log("Player : " + player);
     }
 
-    private Player GetTargetPlayer(int photonTargetID)
-    {
-        if (photonTargetID == photonViewID)
-        {
-            return player;
-        }
-        else if (photonTargetID == 1)
-        {
-            return gameManager.PlayerM.GetComponent<Player>();
-        }
-        else
-        {
-            return gameManager.PlayerF.GetComponent<Player>();
-        }
-    }
     private void MovePlayer()
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
@@ -73,7 +58,7 @@ public class MoveController : MonoBehaviourPun
             enableMove = true; // Re-enable movement once the target position is reached
             if (player.IsHandleWire || player.IsAtSocket) RenderWire();
             player.PreviousPosition = player.CurrentPosition;
-            player.CurrentPosition = newTargetPosition;
+            player.CurrentPosition = (Vector2)newTargetPosition;
             if (dimensionIn != null || dimensionOut != null)
             {
                 TeleportPlayer();
@@ -255,6 +240,7 @@ public class MoveController : MonoBehaviourPun
 
             if (moveDirection != Vector2.zero)
             {
+                Debug.Log("Current: " + player.CurrentPosition);
                 if (item.GetComponent<Bridge>() != null)
                 {
                     Bridge bridge = item.GetComponent<Bridge>();
