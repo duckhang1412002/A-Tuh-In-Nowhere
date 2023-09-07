@@ -34,19 +34,49 @@ public class Bridge : MonoBehaviour
                 color.ChangeSpriteColor(this.gameObject, "Default");
             }
         }
+        this.HasPlayerUnderBridge = false;
+        this.HasPlayerOnBridge = false;
         GameObject playerM = gameManager.PlayerM;
         GameObject playerF = gameManager.PlayerF;
-        if (playerM != null && playerM.transform.position == this.transform.position)
+        if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
         {
-            Debug.Log("Found PlayerM at bridge!");
-            this.HasPlayerUnderBridge = playerM.transform.position.z == 5f;
-            this.HasPlayerOnBridge = playerM.transform.position.z == 2f;
-        } else if (playerF != null && playerF.transform.position == this.transform.position)
+            Debug.Log("Found playerM at Bridge!");
+            if (playerM.transform.position.z == 5f)
+            {
+                this.HasPlayerUnderBridge = true;
+                if (playerM.GetComponent<Player>().IsHandleWire)
+                {
+                    Debug.Log("there is a wire underneath");
+                    this.HasWireUnderBridge = true;
+                }
+            } else if (playerM.transform.position.z == 2f)
+            {
+                this.HasPlayerOnBridge = true;
+                if (playerM.GetComponent<Player>().IsHandleWire) this.HasWireOnBridge = true;
+            }
+/*            this.HasPlayerUnderBridge = playerM.transform.position.z == 5f;
+            this.HasPlayerOnBridge = playerM.transform.position.z == 2f;*/
+        } 
+        if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
         {
-            this.HasPlayerUnderBridge = playerF.transform.position.z == 5f;
-            this.HasPlayerOnBridge = playerF.transform.position.z == 2f;
+            if (playerF.transform.position.z == 5f)
+            {
+                this.HasPlayerUnderBridge = true;
+                if (playerF.GetComponent<Player>().IsHandleWire)
+                {
+                    Debug.Log("there is a wire underneath");
+                    this.HasWireUnderBridge = true;
+                }
+            }
+            else if (playerF.transform.position.z == 2f)
+            {
+                this.HasPlayerOnBridge = true;
+                if (playerF.GetComponent<Player>().IsHandleWire) this.HasWireOnBridge = true;
+            }
+            /*this.HasPlayerUnderBridge = playerF.transform.position.z == 5f;
+            this.HasPlayerOnBridge = playerF.transform.position.z == 2f;*/
         }
-        
+
     }
 
     public bool IsVertical()
@@ -166,12 +196,28 @@ public class Bridge : MonoBehaviour
     {
         if (this.IsVertical())
         {
-            if (moveDirection == Vector2.up || moveDirection == Vector2.down && !HasWireOnBridge && !HasPlayerOnBridge) return 2f;
-            if (moveDirection == Vector2.left || moveDirection == Vector2.right && !HasWireUnderBridge && !HasPlayerUnderBridge) return 5f;
-        } else if (this.IsHorizontal())
+            if (moveDirection == Vector2.up || moveDirection == Vector2.down && !HasPlayerOnBridge)
+            {
+                if (!player.IsHandleWire || (player.IsHandleWire && !HasWireOnBridge)) 
+                    return 2f;
+            }
+            if (moveDirection == Vector2.left || moveDirection == Vector2.right && !HasPlayerUnderBridge)
+            {
+                if (!player.IsHandleWire || (player.IsHandleWire && !HasWireUnderBridge))
+                    return 5f;
+            }
+            } else if (this.IsHorizontal())
         {
-            if (moveDirection == Vector2.up || moveDirection == Vector2.down && !HasWireUnderBridge && !HasPlayerUnderBridge) return 5f;
-            if (moveDirection == Vector2.left || moveDirection == Vector2.right && !HasWireOnBridge && !HasPlayerOnBridge) return 2f;
+            if (moveDirection == Vector2.up || moveDirection == Vector2.down && !HasPlayerUnderBridge)
+            {
+                if (!player.IsHandleWire || (player.IsHandleWire && !HasWireUnderBridge))
+                    return 5f;
+            }
+            if (moveDirection == Vector2.left || moveDirection == Vector2.right && !HasPlayerOnBridge)
+            {
+                if (!player.IsHandleWire || (player.IsHandleWire && !HasWireOnBridge))
+                    return 2f;
+            }
         }
         return -1f;
     }

@@ -50,6 +50,9 @@ public class MoveController : MonoBehaviourPun
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
 
+        //update z
+        if (player.transform.position.z != player.DefaultZAxis) player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.DefaultZAxis);
+        
         player.transform.position = Vector3.MoveTowards(transform.position, newTargetPosition, moveSpeed * Time.deltaTime);
 
         if (player.transform.position == newTargetPosition && !enableMove)
@@ -196,7 +199,7 @@ public class MoveController : MonoBehaviourPun
             }
             wireColor = s.Color;
             //sprite index = 2
-            rpcManager.CallRenderWire(player.TargetPosition, player.transform.position.z + 1, 2, rotationIndex, wireColor);
+            rpcManager.CallRenderWire(player.TargetPosition, player.DefaultZAxis + 1, 2, rotationIndex, wireColor);
             Debug.Log("It's endpoint");
             /* reset wire */
             player.HandleWireSteps = 0;
@@ -314,7 +317,6 @@ public class MoveController : MonoBehaviourPun
             bool ok = false;
             if (socket.CheckSocketStartPoint(player)) {
                 rpcManager.CallChangePlayerColor(photonViewID, targetPos);
-                Debug.Log("yes it's a start point!");
                 ok = true;
             }
             else if (socket.CheckSocketEndPoint(player)) {
@@ -322,8 +324,6 @@ public class MoveController : MonoBehaviourPun
                 rpcManager.CallAddScore();
                 ok = true;
             }
-            Debug.Log("I'm still here!");
-            Debug.Log("OK ?" + ok);
             return (ok == true || !player.IsHandleWire);
         }
         else if (itemTag == "Bridge") {
