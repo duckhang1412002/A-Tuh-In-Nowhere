@@ -35,12 +35,12 @@ public class DoorButton : MonoBehaviour
         if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
         {
             IsActive = true;
-            if (playerM.GetComponent<Player>().IsHandleWire) HasPipeOn = true;
+            if (playerM.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)this.transform.position] = true;
         }
         else if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
         {
             IsActive = true;
-            if (playerF.GetComponent<Player>().IsHandleWire) HasPipeOn = true;
+            if (playerF.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)this.transform.position] = true;
         }
         else IsActive = gameManager.WireMap.ContainsKey(this.transform.position);
 

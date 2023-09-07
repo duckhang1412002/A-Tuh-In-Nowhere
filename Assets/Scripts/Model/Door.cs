@@ -78,15 +78,15 @@ public class Door : MonoBehaviour
         if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
         {
             HasPlayerAtDoorPosition = true;
-            if (playerM.GetComponent<Player>().IsHandleWire) HasPipeAtDoorPosition = true;
+            if (playerM.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)this.transform.position] = true;
         }
         else if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
         {
             HasPlayerAtDoorPosition = true;
-            if (playerF.GetComponent<Player>().IsHandleWire) HasPipeAtDoorPosition = true;
+            if (playerF.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)this.transform.position] = true;
         }
         else HasPlayerAtDoorPosition = false;
-        //HasPipeAtDoorPosition = gameManager.WireMap.ContainsKey(this.transform.position);
+        HasPipeAtDoorPosition = gameManager.WireMap.ContainsKey(this.transform.position);
         DoorTransition();
 
         
