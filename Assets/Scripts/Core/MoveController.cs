@@ -96,7 +96,6 @@ public class MoveController : MonoBehaviourPun
 
         if (player.PreviousDirection == Vector2.zero) return;
         Debug.Log("Wire is rendering at " + player.transform.position);
-        player.IsAtSocket = false;
         string wireColor = player.HandleWireColor;
         Vector2 renderPosition = player.CurrentPosition;
         int rotationIndex = 0;
@@ -105,33 +104,9 @@ public class MoveController : MonoBehaviourPun
         Vector2 offsetPrev = player.CurrentPosition - player.PreviousPosition;
         Vector2 offsetNext = player.TargetPosition - player.CurrentPosition;
 
-        int spriteIndex = 0; // Default to straight wire sprite
+        int spriteIndex; // Default to straight wire sprite
         /* do render for socket */
-        if (player.HandleWireSteps == -1) //endpoint
-        {
-            GameObject itemCurrent = GetItemAtPosition(player.TargetPosition);
-            Socket s = itemCurrent.GetComponent<Socket>();
-            spriteIndex = 2;
-            if (offsetNext == Vector2.up) //up
-            {
-                rotationIndex = 3;
-            }
-            else if (offsetNext == Vector2.down) //down
-            {
-                rotationIndex = 1;
-            }
-            else if (offsetNext == Vector2.left) //left
-            {
-                rotationIndex = 0;
-            }
-            else if (offsetNext == Vector2.right) //right
-            {
-                rotationIndex = 2;
-            }
-            wireColor = s.Color;
-            rpcManager.CallRenderWire(player.TargetPosition, player.DefaultZAxis+1, spriteIndex, rotationIndex, wireColor);
-            Debug.Log("It's endpoint");
-        }
+
 
         spriteIndex = 0; // Default to straight wire sprite
         if (offset == new Vector2(0, 2) || offset == Vector2.up) //up
@@ -192,13 +167,42 @@ public class MoveController : MonoBehaviourPun
                 rotationIndex = 0;
             }
             Debug.Log("It's after startpoint");
-        } 
-        /* ---- */
-
+        }
         if (player.HandleWireSteps != 0) //if not start point
         {
-            GameObject newWire = rpcManager.CallRenderWire(renderPosition, player.DefaultZAxis+1, spriteIndex, rotationIndex, wireColor);
-        }    
+            GameObject newWire = rpcManager.CallRenderWire(renderPosition, player.DefaultZAxis + 1, spriteIndex, rotationIndex, wireColor);
+        }
+        /* ---- */
+
+        if (player.HandleWireSteps != 0 && player.IsAtSocket) //endpoint
+        {
+            GameObject itemCurrent = GetItemAtPosition(player.TargetPosition);
+            Socket s = itemCurrent.GetComponent<Socket>();
+            if (offsetNext == Vector2.up) //up
+            {
+                rotationIndex = 3;
+            }
+            else if (offsetNext == Vector2.down) //down
+            {
+                rotationIndex = 1;
+            }
+            else if (offsetNext == Vector2.left) //left
+            {
+                rotationIndex = 0;
+            }
+            else if (offsetNext == Vector2.right) //right
+            {
+                rotationIndex = 2;
+            }
+            wireColor = s.Color;
+            //sprite index = 2
+            rpcManager.CallRenderWire(player.TargetPosition, player.transform.position.z + 1, 2, rotationIndex, wireColor);
+            Debug.Log("It's endpoint");
+            /* reset wire */
+            player.HandleWireSteps = 0;
+            player.HandleWireColor = "Default";
+        }
+        player.IsAtSocket = false;
         ++player.HandleWireSteps; //increase steps
         Debug.Log("Step: " + player.HandleWireSteps);
     }
@@ -214,6 +218,21 @@ public class MoveController : MonoBehaviourPun
                 inputDelayTimer = 0.0f;
                 allowInput = true; // Enable input after the delay
             }
+        }
+        if (isMoving && enableMove) //case dashing in the same direction
+        {
+            Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
+            Debug.Log("is moving!");
+            //check if the next position is valid to move in or else it will return here
+            if (!IsPositionValid(newPosition, player.PreviousDirection))
+            {
+                Debug.Log("not moving anymore!");
+                isMoving = false;
+                return;
+            }
+            enableMove = false;
+            player.PreviousDirection = player.PreviousDirection;
+            player.TargetPosition = newPosition;
         }
         else if (enableMove && allowInput && !isMoving)
         { // Enable move if player is allowed to move
@@ -264,19 +283,6 @@ public class MoveController : MonoBehaviourPun
                 allowInput = false; // Disable input for the delay periods
             }
         }
-        else if (isMoving) //case dashing in the same direction
-        {
-            Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
-            //check if the next position is valid to move in or else it will return here
-            if (!IsPositionValid(newPosition, player.PreviousDirection))
-            {
-                isMoving = false;
-                return;
-            }
-            enableMove = false;
-            player.PreviousDirection = player.PreviousDirection;
-            player.TargetPosition = newPosition;
-        }
         MovePlayer();
     }
 
@@ -300,65 +306,82 @@ public class MoveController : MonoBehaviourPun
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
 
-        switch (itemTag)
-        {
-            case "Wall":
-                return false;
-            case "Socket":
-                Socket socket = item.GetComponent<Socket>();
-                if (socket.CheckSocketStartPoint(player)) {
-                    rpcManager.CallChangePlayerColor(photonViewID, targetPos);
-                    return true;
-                } else if (socket.CheckSocketEndPoint(player)) {
-                    rpcManager.CallChangePlayerColor(photonViewID, targetPos);
-                    rpcManager.CallAddScore();
-                    return true;
-                }
-                return !player.IsHandleWire;
-            case "Bridge":
-                Bridge bridge = item.GetComponent<Bridge>();
-                float newZ = bridge.GetZAxisToMove(player, moveDirection);
-                if (newZ == -1f) return false;
-                rpcManager.CallUpdateDefaultZAxis(photonViewID, newZ);
-                return true;
-            case "Ice":
-                //wrong render
-                isMoving = true;
-                return true;
-            case "DimensionIn":
-                DimensionIn dIn = item.GetComponent<DimensionIn>();
-                Vector2 teleportPos = dIn.GetEntrancePosition(moveDirection);
-                if (teleportPos == Vector2.zero) return false;
-                Debug.Log("I'm going in: " + teleportPos);
-                GameObject itemIn = GetItemAtPosition(teleportPos);
-                if (!(gameManager.WireMap.ContainsKey(teleportPos) && player.IsHandleWire && itemIn.tag != "Bridge"))
-                {
-                    dimensionIn = dIn;
-                    Debug.Log("I can go in now!");
-                    return true;
-                }
-                return false;
-            case "DimensionOut":
-                DimensionOut dOut = item.GetComponent<DimensionOut>();
-                Vector2 telePos = dOut.GetExitPosition(moveDirection);
-                if (telePos == Vector2.zero) return false;
-                GameObject itemOut = GetItemAtPosition(telePos);
-                if (!(gameManager.WireMap.ContainsKey(telePos) && player.IsHandleWire && itemOut.tag != "Bridge"))
-                {
-                    dimensionOut = dOut;
-                    return true;
-                }
-                return false;
-            case "Door":
-                Door door = item.GetComponent<Door>();
-                return (door.IsValidPosition());
-            case "DoorButton":
-                DoorButton doorButton= item.GetComponent<DoorButton>();
-                return true;
-            default: //just ground
-                break;
+        if (itemTag == "Wall") {
+            return false;
         }
-        //check if there is a wire
+        else if (itemTag == "Socket") {
+            Socket socket = item.GetComponent<Socket>();
+            bool ok = false;
+            if (socket.CheckSocketStartPoint(player)) {
+                rpcManager.CallChangePlayerColor(photonViewID, targetPos);
+                Debug.Log("yes it's a start point!");
+                ok = true;
+            }
+            else if (socket.CheckSocketEndPoint(player)) {
+                rpcManager.CallChangePlayerColor(photonViewID, targetPos);
+                rpcManager.CallAddScore();
+                ok = true;
+            }
+            Debug.Log("I'm still here!");
+            Debug.Log("OK ?" + ok);
+            return (ok == true || !player.IsHandleWire);
+        }
+        else if (itemTag == "Bridge") {
+            Bridge bridge = item.GetComponent<Bridge>();
+            float newZ = bridge.GetZAxisToMove(player, moveDirection);
+            if (newZ == -1f)
+            {
+                return false;
+            }
+            rpcManager.CallUpdateDefaultZAxis(photonViewID, newZ);
+            return true;
+        }
+        else if (itemTag == "Ice") {
+            // Wrong render
+            isMoving = true;
+            return true;
+        }
+        else if (itemTag == "DimensionIn") {
+            DimensionIn dIn = item.GetComponent<DimensionIn>();
+            Vector2 telePos = dIn.GetEntrancePosition(moveDirection);
+            if (telePos == Vector2.zero)
+            {
+                return false;
+            }
+            if (IsPositionValid(telePos, moveDirection))
+            {
+                dimensionIn = dIn;
+                return true;
+            }
+            return false;
+        }
+        else if (itemTag == "DimensionOut") {
+            DimensionOut dOut = item.GetComponent<DimensionOut>();
+            Vector2 telePos = dOut.GetExitPosition(moveDirection);
+            if (telePos == Vector2.zero)
+            {
+                return false;
+            }
+            if (IsPositionValid(telePos, moveDirection))
+            {
+                dimensionOut = dOut;
+                return true;
+            }
+            return false;
+        }
+        else if (itemTag == "Door") {
+            Door door = item.GetComponent<Door>();
+            return door.IsValidPosition();
+        }
+        else if (itemTag == "DoorButton") {
+            DoorButton doorButton = item.GetComponent<DoorButton>();
+            return true;
+        }
+        else // Just ground
+        {
+            // Handle the default case for "Ground" here if needed
+            // ...
+        }
 
         return true;
     }

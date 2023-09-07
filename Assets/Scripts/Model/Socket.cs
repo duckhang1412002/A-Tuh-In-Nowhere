@@ -39,8 +39,8 @@ public class Socket : MonoBehaviour
         if (player.HandleWireColor == this.Color) //endpoint
         {
             player.IsHandleWire = false;
-            player.HandleWireSteps = -1;
-            player.HandleWireColor = "Default";
+            //player.HandleWireSteps = -1;
+            //player.HandleWireColor = "Default";
             this.IsEndPoint = true;
         } else
         {
@@ -56,7 +56,7 @@ public class Socket : MonoBehaviour
         if (childTransform != null)
         {
             GameObject body = childTransform.gameObject;
-            body.GetComponent<ChangeColor>().ChangeSpriteColor(body, player.HandleWireColor);
+            body.GetComponent<ChangeColor>().ChangeSpriteColor(body, (this.IsEndPoint) ? "Default" : player.HandleWireColor);
         }
     }
 
