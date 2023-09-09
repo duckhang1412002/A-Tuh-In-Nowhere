@@ -8,7 +8,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Photon.Realtime;
 using UnityEngine.EventSystems;
-using static UnityEngine.GraphicsBuffer;
 
 public class MoveController : MonoBehaviourPun
 {
@@ -59,6 +58,10 @@ public class MoveController : MonoBehaviourPun
         {
             Debug.Log("Test call: " + player.transform.position + " == " + newTargetPosition);
             enableMove = true; // Re-enable movement once the target position is reached
+            if (player.IsAtSocket && dimensionIn == null && dimensionOut == null)
+            {
+                rpcManager.CallChangePlayerColor(photonViewID, newTargetPosition);
+            }
             if (player.IsHandleWire || player.IsAtSocket) RenderWire();
             player.PreviousPosition = player.CurrentPosition;
             player.CurrentPosition = (Vector2)newTargetPosition;
@@ -176,7 +179,6 @@ public class MoveController : MonoBehaviourPun
             GameObject newWire = rpcManager.CallRenderWire(renderPosition, player.DefaultZAxis + 1, spriteIndex, rotationIndex, wireColor);
         }
         /* ---- */
-
         if (player.HandleWireSteps != 0 && player.IsAtSocket) //endpoint
         {
             GameObject itemCurrent = GetItemAtPosition(player.TargetPosition);
@@ -308,7 +310,6 @@ public class MoveController : MonoBehaviourPun
         Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
-
         if (itemTag == "Wall") {
             return false;
         }
@@ -316,11 +317,13 @@ public class MoveController : MonoBehaviourPun
             Socket socket = item.GetComponent<Socket>();
             bool ok = false;
             if (socket.CheckSocketStartPoint(player)) {
-                rpcManager.CallChangePlayerColor(photonViewID, targetPos);
+                rpcManager.CallUpdateSocket(photonViewID, targetPos);
+                //rpcManager.CallChangePlayerColor(photonViewID, targetPos);
                 ok = true;
             }
             else if (socket.CheckSocketEndPoint(player)) {
-                rpcManager.CallChangePlayerColor(photonViewID, targetPos);
+                rpcManager.CallUpdateSocket(photonViewID, targetPos);
+                //rpcManager.CallChangePlayerColor(photonViewID, targetPos);
                 rpcManager.CallAddScore();
                 ok = true;
             }

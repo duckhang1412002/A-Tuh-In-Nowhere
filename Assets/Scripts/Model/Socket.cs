@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+using Photon.Pun.Demo.PunBasics;
 
 public class Socket : MonoBehaviour
 {
@@ -9,10 +11,11 @@ public class Socket : MonoBehaviour
 
     public bool IsConnect { get; set; }
     public bool IsEndPoint { get; set; }
-
+    private GameManager gameManager;
     void Start()
     {
         IsConnect = false;
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     public bool CheckSocketStartPoint(Player player)
@@ -31,7 +34,20 @@ public class Socket : MonoBehaviour
             return false;
     }
 
-    public void ChangePlayerColor(Player player)
+    private void Update()
+    {
+        GameObject playerM = gameManager.PlayerM;
+        GameObject playerF = gameManager.PlayerF;
+        if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
+        {
+            ChangePlayerColor(playerM.GetComponent<Player>());
+        }
+        if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
+        {
+            ChangePlayerColor(playerF.GetComponent<Player>());
+        }
+    }
+    public void UpdateSocket(Player player)
     {
         player.IsNotPickWire = player.HandleWireColor == this.Color ? true : false;
         this.IsConnect = true;
@@ -42,7 +58,8 @@ public class Socket : MonoBehaviour
             //player.HandleWireSteps = -1;
             //player.HandleWireColor = "Default";
             this.IsEndPoint = true;
-        } else
+        }
+        else
         {
             player.IsHandleWire = true;
             player.HandleWireSteps = 0;
@@ -50,6 +67,10 @@ public class Socket : MonoBehaviour
         }
 
         player.IsAtSocket = true;
+    }
+
+    public void ChangePlayerColor(Player player)
+    {
         //Default
         // Accessing the child object by name
         Transform childTransform = player.transform.Find("WholePlayerObject").transform.Find("Body");
