@@ -9,8 +9,14 @@ public class DimensionOut : MonoBehaviour
 {
     public DimensionIn BaseDimension { get; set; }
     public string OutDirection { get; set; }
+    public string WireOnColor { get; set; }
 
     private static float[] dimensionOutRotation = { 0f, 90.0f, 180.0f, 270.0f };
+
+    private void Start()
+    {
+        WireOnColor = null;
+    }
 
     public Vector2 GetExitPosition(Vector2 moveDirection)
     {

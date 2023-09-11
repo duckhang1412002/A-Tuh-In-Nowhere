@@ -40,13 +40,13 @@ public class Bridge : MonoBehaviour
         GameObject playerF = gameManager.PlayerF;
         if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
         {
-            Debug.Log("Found playerM at Bridge!");
+            //Debug.Log("Found playerM at Bridge!");
             if (playerM.transform.position.z == 5f)
             {
                 this.HasPlayerUnderBridge = true;
                 if (playerM.GetComponent<Player>().IsHandleWire)
                 {
-                    Debug.Log("there is a wire underneath");
+                    //Debug.Log("there is a wire underneath");
                     this.HasWireUnderBridge = true;
                 }
             } else if (playerM.transform.position.z == 2f)
@@ -64,7 +64,7 @@ public class Bridge : MonoBehaviour
                 this.HasPlayerUnderBridge = true;
                 if (playerF.GetComponent<Player>().IsHandleWire)
                 {
-                    Debug.Log("there is a wire underneath");
+                    //Debug.Log("there is a wire underneath");
                     this.HasWireUnderBridge = true;
                 }
             }
@@ -185,6 +185,34 @@ public class Bridge : MonoBehaviour
         else if (this.IsHorizontal()
         && (previousMove == "Left" || previousMove == "Right"
         && this.HasWireOnBridge))
+        {
+            wireZAxis = 3f;
+        }
+
+        return wireZAxis;
+    }
+
+    public float GetWireZ(Vector2 previousMove)
+    {
+        float wireZAxis = 0f;
+
+        if (this.IsVertical()
+        && (previousMove == Vector2.left || previousMove == Vector2.right))
+        {
+            wireZAxis = 6f;
+        }
+        else if (this.IsHorizontal()
+        && (previousMove == Vector2.up || previousMove == Vector2.down))
+        {
+            wireZAxis = 6f;
+        }
+        else if (this.IsVertical()
+        && (previousMove == Vector2.up || previousMove == Vector2.down))
+        {
+            wireZAxis = 3f;
+        }
+        else if (this.IsHorizontal()
+        && (previousMove == Vector2.left || previousMove == Vector2.right))
         {
             wireZAxis = 3f;
         }

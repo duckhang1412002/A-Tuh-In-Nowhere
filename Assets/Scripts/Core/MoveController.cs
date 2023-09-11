@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Photon.Realtime;
 using UnityEngine.EventSystems;
+using static UnityEditor.PlayerSettings;
 
 public class MoveController : MonoBehaviourPun
 {
@@ -42,7 +43,7 @@ public class MoveController : MonoBehaviourPun
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
-        Debug.Log("Player : " + player);
+        //Debug.Log("Player : " + player);
     }
 
     private void MovePlayer()
@@ -56,18 +57,26 @@ public class MoveController : MonoBehaviourPun
 
         if (player.transform.position == newTargetPosition && !enableMove)
         {
-            Debug.Log("Test call: " + player.transform.position + " == " + newTargetPosition);
+            //Debug.Log("Test call: " + player.transform.position + " == " + newTargetPosition);
             enableMove = true; // Re-enable movement once the target position is reached
-            if (player.IsAtSocket && dimensionIn == null && dimensionOut == null)
+            if (player.IsAtSocket)
             {
-                rpcManager.CallChangePlayerColor(photonViewID, newTargetPosition);
+                Vector2 socketPos = newTargetPosition;
+                if (dimensionIn != null) socketPos = dimensionIn.GetEntrancePosition(player.PreviousDirection);
+                if (dimensionOut != null) socketPos = dimensionOut.GetExitPosition(player.PreviousDirection);
+                rpcManager.CallChangePlayerColor(photonViewID, socketPos);
             }
             if (player.IsHandleWire || player.IsAtSocket) RenderWire();
             player.PreviousPosition = player.CurrentPosition;
-            player.CurrentPosition = (Vector2)newTargetPosition;
+            player.CurrentPosition = newTargetPosition;
             if (dimensionIn != null || dimensionOut != null)
             {
                 TeleportPlayer();
+            }
+            GameObject item = GetItemAtPosition((Vector2)player.transform.position);
+            if (item.tag != "Bridge") {
+                player.DefaultZAxis = 6f;
+                player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.DefaultZAxis);
             }
         }
     }
@@ -76,17 +85,41 @@ public class MoveController : MonoBehaviourPun
     {
         if (dimensionIn != null)
         {
-            player.transform.position = dimensionIn.GetEntrancePosition(player.PreviousDirection);
-            dimensionIn = null;
+            Vector2 dimPos = dimensionIn.GetEntrancePosition(player.PreviousDirection);
+            player.transform.position = new Vector3(dimPos.x, dimPos.y, player.transform.position.z);
+            //dimensionIn = null;
+            DimensionOut dOut = dimensionIn.GetDimensionOut(player.PreviousDirection).GetComponent<DimensionOut>();
+            if (dOut.WireOnColor != null)
+            {
+                int rotationIndex = (dOut.OutDirection == "Top" || dOut.OutDirection == "Bottom") ? 1 : 2;
+                rpcManager.CallRenderWire(dOut.transform.position, 7f, 0, rotationIndex, dOut.WireOnColor);
+                Debug.Log("In color: " + dOut.WireOnColor);
+            } //is handle wire
+
         } else
         {
-            player.transform.position = dimensionOut.GetExitPosition(player.PreviousDirection);
-            dimensionOut = null;
+            //player.transform.position = dimensionOut.GetExitPosition(player.PreviousDirection);
+            Vector2 dimPos = dimensionOut.GetExitPosition(player.PreviousDirection);
+            player.transform.position = new Vector3(dimPos.x, dimPos.y, player.transform.position.z);
+            //dimensionOut = null;
+
+            if (dimensionOut.WireOnColor != null)
+            {
+                int rotationIndex = (dimensionOut.OutDirection == "Top" || dimensionOut.OutDirection == "Bottom") ? 1 : 2;
+                rpcManager.CallRenderWire(dimensionOut.transform.position, 7f, 0, rotationIndex, dimensionOut.WireOnColor);
+                Debug.Log("Out color: " + dimensionOut.WireOnColor);
+            } //is Handle wire
+            
         }
         /* !!!!! CHECK HERE !!!!! */
-        player.PreviousPosition = CalculatePrevious(player.transform.position, player.PreviousDirection);
-        player.CurrentPosition = player.TargetPosition = player.transform.position;
+        player.PreviousPosition =  CalculatePrevious(player.transform.position, player.PreviousDirection);
+        
+        Debug.Log("Previous move after teleport:" + player.PreviousPosition);
+        player.CurrentPosition = player.transform.position;
+        player.TargetPosition = player.transform.position;
         //player.PreviousPosition = player.CurrentPosition = player.TargetPosition = player.transform.position;
+        dimensionIn = null;
+        dimensionOut = null;
     }
 
     private Vector2 CalculatePrevious(Vector2 pos, Vector2 dir)
@@ -97,22 +130,48 @@ public class MoveController : MonoBehaviourPun
         return new Vector2(pos.x-1, pos.y);
     }
 
+    private int CalculateRotationIndex(Vector2 dir)
+    {
+        if (dir == Vector2.up) //up
+        {
+            return 3;
+        }
+        else if (dir == Vector2.down) //down
+        {
+            return 1;
+        }
+        else if (dir == Vector2.left) //left
+        {
+            return 0;
+        }
+        else
+            return 2;
+    }
+
     private void RenderWire()
     {
-
+        //Debug.Log("Prev Pos 1st: " + player.PreviousPosition);
         if (player.PreviousDirection == Vector2.zero) return;
-        Debug.Log("Wire is rendering at " + player.transform.position);
+        //Debug.Log("Wire is rendering at " + player.transform.position);
         string wireColor = player.HandleWireColor;
         Vector2 renderPosition = player.CurrentPosition;
         int rotationIndex = 0;
 
-        Vector2 offset = player.TargetPosition - player.PreviousPosition;
-        Vector2 offsetPrev = player.CurrentPosition - player.PreviousPosition;
+        Vector2 offset = player.TargetPosition - (Vector2)player.PreviousPosition;
+        Vector2 offsetPrev = player.CurrentPosition - (Vector2)player.PreviousPosition;
         Vector2 offsetNext = player.TargetPosition - player.CurrentPosition;
-
+        //Debug.Log("Prev Pos: " + player.PreviousPosition);
         int spriteIndex; // Default to straight wire sprite
-        /* do render for socket */
-
+        float wireZ = 7f; // Default z for wire
+        /* check case render at bridge */
+        if (player.DefaultZAxis != 6f)
+        {
+            GameObject targetItem = GetItemAtPosition(renderPosition);
+            if (targetItem.tag == "Bridge")
+            {
+               wireZ = targetItem.GetComponent<Bridge>().GetWireZ(player.PreviousDirection);
+            }
+        }
 
         spriteIndex = 0; // Default to straight wire sprite
         if (offset == new Vector2(0, 2) || offset == Vector2.up) //up
@@ -149,7 +208,7 @@ public class MoveController : MonoBehaviourPun
             }
             else
             {
-                Debug.Log("I can not render!" + offset + " - " + offsetPrev + " - " + offsetNext);
+                //Debug.Log("I can not render!" + offset + " - " + offsetPrev + " - " + offsetNext);
             }
         }
 
@@ -172,16 +231,19 @@ public class MoveController : MonoBehaviourPun
             {
                 rotationIndex = 0;
             }
-            Debug.Log("It's after startpoint");
+            //Debug.Log("It's after startpoint");
         }
         if (player.HandleWireSteps != 0) //if not start point
         {
-            GameObject newWire = rpcManager.CallRenderWire(renderPosition, player.DefaultZAxis + 1, spriteIndex, rotationIndex, wireColor);
+            GameObject newWire = rpcManager.CallRenderWire(renderPosition, wireZ, spriteIndex, rotationIndex, wireColor);
         }
         /* ---- */
         if (player.HandleWireSteps != 0 && player.IsAtSocket) //endpoint
         {
-            GameObject itemCurrent = GetItemAtPosition(player.TargetPosition);
+            Vector2 socketPos = player.TargetPosition;
+            if (dimensionIn != null) socketPos = dimensionIn.GetEntrancePosition(player.PreviousDirection);
+            if (dimensionOut != null) socketPos = dimensionOut.GetExitPosition(player.PreviousDirection);
+            GameObject itemCurrent = GetItemAtPosition(socketPos);
             Socket s = itemCurrent.GetComponent<Socket>();
             if (offsetNext == Vector2.up) //up
             {
@@ -201,15 +263,16 @@ public class MoveController : MonoBehaviourPun
             }
             wireColor = s.Color;
             //sprite index = 2
-            rpcManager.CallRenderWire(player.TargetPosition, player.DefaultZAxis + 1, 2, rotationIndex, wireColor);
-            Debug.Log("It's endpoint");
+            //default z = 7
+            rpcManager.CallRenderWire(socketPos, 7f, 2, rotationIndex, wireColor);
+            //Debug.Log("It's endpoint");
             /* reset wire */
             player.HandleWireSteps = 0;
             player.HandleWireColor = "Default";
         }
         player.IsAtSocket = false;
         ++player.HandleWireSteps; //increase steps
-        Debug.Log("Step: " + player.HandleWireSteps);
+        //Debug.Log("Step: " + player.HandleWireSteps);
     }
 
     private void Update()
@@ -227,11 +290,11 @@ public class MoveController : MonoBehaviourPun
         if (isMoving && enableMove) //case dashing in the same direction
         {
             Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
-            Debug.Log("is moving!");
+            //Debug.Log("is moving!");
             //check if the next position is valid to move in or else it will return here
             if (!IsPositionValid(newPosition, player.PreviousDirection))
             {
-                Debug.Log("not moving anymore!");
+                //Debug.Log("not moving anymore!");
                 isMoving = false;
                 return;
             }
@@ -264,7 +327,7 @@ public class MoveController : MonoBehaviourPun
 
             if (moveDirection != Vector2.zero)
             {
-                Debug.Log("Current: " + player.CurrentPosition);
+               // Debug.Log("Current: " + player.CurrentPosition);
                 if (item.GetComponent<Bridge>() != null)
                 {
                     Bridge bridge = item.GetComponent<Bridge>();
@@ -307,9 +370,10 @@ public class MoveController : MonoBehaviourPun
         GameObject item = GetItemAtPosition(targetPos);
         if (item == null || item.tag == null) return false;
         string itemTag = item.tag;
-        Debug.Log(targetPos + " is a " + itemTag);
+        //Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
+
         if (itemTag == "Wall") {
             return false;
         }
@@ -351,6 +415,11 @@ public class MoveController : MonoBehaviourPun
             {
                 return false;
             }
+            if (player.IsHandleWire)
+            {
+                GameObject dOutGO = dIn.GetDimensionOut(moveDirection);
+                dOutGO.GetComponent<DimensionOut>().WireOnColor = player.HandleWireColor;
+            }
             if (IsPositionValid(telePos, moveDirection))
             {
                 dimensionIn = dIn;
@@ -364,6 +433,10 @@ public class MoveController : MonoBehaviourPun
             if (telePos == Vector2.zero)
             {
                 return false;
+            }
+            if (player.IsHandleWire)
+            {
+                dOut.WireOnColor = player.HandleWireColor;
             }
             if (IsPositionValid(telePos, moveDirection))
             {

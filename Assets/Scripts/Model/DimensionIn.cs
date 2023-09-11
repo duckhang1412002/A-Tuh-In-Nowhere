@@ -47,6 +47,29 @@ public class DimensionIn : MonoBehaviour
         return entrancePosition;
     }
 
+    public GameObject GetDimensionOut(Vector2 moveDirection)
+    {
+        GameObject dimOut = null;
+        if (moveDirection == Vector2.right && HasLeft())
+        {
+            dimOut = exitLeft;
+        }
+        else if (moveDirection == Vector2.down && HasTop())
+        {
+            dimOut = exitTop;
+        }
+        else if (moveDirection == Vector2.left && HasRight())
+        {
+            dimOut = exitRight;
+        }
+        else if (moveDirection == Vector2.up && HasBottom())
+        {
+            dimOut = exitBottom;
+        }
+
+        return dimOut;
+    }
+
     public Vector3 GetNextPosition(Player player)
     {
         Vector3 entrancePosition = this.transform.position;
