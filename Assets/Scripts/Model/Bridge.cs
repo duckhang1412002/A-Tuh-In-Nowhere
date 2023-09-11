@@ -18,22 +18,11 @@ public class Bridge : MonoBehaviour
         HasWireUnderBridge = false;
         HasPlayerOnBridge = false;
         HasPlayerUnderBridge = false;
-        color = new ChangeColor();
+        color = GameObject.FindGameObjectWithTag("GameController").GetComponent<ChangeColor>();
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     void Update(){
-        if (color != null)
-        {
-            if (HasPlayerUnderBridge)
-            {
-                color.ChangeSpriteColor(this.gameObject, "Opacity");
-            }
-            else
-            {
-                color.ChangeSpriteColor(this.gameObject, "Default");
-            }
-        }
         this.HasPlayerUnderBridge = false;
         this.HasPlayerOnBridge = false;
         GameObject playerM = gameManager.PlayerM;
@@ -75,6 +64,17 @@ public class Bridge : MonoBehaviour
             }
             /*this.HasPlayerUnderBridge = playerF.transform.position.z == 5f;
             this.HasPlayerOnBridge = playerF.transform.position.z == 2f;*/
+        }
+
+        if (HasPlayerUnderBridge)
+        {
+            Debug.Log("Color is null? : " + color);
+            color.ChangeSpriteColor(this.gameObject, "Opacity");
+            Debug.Log("CHANGE OPACITY!!!");
+        }
+        else
+        {
+            color.ChangeSpriteColor(this.gameObject, "Default");
         }
 
     }

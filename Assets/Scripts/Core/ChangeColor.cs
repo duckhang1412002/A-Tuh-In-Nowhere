@@ -43,6 +43,19 @@ public class ChangeColor : MonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
+        colorConvertMap["Default"] = COLOR_DEFAULT;
+        colorConvertMap["Opacity"] = COLOR_OPACITY;
+        colorConvertMap["Red"] = COLOR_RED;
+        colorConvertMap["Green"] = COLOR_GREEN;
+        colorConvertMap["Blue"] = COLOR_BLUE;
+        colorConvertMap["Pink"] = COLOR_PINK;
+        colorConvertMap["Purple"] = COLOR_PURPLE;
+        colorConvertMap["Yellow"] = COLOR_YELLOW;
+        colorConvertMap["Orange"] = COLOR_ORANGE;
+        colorConvertMap["Aqua"] = COLOR_AQUA;
+        colorConvertMap["Indigo"] = COLOR_INDIGO;
+        colorConvertMap["Azure"] = COLOR_AZURE;
+        colorConvertMap["Steal"] = COLOR_STEAL;
     }
 
     public string GetColorCode(Color color)

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4650820298274048701}
   - component: {fileID: 4889373268877019131}
   - component: {fileID: -4864912529464209977}
+  - component: {fileID: 334644506480882885}
   m_Layer: 0
   m_Name: Bridge
   m_TagString: Bridge
@@ -97,4 +98,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e67fd5f854593d44d9e85f2de1eea056, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bridgeType: Horizontal
+--- !u!114 &334644506480882885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4763845592473181458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44949323d2a236b4fa6e179e2c2422f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
