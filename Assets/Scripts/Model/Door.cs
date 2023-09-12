@@ -23,6 +23,7 @@ public class Door : MonoBehaviour
     private Vector2 previousPosition; 
     private Vector2 targetPosition; 
     private Vector2 openAxis;
+    private Vector2 doorPosition;
 
     // Start is called before the first frame update
     public void Start()
@@ -33,7 +34,7 @@ public class Door : MonoBehaviour
 
     public void Init()
     {
-        previousPosition = this.transform.position;
+        previousPosition = doorPosition = this.transform.position;
 
         if (DoorOpenDirection == "Up") targetPosition = new Vector2(previousPosition.x, previousPosition.y + 1);
         else if (DoorOpenDirection == "Down") targetPosition = new Vector2(previousPosition.x, previousPosition.y - 1);
@@ -59,34 +60,36 @@ public class Door : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HasPlayerAtDoorPosition = false;
+        GameObject playerM = gameManager.PlayerM;
+        GameObject playerF = gameManager.PlayerF;
+        if (playerM != null && (Vector2)playerM.transform.position == (Vector2)doorPosition)
+        {
+            HasPlayerAtDoorPosition = true;
+            if (playerM.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)doorPosition] = true;
+        }
+        if (playerF != null && (Vector2)playerF.transform.position == (Vector2)doorPosition)
+        {
+            HasPlayerAtDoorPosition = true;
+            if (playerF.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)doorPosition] = true;
+        }
+        HasPipeAtDoorPosition = gameManager.WireMap.ContainsKey(doorPosition);
         if (Button.IsActive)
         {
-            if(!HasPlayerAtDoorPosition){
+            if (!HasPlayerAtDoorPosition && !HasPipeAtDoorPosition)
+            {
                 openAxis = targetPosition;
                 IsActive = !isReverseDoor;
-            }         
+            }
         }
         else
         {
-            if(!HasPlayerAtDoorPosition){
+            if (!HasPlayerAtDoorPosition && !HasPipeAtDoorPosition)
+            {
                 openAxis = previousPosition;
                 IsActive = isReverseDoor;
-            }  
+            }
         }
-        GameObject playerM = gameManager.PlayerM;
-        GameObject playerF = gameManager.PlayerF;
-        if (playerM != null && (Vector2)playerM.transform.position == (Vector2)this.transform.position)
-        {
-            HasPlayerAtDoorPosition = true;
-            if (playerM.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)this.transform.position] = true;
-        }
-        else if (playerF != null && (Vector2)playerF.transform.position == (Vector2)this.transform.position)
-        {
-            HasPlayerAtDoorPosition = true;
-            if (playerF.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)this.transform.position] = true;
-        }
-        else HasPlayerAtDoorPosition = false;
-        HasPipeAtDoorPosition = gameManager.WireMap.ContainsKey(this.transform.position);
         DoorTransition();
 
         
@@ -98,7 +101,7 @@ public class Door : MonoBehaviour
     }
 
     public void DoorTransition(){
-        if(!HasPipeAtDoorPosition && !HasPlayerAtDoorPosition){
+        if (!HasPipeAtDoorPosition && !HasPlayerAtDoorPosition){
             this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(openAxis.x, openAxis.y, 9), moveSpeed * Time.deltaTime);            
         }       
     }

@@ -8,7 +8,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Photon.Realtime;
 using UnityEngine.EventSystems;
-using static UnityEditor.PlayerSettings;
 
 public class MoveController : MonoBehaviourPun
 {
@@ -354,6 +353,13 @@ public class MoveController : MonoBehaviourPun
         MovePlayer();
     }
 
+    private bool HaveOtherPlayer(Vector2 targetPos)
+    {
+        //get other player
+        GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        return (Vector2)player.transform.position == targetPos;
+    }
+
     private GameObject GetItemAtPosition(Vector2 pos)
     {
         int map = (int)pos.x / 100;
@@ -373,6 +379,7 @@ public class MoveController : MonoBehaviourPun
         //Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
+        if (HaveOtherPlayer(targetPos)) return false;
 
         if (itemTag == "Wall") {
             return false;
