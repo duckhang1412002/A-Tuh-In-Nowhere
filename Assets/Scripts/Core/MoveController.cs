@@ -356,6 +356,7 @@ public class MoveController : MonoBehaviourPun
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
         //get other player
+        if (gameManager.PlayerF == null) return false;
         GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
         return (Vector2)player.transform.position == targetPos;
     }
