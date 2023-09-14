@@ -1,0 +1,11 @@
+1
+9 12
+Wall Wall Wall Wall Null Wall Wall Wall Wall Wall Wall Null
+Wall Socket_Blue Ground Wall Wall Wall Ground Ground Ground Ground Wall Wall
+Wall Wall Ground Ground Ground Ground Ground Wall Ground Ground Ground Wall
+Null Wall Ground Wall Wall Wall Ground Ground Ground Ground Socket_Blue Wall
+Null Wall Ground Ground Ground Ground Ground Wall Socket_Yellow Wall Wall Wall
+Null Wall Wall Socket_Pink V_Bridge Ground PlayerM:0 Ground Wall Wall Null Null
+Null Null Wall Ground Ground Wall Wall Socket_Pink Wall Null Null Null
+Null Null Wall Wall Ground Socket_Yellow Wall Wall Wall Null Null Null
+Null Null Null Wall Wall Wall Wall Wall Null Null Null Null

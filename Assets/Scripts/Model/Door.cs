@@ -74,7 +74,7 @@ public class Door : MonoBehaviour
             if (playerF.GetComponent<Player>().IsHandleWire) gameManager.WireMap[(Vector2)doorPosition] = true;
         }
         HasPipeAtDoorPosition = gameManager.WireMap.ContainsKey(doorPosition);
-        if (Button.IsActive)
+        if (Button != null && Button.IsActive)
         {
             if (!HasPlayerAtDoorPosition && !HasPipeAtDoorPosition)
             {
@@ -82,7 +82,7 @@ public class Door : MonoBehaviour
                 IsActive = !isReverseDoor;
             }
         }
-        else
+        else if (Button != null)
         {
             if (!HasPlayerAtDoorPosition && !HasPipeAtDoorPosition)
             {
