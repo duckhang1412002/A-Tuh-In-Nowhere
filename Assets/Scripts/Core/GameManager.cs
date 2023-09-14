@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private GameObject[] prefabList;
     private List<string> path;
-    private List<string[,]> inputList;
+    public List<string[,]> inputList { get; set; }
 
     private InputManager inputManager;
     private GameObject player;
@@ -58,10 +59,15 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private PhotonView view;
     private bool singleMode;
+    private bool isMapLoaded;
+
+    public UnityEvent downloadCompleteEvent;
+
     public void Start()
     {
+        isMapLoaded = false;
         view = this.gameObject.GetComponent<PhotonView>();
-        inputManager = new InputManager();
+        inputManager = this.gameObject.GetComponent<InputManager>();
         doorButtonList = new Dictionary<int, GameObject>();
         Score = 0;
         IsCameraTargetPlayer = true;
@@ -73,13 +79,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         //     InitializeMap();
         //     ConnectMap();
         // }
-        LoadMapInput();
+        //LoadMapInput();
         Debug.Log("Welcome to the Game!");
         if (singleMode)
         {
             Debug.Log("Single mode!");
             roomName.text = PhotonNetwork.CurrentRoom.Name;
-            view.RPC("InitializeMapRPC", RpcTarget.All);
+            //view.RPC("InitializeMapRPC", RpcTarget.All);
         }
         else if (PhotonNetwork.IsConnectedAndReady)
         {
@@ -92,20 +98,18 @@ public class GameManager : MonoBehaviourPunCallbacks
             roomName.text = "There's nothing here";
         }
 
-        // if (!singleMode && PhotonNetwork.CurrentRoom.PlayerCount == 2) //set = 1 to debug one player
-        // {
-        //     view.RPC("InitializeMapRPC", RpcTarget.All);
-        // }
+        startBtn.onClick.AddListener(CallInitializeMapRPC);
     }
 
-    private async void LoadMapInput()
+/*    private async void LoadMapInput()
     {
         inputList = await Task.Run(() => inputManager.LoadGridFromFile());
-    }
+        isMapLoaded = true;
+    }*/
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-        LoadMapInput();
+        //LoadMapInput();
 /*        if (PhotonNetwork.CurrentRoom.PlayerCount == 2) //set = 1 to debug one player
         {
             //InitializeMap();
@@ -122,17 +126,34 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void CallInitializeMapRPC()
+    {
+        
+/*        float cnt = 0;
+        while(inputList == null && cnt < 10)
+        {
+            cnt += Time.deltaTime;
+        }*/
+        downloadCompleteEvent.AddListener(() =>
+        {
+            // Place your additional code here
+            Debug.Log("Download completed! Additional code executed.");
+            isMapLoaded = true;
+            view.RPC("InitializeMapRPC", RpcTarget.All);
+        });
+        inputManager.DownloadFile(downloadCompleteEvent);
+        /*        if (inputList != null)
+                {
+                    isMapLoaded = true;
+                    view.RPC("InitializeMapRPC", RpcTarget.All);
+                }
+                if (!isMapLoaded) return;*/
+    }
+
     [PunRPC]
     public void InitializeMapRPC()
     {
         Debug.Log("Initializing....!");
-        foreach (string[,] i in inputList)
-        {
-            foreach(string s in i)
-            {
-                Debug.Log("Input list item: " + s);
-            }
-        }
         InitializeMap();
         ConnectMap();
 
@@ -398,7 +419,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                     // }
                     else
                     {
-                        Debug.Log("Other item: " + item + ".");
                         GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
                         grid[x, y] = instantiatedPrefab;
                     }

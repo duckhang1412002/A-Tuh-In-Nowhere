@@ -1783,6 +1783,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1576311036}
     - target: {fileID: 6222082437928031073, guid: 727ee2fe3cbbaf941a0440e39caeabd4, type: 3}
+      propertyPath: startBtn
+      value: 
+      objectReference: {fileID: 1246388685}
+    - target: {fileID: 6222082437928031073, guid: 727ee2fe3cbbaf941a0440e39caeabd4, type: 3}
       propertyPath: canvaWaiting
       value: 
       objectReference: {fileID: 0}
@@ -1894,5 +1898,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44949323d2a236b4fa6e179e2c2422f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2074989395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074989390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37c93bea0773a134fb3e0d032f3775ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
