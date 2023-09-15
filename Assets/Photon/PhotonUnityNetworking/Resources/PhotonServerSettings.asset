@@ -78,6 +78,8 @@ MonoBehaviour:
   - UpdateMapWire
   - UpdateDefaultZAxis
   - UpdateSocket
+  - CallInitializeMapRPC
+  - StartDownloadOnClients
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

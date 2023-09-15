@@ -58,7 +58,7 @@ public class InputManager : MonoBehaviour
 
             //StartCoroutine(LoadModelAsync(path));
             LoadModel(path);
-
+            onComplete.Invoke();
             return;
         }
 
@@ -75,13 +75,14 @@ public class InputManager : MonoBehaviour
                 //Save the model fetched from firebase into spaceShip 
                 LoadModel(path);
                 Debug.Log("I end download here!");
+                onComplete.Invoke();
                 //StartCoroutine(LoadModelAsync(path));
 
             }
         }
 
         ));
-        this.onComplete = onComplete;
+        //this.onComplete = onComplete;
     }
 
     IEnumerator GetFileRequest(string url, Action<UnityWebRequest> callback)
@@ -101,7 +102,7 @@ public class InputManager : MonoBehaviour
     {
         string[] lines = File.ReadAllLines(filePath);
         gameManager.inputList = ConvertLinesToListMap(lines);
-        onComplete.Invoke();
+        //onComplete.Invoke();
     }
 
     IEnumerator LoadModelAsync(string path)

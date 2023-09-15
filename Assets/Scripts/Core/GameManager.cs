@@ -73,13 +73,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         IsCameraTargetPlayer = true;
         prefabList = FindAllPrefabs();
         singleMode = PhotonNetwork.OfflineMode;
-        //Remember to check Single Player
-        // if (PhotonNetwork.IsConnected || !PhotonNetwork.IsConnected)
-        // {
-        //     InitializeMap();
-        //     ConnectMap();
-        // }
-        //LoadMapInput();
+
         Debug.Log("Welcome to the Game!");
         if (singleMode)
         {
@@ -98,14 +92,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             roomName.text = "There's nothing here";
         }
 
-        startBtn.onClick.AddListener(CallInitializeMapRPC);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startBtn.onClick.AddListener(OnStartButtonClicked);
+        } else if (!PhotonNetwork.IsMasterClient)
+        {
+            startBtn.gameObject.SetActive(false);
+        }
     }
-
-/*    private async void LoadMapInput()
-    {
-        inputList = await Task.Run(() => inputManager.LoadGridFromFile());
-        isMapLoaded = true;
-    }*/
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
@@ -126,14 +120,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void OnStartButtonClicked()
+    {
+        // Inform all clients to start downloading
+        photonView.RPC("StartDownloadOnClients", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void StartDownloadOnClients()
+    {
+        // Trigger the download on all clients
+        CallInitializeMapRPC();
+    }
+
     private void CallInitializeMapRPC()
     {
-        
-/*        float cnt = 0;
-        while(inputList == null && cnt < 10)
-        {
-            cnt += Time.deltaTime;
-        }*/
         downloadCompleteEvent.AddListener(() =>
         {
             // Place your additional code here
@@ -142,12 +143,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             view.RPC("InitializeMapRPC", RpcTarget.All);
         });
         inputManager.DownloadFile(downloadCompleteEvent);
-        /*        if (inputList != null)
-                {
-                    isMapLoaded = true;
-                    view.RPC("InitializeMapRPC", RpcTarget.All);
-                }
-                if (!isMapLoaded) return;*/
     }
 
     [PunRPC]
