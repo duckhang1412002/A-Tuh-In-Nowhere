@@ -27,8 +27,13 @@ public class MoveController : MonoBehaviourPun
     DimensionOut dimensionOut;
 
     private bool allowInput = true;
-    private float inputDelay = 0.3f;
+    private float inputDelay = 0.2f;
     private float inputDelayTimer = 0.0f;
+
+    private Vector2 touchStartPos;
+    private Vector2 touchEndPos;
+    private bool isSwiping = false;
+    private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
     // Start is called before the first frame update
     void Start()
@@ -305,6 +310,73 @@ public class MoveController : MonoBehaviourPun
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
             GameObject item = GetItemAtPosition(player.CurrentPosition);
+
+            // Check for touch input
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        // Record the start position of the touch
+                        touchStartPos = touch.position;
+                        isSwiping = true;
+                        break;
+
+                    case TouchPhase.Moved:
+                        // Determine the direction of the swipe
+                        touchEndPos = touch.position;
+                        Vector2 swipeDirection = touchEndPos - touchStartPos;
+
+                        // Check if the swipe distance exceeds the threshold
+                        if (isSwiping && swipeDirection.magnitude > minSwipeDistance)
+                        {
+                            // Normalize the swipe direction to get a consistent movement speed
+                            swipeDirection.Normalize();
+
+                            // Determine the dominant axis of the swipe
+                            if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+                            {
+                                // Horizontal swipe
+                                if (swipeDirection.x > 0)
+                                {
+                                    // Swipe right
+                                    // Move your player right here
+                                    moveDirection = Vector2.right;
+                                }
+                                else
+                                {
+                                    // Swipe left
+                                    moveDirection = Vector2.left;
+                                }
+                            }
+                            else
+                            {
+                                // Vertical swipe
+                                if (swipeDirection.y > 0)
+                                {
+                                    // Swipe up
+                                    moveDirection = Vector2.up;
+                                }
+                                else
+                                {
+                                    // Swipe down
+                                    moveDirection = Vector2.down;
+                                }
+                            }
+
+                            // Reset the isSwiping flag
+                            isSwiping = false;
+                        }
+                        break;
+
+                    case TouchPhase.Ended:
+                        isSwiping = false;
+                        break;
+                }
+            }
+
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 moveDirection = Vector2.up;
@@ -327,6 +399,8 @@ public class MoveController : MonoBehaviourPun
             if (moveDirection != Vector2.zero)
             {
                // Debug.Log("Current: " + player.CurrentPosition);
+                if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 if (item.GetComponent<Bridge>() != null)
                 {
                     Bridge bridge = item.GetComponent<Bridge>();
@@ -357,8 +431,9 @@ public class MoveController : MonoBehaviourPun
     {
         //get other player
         if (gameManager.PlayerF == null) return false;
-        GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-        return (Vector2)player.transform.position == targetPos;
+        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        Player targetPlayer = playerGO.GetComponent<Player>();
+        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)

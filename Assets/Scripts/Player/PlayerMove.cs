@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 public class PlayerMove : MonoBehaviour
 {
@@ -29,6 +30,11 @@ public class PlayerMove : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 targetPosition;
     private Vector2 startPosition;
+
+    private Vector2 touchStartPos;
+    private Vector2 touchEndPos;
+    private bool isSwiping = false;
+    private float minSwipeDistance = 50f; // Adjust this threshold to your preference
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -40,27 +46,87 @@ public class PlayerMove : MonoBehaviour
         CheckTop();
         CheckFront();
         CheckDown();
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && !isLeft && isMove)
+
+        // Check for touch input
+        Vector2 moveDirection = Vector2.zero;
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    // Record the start position of the touch
+                    touchStartPos = touch.position;
+                    isSwiping = true;
+                    break;
+
+                case TouchPhase.Moved:
+                    // Determine the direction of the swipe
+                    touchEndPos = touch.position;
+                    Vector2 swipeDirection = touchEndPos - touchStartPos;
+
+                    // Check if the swipe distance exceeds the threshold
+                    if (isSwiping && swipeDirection.magnitude > minSwipeDistance)
+                    {
+                        // Normalize the swipe direction to get a consistent movement speed
+                        swipeDirection.Normalize();
+
+                        // Determine the dominant axis of the swipe
+                        if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+                        {
+                            // Horizontal swipe
+                            if (swipeDirection.x > 0)
+                            {
+                                moveDirection = Vector2.right;
+                            }
+                            else
+                            {
+                                moveDirection = Vector2.left;
+                            }
+                        }
+                        else
+                        {
+                            if (swipeDirection.y > 0)
+                            {
+                                moveDirection = Vector2.up;
+                            }
+                            else
+                            {
+                                moveDirection = Vector2.down;
+                            }
+                        }
+                        isSwiping = false;
+                    }
+                    break;
+
+                case TouchPhase.Ended:
+                    isSwiping = false;
+                    break;
+            }
+        }
+
+        if ((Input.GetKeyDown(KeyCode.LeftArrow) || moveDirection == Vector2.left) && !isLeft && isMove)
         {
             startPosition = rb.position;
             targetPosition = startPosition + new Vector2(-moveX, 0f);
             this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
             StartCoroutine(Move());
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && !isRight && isMove)
+        else if ((Input.GetKeyDown(KeyCode.RightArrow) || moveDirection == Vector2.right) && !isRight && isMove)
         {
             startPosition = rb.position;
             targetPosition = startPosition + new Vector2(moveX, 0f);
             this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             StartCoroutine(Move());
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow) && !isTop && isMove)
+        else if ((Input.GetKeyDown(KeyCode.UpArrow) || moveDirection == Vector2.up) && !isTop && isMove)
         {
             startPosition = rb.position;
             targetPosition = startPosition + new Vector2(0f, moveY);
             StartCoroutine(Move());
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && !isDown && isMove)
+        else if ((Input.GetKeyDown(KeyCode.DownArrow) || moveDirection == Vector2.down) && !isDown && isMove)
         {
             startPosition = rb.position;
             targetPosition = startPosition + new Vector2(0f, -moveY);
