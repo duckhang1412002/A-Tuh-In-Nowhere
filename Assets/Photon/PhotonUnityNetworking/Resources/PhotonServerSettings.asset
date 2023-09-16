@@ -80,6 +80,7 @@ MonoBehaviour:
   - UpdateSocket
   - CallInitializeMapRPC
   - StartDownloadOnClients
+  - ActiveStartBtn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

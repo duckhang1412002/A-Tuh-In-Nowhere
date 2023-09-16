@@ -27,7 +27,7 @@ public class MoveController : MonoBehaviourPun
     DimensionOut dimensionOut;
 
     private bool allowInput = true;
-    private float inputDelay = 0.2f;
+    private float inputDelay = 0.3f; //adjust this for delay input
     private float inputDelayTimer = 0.0f;
 
     private Vector2 touchStartPos;
@@ -433,7 +433,7 @@ public class MoveController : MonoBehaviourPun
         if (gameManager.PlayerF == null) return false;
         GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
         Player targetPlayer = playerGO.GetComponent<Player>();
-        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
+        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos || Vector2.Distance((Vector2)targetPlayer.transform.position, targetPos) < 1.0f);
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)

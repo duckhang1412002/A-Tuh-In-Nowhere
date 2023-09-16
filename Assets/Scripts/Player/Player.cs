@@ -94,6 +94,8 @@ public class Player : MonoBehaviourPun
         PreviousMove = "";
         HandleWireColor = "Default";
         PreviousDirection = Vector2.zero;
+        PhotonNetwork.SendRate = 40; // Adjust the send rate as needed
+        PhotonNetwork.SerializationRate = 40; // Adjust the serialization rate as needed
     }
 
     // Update is called once per frame
