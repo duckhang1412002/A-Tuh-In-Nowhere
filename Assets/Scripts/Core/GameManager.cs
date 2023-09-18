@@ -59,13 +59,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private PhotonView view;
     private bool singleMode;
-    private bool isMapLoaded;
+    private int isMapLoaded;
 
     public UnityEvent downloadCompleteEvent;
 
     public void Start()
     {
-        isMapLoaded = false;
+        isMapLoaded = 0;
         view = this.gameObject.GetComponent<PhotonView>();
         inputManager = this.gameObject.GetComponent<InputManager>();
         doorButtonList = new Dictionary<int, GameObject>();
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         prefabList = FindAllPrefabs();
         singleMode = PhotonNetwork.OfflineMode;
         startBtn.gameObject.SetActive(false); //true if single mode and false if multiplayer
-        Debug.Log("Welcome to the Game!");
+        Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
         if (singleMode)
         {
             Debug.Log("Single mode!");
@@ -140,10 +140,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             // Place your additional code here
             Debug.Log("Download completed! Additional code executed.");
-            isMapLoaded = true;
-            view.RPC("InitializeMapRPC", RpcTarget.All);
+            view.RPC("AddMapLoaded", RpcTarget.All);
+            if (isMapLoaded == PhotonNetwork.CurrentRoom.PlayerCount)
+            {
+                Debug.Log("Everyone downloaded the game!");
+                view.RPC("InitializeMapRPC", RpcTarget.All);
+            }
+
         });
         inputManager.DownloadFile(downloadCompleteEvent);
+    }
+
+    [PunRPC]
+    private void AddMapLoaded()
+    {
+        ++isMapLoaded;
     }
 
     [PunRPC]
