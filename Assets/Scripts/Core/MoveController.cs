@@ -424,6 +424,10 @@ public class MoveController : MonoBehaviourPun
                 allowInput = false; // Disable input for the delay periods
             }
         }
+        if (HaveOtherPlayer(player.TargetPosition))
+        {
+            Debug.Log("Have other player at target !!!");
+        }
         MovePlayer();
     }
 
@@ -433,7 +437,7 @@ public class MoveController : MonoBehaviourPun
         if (gameManager.PlayerF == null) return false;
         GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
         Player targetPlayer = playerGO.GetComponent<Player>();
-        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos || Vector2.Distance((Vector2)targetPlayer.transform.position, targetPos) < 1.0f);
+        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)
