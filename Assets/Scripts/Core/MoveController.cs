@@ -429,7 +429,6 @@ public class MoveController : MonoBehaviourPun
                 photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 player.PreviousDirection = moveDirection;
                 player.TargetPosition = newPosition;
-                photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
             }
@@ -456,6 +455,7 @@ public class MoveController : MonoBehaviourPun
                 Player targetPlayer = playerGO.GetComponent<Player>();
                 return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
         if (otherPlayerPos == Vector2.zero) return false;
+        Debug.Log(targetPos + " -- " + otherPlayerPos);
         return (targetPos == otherPlayerPos);
     }
 
@@ -473,6 +473,7 @@ public class MoveController : MonoBehaviourPun
 
     private bool IsPositionValid(Vector2 targetPos, Vector2 moveDirection)
     {
+        Debug.Log("Other player pos: " + otherPlayerPos);
         GameObject item = GetItemAtPosition(targetPos);
         if (item == null || item.tag == null) return false;
         string itemTag = item.tag;
