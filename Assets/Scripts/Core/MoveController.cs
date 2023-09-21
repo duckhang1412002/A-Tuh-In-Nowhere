@@ -434,6 +434,10 @@ public class MoveController : MonoBehaviourPun
         GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
         Player targetPlayer = playerGO.GetComponent<Player>();
         return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
+
+        /*PLAYER DETECH CAIS DUJ COS PLAYER KHACS*/
+        
+        /*========================================*/
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)
