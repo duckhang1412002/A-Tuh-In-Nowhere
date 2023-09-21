@@ -430,7 +430,7 @@ public class MoveController : MonoBehaviourPun
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
         //get other player
-        if (gameManager.PlayerF == null || gameManager.PlayerM) return false;
+        if (gameManager.PlayerF == null || gameManager.PlayerM == null) return false;
         GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
         Player targetPlayer = playerGO.GetComponent<Player>();
         return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);

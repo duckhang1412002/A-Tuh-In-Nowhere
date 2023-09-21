@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             Debug.Log("Not Connected");
             roomName.text = "There's nothing here";
         }
+        Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
