@@ -155,6 +155,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void AddMapLoaded()
     {
         ++isMapLoaded;
+        Debug.Log("Load map cnt : " + isMapLoaded);
     }
 
     [PunRPC]
