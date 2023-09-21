@@ -37,7 +37,7 @@ public class MoveController : MonoBehaviourPun
 
     // Start is called before the first frame update
 
-    Vector2 otherPlayerPos;
+    static Vector2 otherPlayerPos;
     void Start()
     {
         dimensionIn = null;
@@ -444,8 +444,7 @@ public class MoveController : MonoBehaviourPun
     [PunRPC]
     private void UpdateOtherPlayer(float x, float y)
     {
-        Vector2 newPos = new Vector2(x, y);
-        this.otherPlayerPos = newPos;
+        otherPlayerPos = new Vector2(x, y);
         Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
     }
 
