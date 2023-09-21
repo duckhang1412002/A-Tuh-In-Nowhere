@@ -396,19 +396,19 @@ public class MoveController : MonoBehaviourPun
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
                 moveDirection += Vector2.left;
-                this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
                 moveDirection += Vector2.right;
-                this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             }
 
             if (moveDirection != Vector2.zero)
             {
                // Debug.Log("Current: " + player.CurrentPosition);
+               /*Swipe face direction*/
                 if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
                 if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                /*---*/
                 if (item.GetComponent<Bridge>() != null)
                 {
                     Bridge bridge = item.GetComponent<Bridge>();
@@ -429,7 +429,7 @@ public class MoveController : MonoBehaviourPun
                 photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 player.PreviousDirection = moveDirection;
                 player.TargetPosition = newPosition;
-                photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
+                //photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
             }
@@ -445,11 +445,12 @@ public class MoveController : MonoBehaviourPun
     private void UpdateOtherPlayer(float x, float y)
     {
         otherPlayerPos = new Vector2(x, y);
-        Debug.Log("Other player move to: " + otherPlayerPos);
+        Debug.Log("Other player move to (RPC): " + otherPlayerPos);
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
+        Debug.Log("Other player move to (CHECK HAVE OTHER PL): " + otherPlayerPos);
         //get other player
         /*        if (gameManager.PlayerF == null) return false;
                 GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
