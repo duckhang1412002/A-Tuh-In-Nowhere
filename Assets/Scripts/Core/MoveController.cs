@@ -36,6 +36,8 @@ public class MoveController : MonoBehaviourPun
     private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
     // Start is called before the first frame update
+
+    Vector2 otherPlayerPos;
     void Start()
     {
         dimensionIn = null;
@@ -47,9 +49,15 @@ public class MoveController : MonoBehaviourPun
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
-        //Debug.Log("Player : " + player);
+        otherPlayerPos = GetOtherPlayerPosition();
     }
-
+    //Get other player position at start
+    private Vector2 GetOtherPlayerPosition()
+    {
+        if (gameManager.PlayerF == null) return Vector2.zero;
+        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        return playerGO.transform.position;
+    }
     private void MovePlayer()
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
@@ -420,6 +428,7 @@ public class MoveController : MonoBehaviourPun
                 if (!IsPositionValid(newPosition, moveDirection)) return;
                 player.PreviousDirection = moveDirection;
                 player.TargetPosition = newPosition;
+                photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
             }
@@ -431,14 +440,23 @@ public class MoveController : MonoBehaviourPun
         MovePlayer();
     }
 
+    [PunRPC]
+    private void UpdateOtherPlayer(float x, float y)
+    {
+        otherPlayerPos = new Vector2(x, y);
+    }
+
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
         //get other player
-        if (gameManager.PlayerF == null) return false;
-        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-        Player targetPlayer = playerGO.GetComponent<Player>();
-        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
+        /*        if (gameManager.PlayerF == null) return false;
+                GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+                Player targetPlayer = playerGO.GetComponent<Player>();
+                return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
+        if (otherPlayerPos == Vector2.zero) return false;
+        return (targetPos == otherPlayerPos);
     }
+
 
     private GameObject GetItemAtPosition(Vector2 pos)
     {
