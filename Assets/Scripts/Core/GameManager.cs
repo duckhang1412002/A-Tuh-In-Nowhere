@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private int isMapLoaded;
 
     public UnityEvent downloadCompleteEvent;
+    //public UnityEvent everyoneDownloadComplete;
 
     public void Start()
     {
@@ -141,12 +142,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             // Place your additional code here
             Debug.Log("Download completed! Additional code executed.");
             view.RPC("AddMapLoaded", RpcTarget.All);
-            if (isMapLoaded == PhotonNetwork.CurrentRoom.PlayerCount)
-            {
-                Debug.Log("Everyone downloaded the game!");
-                view.RPC("InitializeMapRPC", RpcTarget.All);
-            }
-
         });
         inputManager.DownloadFile(downloadCompleteEvent);
     }
@@ -156,6 +151,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         ++isMapLoaded;
         Debug.Log("Load map cnt : " + isMapLoaded);
+        if (isMapLoaded == PhotonNetwork.CurrentRoom.PlayerCount)
+        {
+            Debug.Log("Everyone downloaded the game!");
+            view.RPC("InitializeMapRPC", RpcTarget.All);
+        }
     }
 
     [PunRPC]
