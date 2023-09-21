@@ -36,6 +36,8 @@ public class MoveController : MonoBehaviourPun
     private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
     // Start is called before the first frame update
+
+    Vector2 otherPlayerPos;
     void Start()
     {
         dimensionIn = null;
@@ -47,9 +49,16 @@ public class MoveController : MonoBehaviourPun
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
-        //Debug.Log("Player : " + player);
+        otherPlayerPos = GetOtherPlayerPosition();
     }
-
+    //Get other player position at start
+    private Vector2 GetOtherPlayerPosition()
+    {
+        if (gameManager.PlayerF == null) return Vector2.zero;
+        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        Debug.Log("I GET THE OTHER PLAYER INIT POSITION: " + playerGO.transform.position);
+        return playerGO.transform.position;
+    }
     private void MovePlayer()
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
@@ -418,27 +427,40 @@ public class MoveController : MonoBehaviourPun
                 Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
                 //check if the next position is valid to move in or else it will return here
                 if (!IsPositionValid(newPosition, moveDirection)) return;
+                photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 player.PreviousDirection = moveDirection;
                 player.TargetPosition = newPosition;
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
             }
         }
+        if (HaveOtherPlayer(player.TargetPosition))
+        {
+            Debug.Log("Have other player at target !!!");
+        }
         MovePlayer();
+    }
+
+    [PunRPC]
+    private void UpdateOtherPlayer(float x, float y)
+    {
+        Vector2 newPos = new Vector2(x, y);
+        this.otherPlayerPos = newPos;
+        Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
         //get other player
-        if (gameManager.PlayerF == null || gameManager.PlayerM == null) return false;
-        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-        Player targetPlayer = playerGO.GetComponent<Player>();
-        return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
-
-        /*PLAYER DETECH CAIS DUJ COS PLAYER KHACS*/
-        
-        /*========================================*/
+        /*        if (gameManager.PlayerF == null) return false;
+                GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+                Player targetPlayer = playerGO.GetComponent<Player>();
+                return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
+        Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
+        if (otherPlayerPos == Vector2.zero) return false;       
+        return (targetPos == otherPlayerPos);
     }
+
 
     private GameObject GetItemAtPosition(Vector2 pos)
     {
@@ -453,12 +475,14 @@ public class MoveController : MonoBehaviourPun
 
     private bool IsPositionValid(Vector2 targetPos, Vector2 moveDirection)
     {
+        Debug.Log("Other player pos: " + otherPlayerPos);
         GameObject item = GetItemAtPosition(targetPos);
         if (item == null || item.tag == null) return false;
         string itemTag = item.tag;
         //Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
+
         if (HaveOtherPlayer(targetPos)) return false;
 
         if (itemTag == "Wall") {
