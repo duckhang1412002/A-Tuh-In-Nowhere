@@ -478,6 +478,7 @@ public class MoveController : MonoBehaviourPun
         //Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         if (gameManager.WireMap.ContainsKey(targetPos) && player.IsHandleWire && itemTag != "Bridge") return false;
+
         if (HaveOtherPlayer(targetPos)) return false;
 
         if (itemTag == "Wall") {
