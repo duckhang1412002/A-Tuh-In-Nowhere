@@ -429,6 +429,7 @@ public class MoveController : MonoBehaviourPun
                 photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 player.PreviousDirection = moveDirection;
                 player.TargetPosition = newPosition;
+                photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
             }
