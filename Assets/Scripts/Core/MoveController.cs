@@ -424,17 +424,13 @@ public class MoveController : MonoBehaviourPun
                 allowInput = false; // Disable input for the delay periods
             }
         }
-        if (HaveOtherPlayer(player.TargetPosition))
-        {
-            Debug.Log("Have other player at target !!!");
-        }
         MovePlayer();
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
         //get other player
-        if (gameManager.PlayerF == null) return false;
+        if (gameManager.PlayerF == null || gameManager.PlayerM) return false;
         GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
         Player targetPlayer = playerGO.GetComponent<Player>();
         return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);

@@ -213,7 +213,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private GameObject InstantiatePlayerM(int id, int x, int y)
     {
-        GameObject prefab = prefabList.FirstOrDefault(o => o.name == "Player");
         Quaternion rotation = playerPrefabM.transform.rotation;
         float z = playerPrefabM.transform.position.z;
         int roundedX = Mathf.RoundToInt(x);
@@ -225,7 +224,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     private GameObject InstantiatePlayerF(int id, int x, int y)
     {
-        GameObject prefab = prefabList.FirstOrDefault(o => o.name == "Player");
         Quaternion rotation = playerPrefabF.transform.rotation;
         float z = playerPrefabF.transform.position.z;
         int roundedX = Mathf.RoundToInt(x);
