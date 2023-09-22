@@ -37,7 +37,7 @@ public class MoveController : MonoBehaviourPun
 
     // Start is called before the first frame update
 
-    static Vector2 otherPlayerPos;
+    Vector2 otherPlayerPos;
     void Start()
     {
         dimensionIn = null;
@@ -56,7 +56,6 @@ public class MoveController : MonoBehaviourPun
     {
         if (gameManager.PlayerF == null) return Vector2.zero;
         GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-        Debug.Log("I GET THE OTHER PLAYER INIT POSITION: " + playerGO.transform.position);
         return playerGO.transform.position;
     }
     private void MovePlayer()
@@ -445,7 +444,7 @@ public class MoveController : MonoBehaviourPun
     private void UpdateOtherPlayer(float x, float y)
     {
         otherPlayerPos = new Vector2(x, y);
-        Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
+        Debug.Log("Other player move to: " + otherPlayerPos);
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)
@@ -455,8 +454,8 @@ public class MoveController : MonoBehaviourPun
                 GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
                 Player targetPlayer = playerGO.GetComponent<Player>();
                 return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
-        Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
-        if (otherPlayerPos == Vector2.zero) return false;       
+        if (otherPlayerPos == Vector2.zero) return false;
+        Debug.Log(targetPos + " -- " + otherPlayerPos);
         return (targetPos == otherPlayerPos);
     }
 
