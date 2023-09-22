@@ -56,15 +56,15 @@ public class MoveController : MonoBehaviourPun
         otherPlayer = GetOtherPlayer();
 
         if(otherPlayer != null){
-            leftPo_Other = this.gameObject.transform.Find("LeftPos").gameObject;
-            rightPo_Other = this.gameObject.transform.Find("RightPos").gameObject;
-            topPo_Other = this.gameObject.transform.Find("TopPos").gameObject;
-            bottomPo_Other = this.gameObject.transform.Find("BottomPos").gameObject;
+            // leftPo_Other = this.gameObject.transform.Find("LeftPos").gameObject;
+            // rightPo_Other = this.gameObject.transform.Find("RightPos").gameObject;
+            // topPo_Other = this.gameObject.transform.Find("TopPos").gameObject;
+            // bottomPo_Other = this.gameObject.transform.Find("BottomPos").gameObject;
 
-            leftPo_Mine = otherPlayer.transform.Find("LeftPos").gameObject;
-            rightPo_Mine = otherPlayer.transform.Find("RightPos").gameObject;
-            topPo_Mine = otherPlayer.transform.Find("TopPos").gameObject;
-            bottomPo_Mine = otherPlayer.transform.Find("BottomPos").gameObject;
+            // leftPo_Mine = otherPlayer.transform.Find("LeftPos").gameObject;
+            // rightPo_Mine = otherPlayer.transform.Find("RightPos").gameObject;
+            // topPo_Mine = otherPlayer.transform.Find("TopPos").gameObject;
+            // bottomPo_Mine = otherPlayer.transform.Find("BottomPos").gameObject;
         }
     }
     //Get other player position at start
