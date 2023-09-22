@@ -468,7 +468,7 @@ public class MoveController : MonoBehaviourPun
         }
         if (HaveOtherPlayer(player.TargetPosition))
         {
-            Debug.Log("Have other player at target !!!");
+            //Debug.Log("Have other player at target !!!");
         }
         MovePlayer();
     }
@@ -477,7 +477,7 @@ public class MoveController : MonoBehaviourPun
     private void UpdateOtherPlayer(float x, float y)
     {
         otherPlayerPos = new Vector2(x, y);
-        Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
+        //Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)
@@ -487,7 +487,7 @@ public class MoveController : MonoBehaviourPun
                 GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
                 Player targetPlayer = playerGO.GetComponent<Player>();
                 return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
-        Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
+        //Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
         if (otherPlayerPos == Vector2.zero) return false;     
         return (targetPos == otherPlayerPos);
     }
