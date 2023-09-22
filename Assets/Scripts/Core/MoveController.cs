@@ -315,10 +315,9 @@ public class MoveController : MonoBehaviourPun
         if (isPauseGame) return; // Disable movement game is paused
    
         if(otherPlayer != null){
-            GameObject lPO = otherPlayer.transform.Find("LeftPos").gameObject;
-            GameObject rPO = otherPlayer.transform.Find("RightPos").gameObject;
-            GameObject tPO = otherPlayer.transform.Find("TopPos").gameObject;
-            GameObject bPO = otherPlayer.transform.Find("BottomPos").gameObject;
+            if(leftPo_Mine.transform.position == rightPo_Other.transform.position){
+                Debug.Log("WINNNNNNNNNNNNNNNNNNNNNNNNNERRRRRRRRR: " + leftPo_Mine.transform.position + " " + rightPo_Other.transform.position);
+            }
         }
 
         if (!allowInput)
