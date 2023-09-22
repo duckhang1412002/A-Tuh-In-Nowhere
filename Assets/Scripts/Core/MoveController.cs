@@ -27,7 +27,7 @@ public class MoveController : MonoBehaviourPun
     DimensionOut dimensionOut;
 
     private bool allowInput = true;
-    private float inputDelay = 0.3f; //adjust this for delay input
+    private float inputDelay = 0.5f; //adjust this for delay input
     private float inputDelayTimer = 0.0f;
 
     private Vector2 touchStartPos;
@@ -36,8 +36,11 @@ public class MoveController : MonoBehaviourPun
     private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
     // Start is called before the first frame update
-
     static Vector2 otherPlayerPos;
+    private GameObject otherPlayer;
+
+    GameObject leftPo_Mine, rightPo_Mine, topPo_Mine, bottomPo_Mine, leftPo_Other, rightPo_Other, topPo_Other, bottomPo_Other;
+
     void Start()
     {
         dimensionIn = null;
@@ -50,6 +53,19 @@ public class MoveController : MonoBehaviourPun
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
         otherPlayerPos = GetOtherPlayerPosition();
+        otherPlayer = GetOtherPlayer();
+
+        if(otherPlayer != null){
+            leftPo_Other = this.gameObject.transform.Find("LeftPos").gameObject;
+            rightPo_Other = this.gameObject.transform.Find("RightPos").gameObject;
+            topPo_Other = this.gameObject.transform.Find("TopPos").gameObject;
+            bottomPo_Other = this.gameObject.transform.Find("BottomPos").gameObject;
+
+            leftPo_Mine = otherPlayer.transform.Find("LeftPos").gameObject;
+            rightPo_Mine = otherPlayer.transform.Find("RightPos").gameObject;
+            topPo_Mine = otherPlayer.transform.Find("TopPos").gameObject;
+            bottomPo_Mine = otherPlayer.transform.Find("BottomPos").gameObject;
+        }
     }
     //Get other player position at start
     private Vector2 GetOtherPlayerPosition()
@@ -59,6 +75,12 @@ public class MoveController : MonoBehaviourPun
         Debug.Log("I GET THE OTHER PLAYER INIT POSITION: " + playerGO.transform.position);
         return playerGO.transform.position;
     }
+    private GameObject GetOtherPlayer(){
+        if (gameManager.PlayerF == null) return null;
+        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        return playerGO;
+    }
+
     private void MovePlayer()
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
@@ -289,10 +311,20 @@ public class MoveController : MonoBehaviourPun
     }
 
     private void Update()
-    {
+    {       
         if (isPauseGame) return; // Disable movement game is paused
+   
+        if(otherPlayer != null){
+            if(leftPo_Mine.transform.position == rightPo_Other.transform.position){
+                Debug.Log("WINNNNNNNNNNNNNNNNNNNNNNNNNERRRRRRRRR: " + leftPo_Mine.transform.position + " " + rightPo_Other.transform.position);
+            }
+        }
+
         if (!allowInput)
         {
+            //inputDelay = PhotonNetwork.GetPing() / 100;
+            inputDelay = 0.4f;
+            Debug.Log("-------------------------Delay Input: " + inputDelay + "(speed) ------------------------");
             inputDelayTimer += Time.deltaTime;
             if (inputDelayTimer >= inputDelay)
             {
@@ -404,7 +436,7 @@ public class MoveController : MonoBehaviourPun
                 moveDirection += Vector2.right;
                 this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             }
-
+         
             if (moveDirection != Vector2.zero)
             {
                // Debug.Log("Current: " + player.CurrentPosition);
@@ -436,7 +468,7 @@ public class MoveController : MonoBehaviourPun
         }
         if (HaveOtherPlayer(player.TargetPosition))
         {
-            Debug.Log("Have other player at target !!!");
+            //Debug.Log("Have other player at target !!!");
         }
         MovePlayer();
     }
@@ -445,7 +477,7 @@ public class MoveController : MonoBehaviourPun
     private void UpdateOtherPlayer(float x, float y)
     {
         otherPlayerPos = new Vector2(x, y);
-        Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
+        //Debug.Log("OTHER PLAYER START TO MOVE TO POSITION: " + otherPlayerPos);
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)
@@ -455,8 +487,8 @@ public class MoveController : MonoBehaviourPun
                 GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
                 Player targetPlayer = playerGO.GetComponent<Player>();
                 return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
-        Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
-        if (otherPlayerPos == Vector2.zero) return false;       
+        //Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
+        if (otherPlayerPos == Vector2.zero) return false;     
         return (targetPos == otherPlayerPos);
     }
 
