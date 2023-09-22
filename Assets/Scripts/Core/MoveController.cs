@@ -27,7 +27,7 @@ public class MoveController : MonoBehaviourPun
     DimensionOut dimensionOut;
 
     private bool allowInput = true;
-    private float inputDelay = 0.3f; //adjust this for delay input
+    private float inputDelay = 1f; //adjust this for delay input
     private float inputDelayTimer = 0.0f;
 
     private Vector2 touchStartPos;
@@ -36,21 +36,36 @@ public class MoveController : MonoBehaviourPun
     private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
     // Start is called before the first frame update
-
     static Vector2 otherPlayerPos;
-    private bool isDelayInput;
+    private GameObject otherPlayer;
+
+    GameObject leftPo_Mine, rightPo_Mine, topPo_Mine, bottomPo_Mine, leftPo_Other, rightPo_Other, topPo_Other, bottomPo_Other;
+
     void Start()
     {
         dimensionIn = null;
         dimensionOut = null;
         isPauseGame = isMoving = false;
-        enableMove = isDelayInput = true;
+        enableMove = true;
         wireSpawner = GameObject.Find("WireSpawner").GetComponent<Wire>();
         photonViewID = PhotonNetwork.LocalPlayer.ActorNumber;
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
         otherPlayerPos = GetOtherPlayerPosition();
+        otherPlayer = GetOtherPlayer();
+
+        if(otherPlayer != null){
+            leftPo_Other = this.gameObject.transform.Find("LeftPos").gameObject;
+            rightPo_Other = this.gameObject.transform.Find("RightPos").gameObject;
+            topPo_Other = this.gameObject.transform.Find("TopPos").gameObject;
+            bottomPo_Other = this.gameObject.transform.Find("BottomPos").gameObject;
+
+            leftPo_Mine = otherPlayer.transform.Find("LeftPos").gameObject;
+            rightPo_Mine = otherPlayer.transform.Find("RightPos").gameObject;
+            topPo_Mine = otherPlayer.transform.Find("TopPos").gameObject;
+            bottomPo_Mine = otherPlayer.transform.Find("BottomPos").gameObject;
+        }
     }
     //Get other player position at start
     private Vector2 GetOtherPlayerPosition()
@@ -60,6 +75,12 @@ public class MoveController : MonoBehaviourPun
         Debug.Log("I GET THE OTHER PLAYER INIT POSITION: " + playerGO.transform.position);
         return playerGO.transform.position;
     }
+    private GameObject GetOtherPlayer(){
+        if (gameManager.PlayerF == null) return null;
+        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        return playerGO;
+    }
+
     private void MovePlayer()
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
@@ -290,10 +311,21 @@ public class MoveController : MonoBehaviourPun
     }
 
     private void Update()
-    {
+    {       
         if (isPauseGame) return; // Disable movement game is paused
+   
+        if(otherPlayer != null){
+            GameObject lPO = otherPlayer.transform.Find("LeftPos").gameObject;
+            GameObject rPO = otherPlayer.transform.Find("RightPos").gameObject;
+            GameObject tPO = otherPlayer.transform.Find("TopPos").gameObject;
+            GameObject bPO = otherPlayer.transform.Find("BottomPos").gameObject;
+        }
+
         if (!allowInput)
         {
+            //inputDelay = PhotonNetwork.GetPing() / 100;
+            inputDelay = 0.4f;
+            Debug.Log("-------------------------Delay Input: " + inputDelay + "(speed) ------------------------");
             inputDelayTimer += Time.deltaTime;
             if (inputDelayTimer >= inputDelay)
             {
@@ -389,22 +421,24 @@ public class MoveController : MonoBehaviourPun
 
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                StartCoroutine(DelayInput("up"));
+                moveDirection = Vector2.up;
             }
             else if (Input.GetKey(KeyCode.DownArrow))
             {
-                StartCoroutine(DelayInput("down"));
+                moveDirection = Vector2.down;
             }
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
-                StartCoroutine(DelayInput("left"));
+                moveDirection += Vector2.left;
+                this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
-                StartCoroutine(DelayInput("up"));
+                moveDirection += Vector2.right;
+                this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             }
-
-            if (moveDirection != Vector2.zero && !isDelayInput)
+         
+            if (moveDirection != Vector2.zero)
             {
                // Debug.Log("Current: " + player.CurrentPosition);
                 if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
@@ -431,7 +465,6 @@ public class MoveController : MonoBehaviourPun
                 player.TargetPosition = newPosition;
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
-                isDelayInput = true;
             }
         }
         if (HaveOtherPlayer(player.TargetPosition))
@@ -456,7 +489,7 @@ public class MoveController : MonoBehaviourPun
                 Player targetPlayer = playerGO.GetComponent<Player>();
                 return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);*/
         Debug.Log("HAVEOTHERPLAYER FUNCTION: OTHER PLAYER POS: " + otherPlayerPos);
-        if (otherPlayerPos == Vector2.zero) return false;       
+        if (otherPlayerPos == Vector2.zero) return false;     
         return (targetPos == otherPlayerPos);
     }
 
@@ -570,14 +603,5 @@ public class MoveController : MonoBehaviourPun
         }
 
         return true;
-    }
-    
-    private IEnumerator DelayInput(string direction){
-        Debug.Log("INENENENENEN");
-        float delayTime = 2f;
-        yield return new WaitForSeconds(delayTime);
-
-        Debug.Log("OUTOUTOUT");
-        isDelayInput = false;
     }
 }
