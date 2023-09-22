@@ -38,12 +38,13 @@ public class MoveController : MonoBehaviourPun
     // Start is called before the first frame update
 
     static Vector2 otherPlayerPos;
+    private bool isDelayInput;
     void Start()
     {
         dimensionIn = null;
         dimensionOut = null;
         isPauseGame = isMoving = false;
-        enableMove = true;
+        enableMove = isDelayInput = true;
         wireSpawner = GameObject.Find("WireSpawner").GetComponent<Wire>();
         photonViewID = PhotonNetwork.LocalPlayer.ActorNumber;
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
@@ -388,24 +389,22 @@ public class MoveController : MonoBehaviourPun
 
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                moveDirection = Vector2.up;
+                StartCoroutine(DelayInput("up"));
             }
             else if (Input.GetKey(KeyCode.DownArrow))
             {
-                moveDirection = Vector2.down;
+                StartCoroutine(DelayInput("down"));
             }
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
-                moveDirection += Vector2.left;
-                this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                StartCoroutine(DelayInput("left"));
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
-                moveDirection += Vector2.right;
-                this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                StartCoroutine(DelayInput("up"));
             }
 
-            if (moveDirection != Vector2.zero)
+            if (moveDirection != Vector2.zero && !isDelayInput)
             {
                // Debug.Log("Current: " + player.CurrentPosition);
                 if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
@@ -432,6 +431,7 @@ public class MoveController : MonoBehaviourPun
                 player.TargetPosition = newPosition;
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
+                isDelayInput = true;
             }
         }
         if (HaveOtherPlayer(player.TargetPosition))
@@ -570,5 +570,14 @@ public class MoveController : MonoBehaviourPun
         }
 
         return true;
+    }
+    
+    private IEnumerator DelayInput(string direction){
+        Debug.Log("INENENENENEN");
+        float delayTime = 2f;
+        yield return new WaitForSeconds(delayTime);
+
+        Debug.Log("OUTOUTOUT");
+        isDelayInput = false;
     }
 }
