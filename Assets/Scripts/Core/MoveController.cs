@@ -27,9 +27,8 @@ public class MoveController : MonoBehaviourPun
     DimensionOut dimensionOut;
 
     private bool allowInput = true;
-    private float inputDelay = 0.5f; //adjust this for delay input
+    private float inputDelay = 0.0f; //adjust this for delay input
     private float inputDelayTimer = 0.0f;
-
     private Vector2 touchStartPos;
     private Vector2 touchEndPos;
     private bool isSwiping = false;
@@ -37,48 +36,31 @@ public class MoveController : MonoBehaviourPun
 
     // Start is called before the first frame update
     static Vector2 otherPlayerPos;
-    private GameObject otherPlayer;
 
-    GameObject leftPo_Mine, rightPo_Mine, topPo_Mine, bottomPo_Mine, leftPo_Other, rightPo_Other, topPo_Other, bottomPo_Other;
-
+    private bool isInputDelayed;
+    
     void Start()
     {
         dimensionIn = null;
         dimensionOut = null;
-        isPauseGame = isMoving = false;
+        isPauseGame = isMoving = isInputDelayed = false;
         enableMove = true;
         wireSpawner = GameObject.Find("WireSpawner").GetComponent<Wire>();
         photonViewID = PhotonNetwork.LocalPlayer.ActorNumber;
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
-        otherPlayerPos = GetOtherPlayerPosition();
-        otherPlayer = GetOtherPlayer();
-
-        if(otherPlayer != null){
-            // leftPo_Other = this.gameObject.transform.Find("LeftPos").gameObject;
-            // rightPo_Other = this.gameObject.transform.Find("RightPos").gameObject;
-            // topPo_Other = this.gameObject.transform.Find("TopPos").gameObject;
-            // bottomPo_Other = this.gameObject.transform.Find("BottomPos").gameObject;
-
-            // leftPo_Mine = otherPlayer.transform.Find("LeftPos").gameObject;
-            // rightPo_Mine = otherPlayer.transform.Find("RightPos").gameObject;
-            // topPo_Mine = otherPlayer.transform.Find("TopPos").gameObject;
-            // bottomPo_Mine = otherPlayer.transform.Find("BottomPos").gameObject;
-        }
+        otherPlayerPos = GetOtherPlayerPosition();         
     }
     //Get other player position at start
     private Vector2 GetOtherPlayerPosition()
     {
+        GameObject playerM =  GameObject.Find("PlayerM(Clone)");
+        GameObject playerF =  GameObject.Find("PlayerF(Clone)");
+
         if (gameManager.PlayerF == null) return Vector2.zero;
-        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-        Debug.Log("I GET THE OTHER PLAYER INIT POSITION: " + playerGO.transform.position);
+        GameObject playerGO = (photonViewID == 1) ? playerF : playerM;
         return playerGO.transform.position;
-    }
-    private GameObject GetOtherPlayer(){
-        if (gameManager.PlayerF == null) return null;
-        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-        return playerGO;
     }
 
     private void MovePlayer()
@@ -311,20 +293,11 @@ public class MoveController : MonoBehaviourPun
     }
 
     private void Update()
-    {       
+    {
         if (isPauseGame) return; // Disable movement game is paused
-   
-        if(otherPlayer != null){
-            if(leftPo_Mine.transform.position == rightPo_Other.transform.position){
-                Debug.Log("WINNNNNNNNNNNNNNNNNNNNNNNNNERRRRRRRRR: " + leftPo_Mine.transform.position + " " + rightPo_Other.transform.position);
-            }
-        }
 
         if (!allowInput)
         {
-            //inputDelay = PhotonNetwork.GetPing() / 100;
-            inputDelay = 0.4f;
-            Debug.Log("-------------------------Delay Input: " + inputDelay + "(speed) ------------------------");
             inputDelayTimer += Time.deltaTime;
             if (inputDelayTimer >= inputDelay)
             {
@@ -347,10 +320,10 @@ public class MoveController : MonoBehaviourPun
             player.PreviousDirection = player.PreviousDirection;
             player.TargetPosition = newPosition;
         }
-        else if (enableMove && allowInput && !isMoving)
+        else if (!isInputDelayed && enableMove && allowInput && !isMoving)
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
-            GameObject item = GetItemAtPosition(player.CurrentPosition);
+            
 
             // Check for touch input
             if (Input.touchCount > 0)
@@ -429,48 +402,74 @@ public class MoveController : MonoBehaviourPun
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
                 moveDirection += Vector2.left;
-                this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                //this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
                 moveDirection += Vector2.right;
-                this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                //this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             }
          
             if (moveDirection != Vector2.zero)
             {
-               // Debug.Log("Current: " + player.CurrentPosition);
-                if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
-                if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                if (item.GetComponent<Bridge>() != null)
-                {
-                    Bridge bridge = item.GetComponent<Bridge>();
-                    bool isHorizontal = bridge.IsHorizontal();
-                    bool isVertical = bridge.IsVertical();
-
-                    if ((isHorizontal && player.DefaultZAxis == 2f && moveDirection.y != 0) ||
-                        (isVertical && player.DefaultZAxis == 2f && moveDirection.x != 0) ||
-                        (isHorizontal && player.DefaultZAxis == 5f && moveDirection.x != 0) ||
-                        (isVertical && player.DefaultZAxis == 5f && moveDirection.y != 0))
-                        return;
-                    
-                }
-                moveDirection.Normalize();
-                Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
-                //check if the next position is valid to move in or else it will return here
-                if (!IsPositionValid(newPosition, moveDirection)) return;
-                photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
-                player.PreviousDirection = moveDirection;
-                player.TargetPosition = newPosition;
-                enableMove = false; // Disable movement until the target position is reached
-                allowInput = false; // Disable input for the delay periods
+               StartCoroutine(DelayedInputExecution(moveDirection));
             }
         }
         if (HaveOtherPlayer(player.TargetPosition))
         {
             //Debug.Log("Have other player at target !!!");
         }
-        MovePlayer();
+         MovePlayer();
+    }
+
+    private IEnumerator DelayedInputExecution(Vector2 moveDirection)
+    {
+        isInputDelayed = true;
+
+        float delayInputTime = (float)PhotonNetwork.GetPing() / 100;
+        Debug.Log("PING IS SPEED, SPEED IS PING ------------- " + delayInputTime + " secs");
+
+        // Wait for 1 second
+        yield return new WaitForSeconds(delayInputTime);
+
+        GameObject item = GetItemAtPosition(player.CurrentPosition);
+
+        // Execute the code below after the delay
+        if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+        if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        if (item.GetComponent<Bridge>() != null)
+        {
+            Bridge bridge = item.GetComponent<Bridge>();
+            bool isHorizontal = bridge.IsHorizontal();
+            bool isVertical = bridge.IsVertical();
+
+            if ((isHorizontal && player.DefaultZAxis == 2f && moveDirection.y != 0) ||
+                (isVertical && player.DefaultZAxis == 2f && moveDirection.x != 0) ||
+                (isHorizontal && player.DefaultZAxis == 5f && moveDirection.x != 0) ||
+                (isVertical && player.DefaultZAxis == 5f && moveDirection.y != 0))
+            {
+                isInputDelayed = false;
+                yield break;
+            }
+        }
+
+        moveDirection.Normalize();
+        Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
+
+        // Check if the next position is valid to move in or else it will return here
+        if (!IsPositionValid(newPosition, moveDirection)){
+            isInputDelayed = false;
+            yield break;
+        }
+
+        photonView.RPC("UpdateOtherPlayer", RpcTarget.Others, newPosition.x, newPosition.y);
+        player.PreviousDirection = moveDirection;
+        player.TargetPosition = newPosition;
+        enableMove = false; // Disable movement until the target position is reached
+        allowInput = false; // Disable input for the delay periods
+
+        // Reset the input delay flag
+        isInputDelayed = false;
     }
 
     [PunRPC]
@@ -506,7 +505,6 @@ public class MoveController : MonoBehaviourPun
 
     private bool IsPositionValid(Vector2 targetPos, Vector2 moveDirection)
     {
-        Debug.Log("Other player pos: " + otherPlayerPos);
         GameObject item = GetItemAtPosition(targetPos);
         if (item == null || item.tag == null) return false;
         string itemTag = item.tag;
