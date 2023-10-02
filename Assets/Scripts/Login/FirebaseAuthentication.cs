@@ -6,10 +6,12 @@ using TMPro;
 using Firebase.Database;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using System.Threading.Tasks;
 
-public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
+public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 {
     [Header("Panel")]
     public GameObject loginPanel;
@@ -17,13 +19,12 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
 
     // Firebase variable
     [Header("Firebase")]
-    public static FirebaseAuthenticaton Instance;
+    public static FirebaseAuthentication Instance;
     public DependencyStatus dependencyStatus;
     public FirebaseAuth auth;
     public FirebaseUser user;
     public DatabaseReference accountsRef;
-    public List<Account> accounts;
-    public string acc_userID = null;
+    public int? currentAccountID = null;
 
     // Login Variables
     [Space]
@@ -40,7 +41,7 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
     public TMP_InputField confirmPasswordRegisterField;
     public ErrorPopup errorPopup;
 
-    public static FirebaseAuthenticaton GetInstance()
+    public static FirebaseAuthentication GetInstance()
     {
         return Instance;
     }
@@ -49,9 +50,6 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
     {
         FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(false);
         ClearFields();
-        accounts = new List<Account>();
-        accounts.Clear();
-
         InitializeFirebase();
     }
 
@@ -69,7 +67,7 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
 
     public void InitializeFirebase()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(async task =>
         {
             if (task.Result == DependencyStatus.Available)
             {
@@ -81,7 +79,9 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
                 auth = FirebaseAuth.DefaultInstance;
                 // Get the reference to the "Accounts" node
                 accountsRef = FirebaseDatabase.DefaultInstance.RootReference;
-                GetListAccount(accountsRef);
+
+                Task fetchTask = GetListAccount(accountsRef);  
+                await fetchTask;
             }
             else
             {
@@ -90,40 +90,41 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         });
     }
 
-    private void GetListAccount(DatabaseReference db)
+    private async Task<List<Account>> GetListAccount(DatabaseReference db)
     {
-        accounts.Clear();
-        // Read the data for each account
-        db.Child("Accounts").GetValueAsync().ContinueWith(readTask =>
+        List<Account> accounts = new List<Account>();
+
+        // Create a task to fetch data from the "accounts" node
+        Task<DataSnapshot> task = db.Child("Account").GetValueAsync();
+
+        // Wait for the task to complete
+        await task;
+
+        if (task.IsCompleted)
         {
-            if (readTask.IsFaulted)
+            // Retrieve the data snapshot
+            DataSnapshot snapshot = task.Result;
+
+            // Loop through the children of the "accounts" node
+            foreach (DataSnapshot accountSnapshot in snapshot.Children)
             {
-                Debug.LogError("Failed to read accounts data: " + readTask.Exception);
+                // Parse and use the account data
+                string _AccountID = accountSnapshot.Child("AccountID").Value.ToString();
+                string _Email = accountSnapshot.Child("Email").Value.ToString();
+                string _Pwd = accountSnapshot.Child("Pwd").Value.ToString();
+                string _Fullname = accountSnapshot.Child("Fullname").Value.ToString();
+                bool _IsOnlined = Convert.ToBoolean(accountSnapshot.Child("IsOnlined").GetValue(false));
+
+                accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined));
             }
-            else if (readTask.IsCompleted)
-            {
-                DataSnapshot snapshot = readTask.Result;
+            Debug.Log("++++++++++++++++++++++++++++++ " + accounts.Count);
+        }
+        else
+        {
+            Debug.LogError("Failed to get accounts: " + task.Exception);
+        }
 
-                if (snapshot != null && snapshot.HasChildren)
-                {
-                    foreach (var accountSnapshot in snapshot.Children)
-                    {
-                        string email = accountSnapshot.Child("email").Value.ToString();
-                        string nickname = accountSnapshot.Child("nickname").Value.ToString();
-                        string password = accountSnapshot.Child("password").Value.ToString();
-                        bool isActive = Convert.ToBoolean(accountSnapshot.Child("isActive").GetValue(false));
-
-                        accounts.Add(new Account { acc_email = email, acc_nickname = nickname, acc_password = password, acc_isActive = isActive });
-
-                        //Debug.Log(email + " " + nickname + " " + password + " " + isActive);
-                    }
-                }
-                else
-                {
-                    Debug.Log("No accounts data found.");
-                }
-            }
-        });
+        return accounts;
     }
 
 
@@ -161,15 +162,17 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         }
     }*/
 
-    public void Login()
+    public async void Login()
     {
+        List<Account> accounts = await GetListAccount(accountsRef);
+
         //Call the login coroutine passing the email and password
-        StartCoroutine(LoginAsync(emailLoginField.text, passwordLoginField.text));
+        StartCoroutine(LoginAsync(emailLoginField.text, passwordLoginField.text, accounts));
     }
 
-    private IEnumerator LoginAsync(string email, string password)
+    private IEnumerator LoginAsync(string email, string password, List<Account> accounts)
     {
-        if (CheckLogIn(email))
+        if (CheckLogIn(email, accounts))
         {
             errorPopup.ShowPopup("This account is already logged in!");
             yield break; // Exit the coroutine
@@ -217,28 +220,32 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         }
         else
         {
+            int matchingAccID = FindAccount(email, accounts).AccountID;
+
+            Debug.Log("THISSSSSSSSSSSS" + matchingAccID);
+
             // User is logged in now
             user = loginTask.Result.User;
-            UpdateUserID(user.UserId);
-            StartCoroutine(UpdateStatus(acc_userID, true));
+            UpdateUserID(matchingAccID);
+            StartCoroutine(UpdateStatus(currentAccountID, true));
             PhotonNetwork.NickName = user.DisplayName;
 
-            Debug.LogFormat("{0} with {1} You Are Successfully Logged In", user.DisplayName, acc_userID);
-            //Debug.Log(PhotonNetwork.NickName);
-            //Debug.Log(acc_userID);
+            Debug.LogFormat("{0} with {1} You Are Successfully Logged In", user.DisplayName, currentAccountID);
 
             ClearFields();
-            SceneManager.LoadScene("PlayMode");
+            SceneManager.LoadScene("GameMode");
         }
     }
 
-    public void Register()
+    public async void Register()
     {
+        List<Account> accounts = await GetListAccount(accountsRef);
+
         //Call the register coroutine passing the email and password
-        StartCoroutine(RegisterAsync(nameRegisterField.text, emailRegisterField.text, passwordRegisterField.text, confirmPasswordRegisterField.text));
+        StartCoroutine(RegisterAsync(nameRegisterField.text, emailRegisterField.text, passwordRegisterField.text, confirmPasswordRegisterField.text, accounts));
     }
 
-    private IEnumerator RegisterAsync(string name, string email, string password, string confirmPassword)
+    private IEnumerator RegisterAsync(string name, string email, string password, string confirmPassword, List<Account> accounts)
     {
 
         if (email == "")
@@ -254,7 +261,7 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
             errorPopup.ShowPopup("The nickname is empty! ");
             yield break;
         }
-        else if (!CheckNicknameAvailability(name))
+        else if (!CheckNicknameAvailability(name, accounts))
         {
             //Debug.LogError("Nickname is already taken");
             errorPopup.ShowPopup("Nickname is already taken! ");
@@ -338,7 +345,7 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
                     AuthError authError = (AuthError)firebaseException.ErrorCode;
 
 
-                    string failedMessage = "Profile update Failed! Becuase ";
+                    string failedMessage = "Profile update Failed! Because ";
                     switch (authError)
                     {
                         case AuthError.InvalidEmail:
@@ -370,19 +377,10 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    Debug.Log("Registration Sucessful Welcome " + user.DisplayName);
-                    Debug.Log("Registration Sucessful Welcome " + user.UserId);
-                    Account newAccount = new Account
-                    {
-                        acc_email = email,
-                        acc_nickname = name,
-                        acc_password = password,
-                        acc_isActive = false
-                    };
+                    Account newAccount = new Account(0, email, password, name, false){};
 
-                    UpdateInfoAccount(newAccount);
-                    accounts.Add(newAccount);
-                    ClearFields();
+                    UpdateInfoAccount(newAccount);         
+                    ClearFields();              
                     RegisterPanel.SetActive(false);
                     loginPanel.SetActive(true);
                 }
@@ -390,41 +388,38 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         }
     }
 
-    private bool CheckNicknameAvailability(string nickname)
+    private bool CheckNicknameAvailability(string nickname, List<Account> accounts)
     {
         foreach (var account in accounts)
         {
-            if (account.acc_nickname == nickname)
+            if (account.Fullname == nickname)
             {
-                //Debug.Log("cannot use this " + nickname);
                 // Nickname is already taken
                 return false;
             }
         }
-        //Debug.Log("can use this " + nickname);
         // Nickname is available
         return true;
     }
 
-    private bool CheckLogIn(string email)
+    private bool CheckLogIn(string email, List<Account> accounts)
     {
-        Account account = FindAccount(email);
-        if (account != null && account.acc_isActive )
+        Debug.Log(accounts[0].Fullname);
+        Account account = FindAccount(email, accounts);
+        if (account != null && account.IsOnlined)
         {
-            //Debug.Log("cannot login");
             // Account is already logged in
             return true;
         }
-        //Debug.Log("can login");
         // Account is not logged in
         return false;
     }
 
-    private Account FindAccount(string email)
+    private Account FindAccount(string email, List<Account> accounts)
     {
         foreach (Account account in accounts)
         {
-            if (account.acc_email == email)
+            if (account.Email == email)
             {
                 return account;
             }
@@ -433,24 +428,37 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         return null; // Account not found
     }
 
-    private void UpdateInfoAccount(Account acc)
+    private async void UpdateInfoAccount(Account acc)
     {
-        string Node = "Accounts";
-        StartCoroutine(UpdateData(Node, "email", acc.acc_email));
-        StartCoroutine(UpdateData(Node, "password", acc.acc_password));
-        StartCoroutine(UpdateData(Node, "nickname", acc.acc_nickname));
-        StartCoroutine(UpdateStatus(user.UserId, acc.acc_isActive));
+        int newAccountID = await GetLastAccountIDAsync() + 1;
+
+        string Node = "Account";
+        StartCoroutine(UpdateData(Node, "AccountID", newAccountID, newAccountID.ToString()));
+        StartCoroutine(UpdateData(Node, "StatusID", newAccountID, acc.StatusID.ToString()));
+        StartCoroutine(UpdateData(Node, "Email", newAccountID, acc.Email.ToString()));
+        StartCoroutine(UpdateData(Node, "Pwd", newAccountID, acc.Pwd.ToString()));
+        StartCoroutine(UpdateData(Node, "Fullname", newAccountID, acc.Fullname.ToString()));
+        StartCoroutine(UpdateData(Node, "Nickname", newAccountID, acc.Nickname.ToString()));
+        StartCoroutine(UpdateData(Node, "Avatarlink", newAccountID, acc.Avatarlink.ToString()));
+        StartCoroutine(UpdateData(Node, "Ribbon", newAccountID, acc.Ribbon.ToString()));
+        StartCoroutine(UpdateData(Node, "Key", newAccountID, acc.Key.ToString()));
+        StartCoroutine(UpdateData(Node, "Createddate", newAccountID, acc.Createddate.ToString()));
+        StartCoroutine(UpdateData(Node, "Lastactive", newAccountID, acc.Lastactive.ToString()));
+        StartCoroutine(UpdateData(Node, "Deleteddate", newAccountID, acc.Deleteddate.ToString()));
+        StartCoroutine(UpdateData(Node, "IsDeleted", newAccountID, acc.IsDeleted.ToString()));
+        StartCoroutine(UpdateData(Node, "RoleID", newAccountID, acc.RoleID.ToString()));
+        StartCoroutine(UpdateStatus(newAccountID, acc.IsOnlined));
     }
 
-    private void UpdateUserID(string userID)
+    private void UpdateUserID(int userID)
     {
-        acc_userID = userID;
+        currentAccountID = userID;
     }
 
-    public IEnumerator UpdateData(string Node, string dataName, string data)
+    public IEnumerator UpdateData(string Node, string dataName, int newAccountID, string data)
     {
         //Set the currently logged in user deaths
-        var DBTask = accountsRef.Child(Node).Child(user.UserId).Child(dataName).SetValueAsync(data);
+        var DBTask = accountsRef.Child(Node).Child(newAccountID.ToString()).Child(dataName).SetValueAsync(data);
 
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
 
@@ -464,10 +472,10 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         }
     }
 
-    public IEnumerator UpdateStatus(string userId, bool data)
+    public IEnumerator UpdateStatus(int? userId, bool data)
     {
         //Set the currently logged in user deaths
-        var DBTask = accountsRef.Child("Accounts").Child(userId).Child("isActive").SetValueAsync(data);
+        var DBTask = accountsRef.Child("Account").Child(userId.ToString()).Child("IsOnlined").SetValueAsync(data);
 
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
 
@@ -486,4 +494,35 @@ public class FirebaseAuthenticaton : MonoBehaviourPunCallbacks
         Application.Quit();
     }
 
+    public int? GetPlayerID(){
+        return currentAccountID;
+    }
+
+    public async Task<int> GetLastAccountIDAsync()
+    {
+        try
+        {
+            DataSnapshot snapshot = await accountsRef.Child("Account")
+                .OrderByKey()
+                .LimitToLast(1)
+                .GetValueAsync();
+
+            if (snapshot.HasChildren)
+            {
+                // Since we used LimitToLast(1), there should be only one child.
+                foreach (var childSnapshot in snapshot.Children)
+                {
+                    int lastAccountId = int.Parse(childSnapshot.Key);
+                    return lastAccountId;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error getting last account ID: {ex.Message}");
+        }
+
+        // Return a default value (e.g., -1) if there was an error or no data found.
+        return 0;
+    }
 }
