@@ -441,7 +441,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                             instantiatedPrefab.GetComponent<Bridge>().Direction = "Vertical";
                             instantiatedPrefab.GetComponent<Bridge>().RenderSprite();
                         }
-
+                         
                         grid[x, y] = instantiatedPrefab;
                     }
                     else if (item.Contains("Dimension"))
