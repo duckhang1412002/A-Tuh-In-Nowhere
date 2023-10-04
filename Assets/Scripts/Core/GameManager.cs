@@ -48,8 +48,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     private Dictionary<int, GameObject> doorButtonList;
     public Dictionary<Vector2, bool> WireMap { get; set; }
 
-    // private Dictionary<Vector2, Socket> pointType;
-
     private bool openPauseUI = false;
     private bool openGuideUI = false;
 
