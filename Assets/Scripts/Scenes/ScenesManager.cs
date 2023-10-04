@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class ScenesManager : MonoBehaviour
 {
@@ -17,16 +18,14 @@ public class ScenesManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void MoveToNextScene(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
-
-    public void BackToHomeScene(){
-        SceneManager.LoadScene(0);
-    }
-
-    public void BackToLevelScene(){
-        SceneManager.LoadScene(1);
+    public void BackToLobbyScene(GameObject mode){
+        if(mode.GetComponent<TextMeshProUGUI>().text == "Single Mode"){
+            SceneManager.LoadScene("SingleLobby");
+        } else if(mode.GetComponent<TextMeshProUGUI>().text == "Multiplayer Mode"){
+            SceneManager.LoadScene("MultiplayerLobby"); 
+        } else if(mode.GetComponent<TextMeshProUGUI>().text == "Creative Mode"){
+            SceneManager.LoadScene("CreativeLobby");
+        }
     }
 
     public void ReloadThisScene(){
