@@ -235,6 +235,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         return instantiatedPrefab;
     }
 
+    // Function to count the number of walls among adjacent cells
+    int CountWalls(params string[] cells)
+    {
+        return cells.Count(cell => cell.Contains("Wall"));
+    }
+
+    bool IsEdgeObject(string obj)
+    {
+        return (obj.Contains("Wall") || obj.Contains("DimensionOut"));
+    }
     private void InitializeMap()
     {
         WireMap = new Dictionary<Vector2, bool>();
@@ -259,6 +269,96 @@ public class GameManager : MonoBehaviourPunCallbacks
                     randomMap[i, j] = inputMap[n - j - 1, i];
                 }
             }
+
+            //check Wall type
+            for (int i = 0; i < m; ++i)
+            {
+                for (int j = 0; j < n; ++j)
+                {
+                    string l = (i > 0) ? randomMap[i - 1, j] : "Null";
+                    string r = (i + 1 < m) ? randomMap[i + 1, j] : "Null";
+                    string d = (j > 0) ? randomMap[i, j - 1] : "Null";
+                    string u = (j + 1 < n) ? randomMap[i, j + 1] : "Null";
+
+                    //Check lai truong hop DOut
+                    if (randomMap[i, j].Contains("Wall"))
+                    {
+                        //case 0: 4 cell adj is not wall or null
+                        if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:0:0";
+                        }
+                        //case 1: 3 cell adj is ground
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:1:1";
+                        }
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:1:3";
+                        }
+                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:1:2";
+                        }
+                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:1:0";
+                        }
+                        //case 2: 2 adj cell is wall NOT Opposite
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:2:0";
+                        }
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:2:1";
+                        }
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:2:3";
+                        }
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:2:2";
+                        }
+                        //case 3: 3 adj cell is wall
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:3:1";
+                        }
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:3:3";
+                        }
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:3:0";
+                        }
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:3:2";
+                        }
+                        //case 4: 4 adj is all wall
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:4:0";
+                        }
+                        //case 5: 2 opposite cell is wall
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
+                        {
+                            randomMap[i, j] = "Wall:5:1";
+                        }
+                        else
+                        {
+                            randomMap[i, j] = "Wall:5:0";
+                        }
+                    }
+
+                }
+            }
+
+
             grid = new GameObject[m, n];
             GameObject ground = prefabList.FirstOrDefault(o => o.name == "Ground");
             float groundZ = ground.transform.position.z;
@@ -274,7 +374,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                         continue;
                     }
                     //Init ground
-                    GameObject groundObject = Instantiate(ground, new Vector3(x + offset, y, groundZ), groundRotate);
+                    if (!item.Contains("Wall"))
+                    {
+                        GameObject groundObject = Instantiate(ground, new Vector3(x + offset, y, groundZ), groundRotate);
+                        grid[x, y] = groundObject;
+                    }
                     GameObject prefab;
 
                     if (item.Contains("Socket"))
@@ -294,7 +398,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                     else if (item.Contains("PlayerM"))
                     {
                         // store ground instead of player
-                        grid[x, y] = groundObject;
 
                         if (PhotonNetwork.LocalPlayer.ActorNumber == 1)
                         {
@@ -311,7 +414,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                     else if (item.Contains("PlayerF"))
                     {
                         // store ground instead of player
-                        grid[x, y] = groundObject;
                         if (PhotonNetwork.LocalPlayer.ActorNumber == 2)
                         {
                             int id = int.Parse(item.Split(':')[1]);
@@ -387,6 +489,17 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                         instantiatedPrefab.GetComponent<Door>().Init();
                         grid[x, y] = instantiatedPrefab;
+                    } else if (item.Contains("Wall"))
+                    {
+                        GameObject instantiatedPrefab = InstantiatePrefab("Wall", x + offset, y);
+                        if (item != "Wall")
+                        {
+                            int spriteIndex = int.Parse(item.Split(':')[1]);
+                            int rotationIndex = int.Parse(item.Split(':')[2]);
+                            instantiatedPrefab.GetComponent<Wall>().RenderSprite(spriteIndex, rotationIndex);
+                        } //have more attribute
+
+                        grid[x, y] = instantiatedPrefab;
                     }
                     // else if (item.Contains("EscButton"))
                     // {
@@ -426,6 +539,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                     // }
                     else
                     {
+                        //Have Ice here
                         GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
                         grid[x, y] = instantiatedPrefab;
                     }
