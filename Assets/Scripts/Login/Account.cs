@@ -10,21 +10,21 @@ public class Account
     }
 
     // for login - register 
-    public Account(int _ID, string _Email, string _Pwd, string _Fullname, bool _IsOnlined)
+    public Account(int _ID, string _Email, string _Pwd, string _Fullname, bool _IsOnlined, int _RoleID, string _Nickname, string _AvtLink, int _Ribbon, int _Key)
     {
         AccountID = _ID;
         Email = _Email;
         Pwd = _Pwd;
         Fullname = _Fullname;
         IsOnlined = _IsOnlined;
-
-        // auto data
-        StatusID = "";
         RoleID = 2;
         Nickname = "";
         Avatarlink = "";
         Ribbon = 0;
         Key = 0;
+
+        // auto data
+        StatusID = "";
         Createddate = DateTime.Now;
         Lastactive = DateTime.Now;
         Deleteddate = null;
