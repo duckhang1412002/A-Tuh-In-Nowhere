@@ -1,11 +1,40 @@
 {
   "project_info": {
     "project_number": "1065060603749",
-    "firebase_url": "https://atuhinnowhere-testing-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    "firebase_url": "https://atuhinnowhere-testing-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "atuhinnowhere-testing",
     "storage_bucket": "atuhinnowhere-testing.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065060603749:android:a8f34b7ac9fff3edc9b38c",
+        "android_client_info": {
+          "package_name": "com.C4F3.AtuhConnectrix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1065060603749-3uqv6s623j8pjdn2amplbg362qpndcsn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVyzcD-0KonR1GOqwxxelrsuhuUoE8dEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065060603749-3p5uot9c1etjr4sbgohnneqvm7dd1ml1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:1065060603749:android:6e8c1afb128f3f42c9b38c",
@@ -15,7 +44,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1065060603749-3p5uot9c1etjr4sbgohnneqvm7dd1ml1.apps.googleusercontent.com",
+          "client_id": "1065060603749-3uqv6s623j8pjdn2amplbg362qpndcsn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

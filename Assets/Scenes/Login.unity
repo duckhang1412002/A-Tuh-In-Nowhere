@@ -5131,13 +5131,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1196674026}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c802f89531310c4382595f59092afd1, type: 3}
+  m_Script: {fileID: 11500000, guid: 57fe5589c01d1dd4b9156ed7745dae57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   loginPanel: {fileID: 398904325}
   RegisterPanel: {fileID: 1187554279}
   dependencyStatus: 0
-  acc_userID: 
   emailLoginField: {fileID: 965056234}
   passwordLoginField: {fileID: 548011528}
   nameRegisterField: {fileID: 1595922883}
