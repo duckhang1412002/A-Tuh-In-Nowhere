@@ -41,23 +41,6 @@ public class ProgressBar : MonoBehaviour
         targetProgress = 0;
 
         StartCoroutine(VerifyData());
-/*        string url = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/1.txt?alt=media";
-        string filePath = $"{Application.persistentDataPath}/Maps/1.txt";
-        StartCoroutine(GetFileRequest(url, filePath, (UnityWebRequest req) =>
-        {
-            if (req.isNetworkError || req.isHttpError)
-            {
-                //Logging any errors that may happen
-                Debug.Log($"{req.error} : {req.downloadHandler.text}");
-            }
-            else
-            {
-                //Save the model fetched from firebase into spaceShip 
-                Debug.Log("I end download here!");
-            }
-        }
-
-                ));*/
 
     }
 
