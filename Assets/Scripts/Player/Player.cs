@@ -7,6 +7,9 @@ using UnityEngine;
 public class Player : MonoBehaviourPun
 {
     public int ID { get; set; }
+    public string[] CompletedMapID {get; set;}
+
+
     public string HandleWireColor{get; set;}
     public bool IsNotPickWire{get; set;}
     public bool IsHandleWire { get; set; }
