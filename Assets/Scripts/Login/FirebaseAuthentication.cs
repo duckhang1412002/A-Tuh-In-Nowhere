@@ -122,7 +122,6 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 
                 accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined, int.Parse(_RoleID), _Nickname, _AvtLink, int.Parse(_Ribbon), int.Parse(_Key)));
             }
-            Debug.Log("++++++++++++++++++++++++++++++ " + accounts.Count);
         }
         else
         {
