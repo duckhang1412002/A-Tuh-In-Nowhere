@@ -114,8 +114,13 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                 string _Pwd = accountSnapshot.Child("Pwd").Value.ToString();
                 string _Fullname = accountSnapshot.Child("Fullname").Value.ToString();
                 bool _IsOnlined = Convert.ToBoolean(accountSnapshot.Child("IsOnlined").GetValue(false));
+                string _RoleID = accountSnapshot.Child("RoleID").Value.ToString();
+                string _Nickname = accountSnapshot.Child("Nickname").Value.ToString();
+                string _AvtLink = accountSnapshot.Child("Avatarlink").Value.ToString();
+                string _Key = accountSnapshot.Child("Key").Value.ToString();
+                string _Ribbon = accountSnapshot.Child("Ribbon").Value.ToString();
 
-                accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined));
+                accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined, int.Parse(_RoleID), _Nickname, _AvtLink, int.Parse(_Ribbon), int.Parse(_Key)));
             }
             Debug.Log("++++++++++++++++++++++++++++++ " + accounts.Count);
         }
@@ -221,8 +226,6 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         else
         {
             int matchingAccID = FindAccount(email, accounts).AccountID;
-
-            Debug.Log("THISSSSSSSSSSSS" + matchingAccID);
 
             // User is logged in now
             user = loginTask.Result.User;
@@ -377,7 +380,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    Account newAccount = new Account(0, email, password, name, false){};
+                    Account newAccount = new Account(0, email, password, name, false, 2, "", "", 0, 0){};
 
                     UpdateInfoAccount(newAccount);         
                     ClearFields();              
