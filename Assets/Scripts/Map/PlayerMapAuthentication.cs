@@ -60,16 +60,10 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(gameObject);
     }
 
-    public void InitializeFirebase()
+    public async void InitializeFirebase()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(async task =>
-        {
-                Task fetchTask = GetListPlayerMap(accountsRef);  
-                await fetchTask;
-
-                UpdatePlayerMap();
-          
-        });
+        Task fetchTask = GetListPlayerMap(accountsRef);  
+        await fetchTask;
     }
 
     private async Task<List<PlayerMap>> GetListPlayerMap(DatabaseReference db)
@@ -110,27 +104,21 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
         return playerMaps;
     }
 
-    public async void UpdatePlayerMap()
+    public async void UpdatePlayerMap(List<PlayerMap> playerMaps, int mapID, int stepNum, int restartNum)
     {
-        List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
+        //List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
 
-        Debug.Log("Coroutine on");
         //Call the coroutine
-        StartCoroutine(UpdatePlayerMapAsync(playerMaps));       
-        Debug.Log("Coroutine out");
+        StartCoroutine(UpdatePlayerMapAsync(playerMaps, mapID, stepNum, restartNum));       
     }
 
-    private IEnumerator UpdatePlayerMapAsync(List<PlayerMap> playerMaps)
-{
-        Debug.Log("Coroutine Started");
-        yield return null; // Ensure the coroutine yields once
-        Debug.Log("Coroutine Finished");
-
-        // if(currentAccountID != null){
-        //     int accountID = (int)currentAccountID;
-        //     PlayerMap newPlayerMap = new PlayerMap(accountID, mapID, stepNumber, restartNumber, false, false){};
-        //     UpdateInfoPlayerMap(newPlayerMap);
-        // } else yield break;
+    private IEnumerator UpdatePlayerMapAsync(List<PlayerMap> playerMaps, int mapID, int stepNum, int restartNum)
+    {
+        if(currentAccountID != null){
+            int accountID = (int)currentAccountID;
+            PlayerMap newPlayerMap = new PlayerMap(accountID, mapID, stepNum, restartNum, false, false){};
+            UpdateInfoPlayerMap(newPlayerMap);
+        } else yield break;
     }
 
     private async void UpdateInfoPlayerMap(PlayerMap map)
@@ -144,8 +132,6 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
         StartCoroutine(UpdateData(Node, "IsVoted", map.AccountID, map.MapID, map.IsVoted.ToString()));
         StartCoroutine(UpdateData(Node, "IsDeleted", map.AccountID, map.MapID, map.IsDeleted.ToString()));
         StartCoroutine(UpdateData(Node, "DeletedDate", map.AccountID, map.MapID, map.DeletedDate.ToString()));
-
-        Debug.Log("******************************* oooooooookkkkkkk");
     }
 
     public IEnumerator UpdateData(string Node, string dataName, int accountID, int mapID, string data)
@@ -165,14 +151,10 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
         }
     }
 
+    public async Task<List<PlayerMap>> GetCurrentPlayerMaps(){
+        List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
 
-    private void InitPlayerMapController(){
-        if(currentAccountID != null){
-            //List<PlayerMap> current_player_maps = player_maps.Where(m => m.AccountID == currentAccountID).ToList();
-
-            //PlayerMapController playerMapController = new PlayerMapController(acc_id, current_player_maps);
-
-            //Debug.Log("CHECK------------------------------------------------" + current_player_maps.Count);
-        }
+        List<PlayerMap> currentPlayerMaps = playerMaps.Where(m => m.AccountID == currentAccountID).ToList();
+        return currentPlayerMaps;
     }
 }
