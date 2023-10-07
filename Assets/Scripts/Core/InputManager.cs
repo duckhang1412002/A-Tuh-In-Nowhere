@@ -141,10 +141,113 @@ public class InputManager : MonoBehaviour
                 for (int j = 0; j < columns; j++)
                 {
                     grid[i, j] = values[j];
+                    if (grid[i, j] == "Null") grid[i, j] = "Wall";
                     btnCnt += values[j].Contains("Door") ? 1 : 0;
                 }
             }
-            listMap.Add(grid);
+            /* ------------------------------------ */
+            int[] dx = { 0, 0, 1, -1, 1, 1, -1, -1 };
+            int[] dy = { -1, 1, 0, 0, 1, -1, 1, -1 };
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (grid[i, j] == "Wall")
+                    {
+                        int cnt = 0;
+                        bool haveGround = false;
+                        for (int k = 0; k < 8; ++k)
+                        {
+                            int x = i + dx[k];
+                            int y = j + dy[k];
+                            if (x < 0 || x >= rows || y < 0 || y >= columns)
+                            {
+                                ++cnt;
+                                continue;
+                            }
+                            if (grid[x, y] == "Wall" || grid[x, y] == "Null")
+                            {
+                                ++cnt;
+                            }
+                            else
+                            {
+                                haveGround = true;
+                            }
+                        }
+                        if (cnt >= 4 && !haveGround) grid[i, j] = "Null";
+                    }
+                }
+            }
+                    // Assuming rows and columns are defined earlier in your code
+                    // Create a grid that is larger by 2 rows and 2 columns
+                    /*            string[,] grid = new string[rows + 2, columns + 2];
+
+                                // Fill the entire grid with "Wall" initially
+                                for (int i = 0; i < rows + 2; i++)
+                                {
+                                    for (int j = 0; j < columns + 2; j++)
+                                    {
+                                        grid[i, j] = "Wall";
+                                    }
+                                }
+
+                                for (int i = 0; i < rows; i++)
+                                {
+                                    string[] values = lines[currentLineIndex + 1 + i].Split(' ');
+                                    for (int j = 0; j < columns; j++)
+                                    {
+                                        if (values[j] == "Null")
+                                        {
+                                            // Replace "." with "Null"
+                                            grid[i + 1, j + 1] = "Wall";
+                                        }
+                                        else
+                                        {
+                                            // Place the actual item from your input
+                                            grid[i + 1, j + 1] = values[j];
+                                        }
+
+                                        btnCnt += values[j].Contains("Door") ? 1 : 0;
+                                    }
+                                }
+                                // Now, your grid contains "#" in the outer boundary, walls generated around main items, and the actual data in the inner grid.
+
+                                // Verify 
+                                int[] dx = { 0, 0, 1, -1, 1, 1, -1, -1 };
+                                int[] dy = { -1, 1, 0, 0, 1, -1, 1, 1 };
+                                for (int i = 0; i < rows + 2; ++i)
+                                {
+                                    for (int j = 0; j < columns + 2; ++j)
+                                    {
+                                        if (grid[i, j] == "Wall")
+                                        {
+                                            // Check all 8 adjacent cells
+                                            bool allWallsOrNull = true;
+                                            int cnt = 0;
+                                            for (int k = 0; k < 4; ++k)
+                                            {
+                                                int x = i + dx[k];
+                                                int y = j + dy[k];
+                                                if (x < 0 || x > rows + 1 || y < 0 || y > columns + 1)
+                                                {
+                                                    ++cnt;
+                                                    continue;
+                                                }
+                                                if (grid[x, y] == "Wall" || grid[x, y] == "Null")
+                                                {
+                                                    ++cnt;
+                                                }
+                                            }
+                                            if (cnt == 4) grid[i, j] = "Null";
+                                        }
+                                    }
+                                }
+                    */
+
+
+
+                    /* ------------------------------------ */
+                    listMap.Add(grid);
             // Move to the next map's data
             currentLineIndex += 1 + rows;
         }
