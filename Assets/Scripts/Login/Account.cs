@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 
 public class Account 
@@ -10,7 +9,7 @@ public class Account
     }
 
     // for login - register 
-    public Account(int _ID, string _Email, string _Pwd, string _Fullname, bool _IsOnlined, int _RoleID, string _Nickname, string _AvtLink, int _Ribbon, int _Key)
+    public Account(int _ID, string _Email, string _Pwd, string _Fullname, bool _IsOnlined, int _RoleID, string _Nickname, string _AvtLink, int _Ribbon, int _Key, DateTime _LastActive)
     {
         AccountID = _ID;
         Email = _Email;
@@ -23,10 +22,11 @@ public class Account
         Ribbon = 0;
         Key = 0;
 
+        Lastactive = _LastActive;
+
         // auto data
         StatusID = "";
         Createddate = DateTime.Now;
-        Lastactive = DateTime.Now;
         Deleteddate = null;
         IsDeleted = false;
     }

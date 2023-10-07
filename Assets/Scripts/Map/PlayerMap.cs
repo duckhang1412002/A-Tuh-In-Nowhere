@@ -1,16 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 public class PlayerMap 
 {
-    public PlayerMap()
+    public PlayerMap(){
+
+    }
+    
+    public PlayerMap(int _AccountID, int _MapID, int _RestartNumber, int _StepNumber, bool _IsVoted, bool _IsDeleted)
     {
-        AccountID = 0;
-        MapID = 0;
-        StepNumber = 0;
-        RestartNumber = 0;
-        IsVoted = false;
+        AccountID = _AccountID;
+        MapID = _MapID;
+        StepNumber = _StepNumber;
+        RestartNumber = _RestartNumber;
+        IsVoted = _IsVoted;
+        IsDeleted = _IsDeleted;
+        DeletedDate = null;
     }
 
     public int AccountID { get; set; }
@@ -18,4 +24,6 @@ public class PlayerMap
     public int StepNumber {get; set; }
     public int RestartNumber {get; set; }
     public bool IsVoted {get; set; }
+    public bool IsDeleted {get; set; }
+    public DateTime? DeletedDate { get; set; }
 }
