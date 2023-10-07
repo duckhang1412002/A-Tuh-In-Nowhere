@@ -8,7 +8,7 @@ public class PlayerMap
 
     }
     
-    public PlayerMap(int _AccountID, int _MapID, int _StepNumber, int _RestartNumber, bool _IsVoted, bool _IsDeleted)
+    public PlayerMap(int _AccountID, int _MapID, int _RestartNumber, int _StepNumber, bool _IsVoted, bool _IsDeleted)
     {
         AccountID = _AccountID;
         MapID = _MapID;

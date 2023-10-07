@@ -104,19 +104,19 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
         return playerMaps;
     }
 
-    public async void UpdatePlayerMap(List<PlayerMap> playerMaps, int mapID, int stepNum, int restartNum)
+    public async void UpdatePlayerMap(List<PlayerMap> playerMaps, int mapID, int restartNum, int stepNum)
     {
         //List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
 
         //Call the coroutine
-        StartCoroutine(UpdatePlayerMapAsync(playerMaps, mapID, stepNum, restartNum));       
+        StartCoroutine(UpdatePlayerMapAsync(playerMaps, mapID, restartNum, stepNum));       
     }
 
-    private IEnumerator UpdatePlayerMapAsync(List<PlayerMap> playerMaps, int mapID, int stepNum, int restartNum)
+    private IEnumerator UpdatePlayerMapAsync(List<PlayerMap> playerMaps, int mapID, int restartNum, int stepNum)
     {
         if(currentAccountID != null){
             int accountID = (int)currentAccountID;
-            PlayerMap newPlayerMap = new PlayerMap(accountID, mapID, stepNum, restartNum, false, false){};
+            PlayerMap newPlayerMap = new PlayerMap(accountID, mapID, restartNum, stepNum, false, false){};
             UpdateInfoPlayerMap(newPlayerMap);
         } else yield break;
     }

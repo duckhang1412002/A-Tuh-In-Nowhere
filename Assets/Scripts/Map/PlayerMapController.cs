@@ -31,7 +31,7 @@ public class PlayerMapController : MonoBehaviour
             levelName = int.Parse(txt_levelName.Split(' ')[1].Trim());
             restartNumber = int.Parse(txt_restartNum.Split(':')[1].Trim());
 
-            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, levelName, 0, restartNumber);
+            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, levelName, restartNumber, 0);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
     }
