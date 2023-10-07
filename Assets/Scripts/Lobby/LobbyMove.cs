@@ -264,6 +264,9 @@ public class LobbyMove : MonoBehaviour
                         InputManager.fileName = SplitText(item.name, 3) + ".txt";
                         PhotonNetwork.OfflineMode = true;
                         PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+                        PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
+                        PlayerMapController.RestartNumber = -1;
+                        PlayerMapController.StepNumber = 0;
                         SceneManager.LoadScene("Game");
                     }  
                 }
