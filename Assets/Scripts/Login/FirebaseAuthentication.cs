@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using System.Threading.Tasks;
+using UnityEditor.Experimental.GraphView;
 
 public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 {
@@ -24,7 +25,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
     public FirebaseAuth auth;
     public FirebaseUser user;
     public DatabaseReference accountsRef;
-    public int? currentAccountID = null;
+    public int currentAccountID = -1; //I change from int? to -1 for null
 
     // Login Variables
     [Space]
@@ -40,6 +41,10 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
     public TMP_InputField passwordRegisterField;
     public TMP_InputField confirmPasswordRegisterField;
     public ErrorPopup errorPopup;
+
+    private float autoUpdateDelay = 10f; //30 s
+    private float autoUpdateDelayTimer = 10f;
+    private bool autoUpdate = false;
 
     public static FirebaseAuthentication GetInstance()
     {
@@ -63,6 +68,23 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Update()
+    {
+        if (currentAccountID != -1)
+        {
+            autoUpdateDelayTimer += Time.deltaTime;
+            if (autoUpdateDelayTimer >= autoUpdateDelay)
+            {
+                autoUpdateDelayTimer = 0.0f;
+                //autoUpdate = true; // Enable input after the delay
+                                   //Start update last active
+
+                string Node = "Account";
+                StartCoroutine(UpdateData(Node, "Lastactive", currentAccountID, DateTime.Now.ToString()));
+            }
+        }
     }
 
     public void InitializeFirebase()
@@ -119,8 +141,9 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                 string _AvtLink = accountSnapshot.Child("Avatarlink").Value.ToString();
                 string _Key = accountSnapshot.Child("Key").Value.ToString();
                 string _Ribbon = accountSnapshot.Child("Ribbon").Value.ToString();
+                string _LastActive = accountSnapshot.Child("Lastactive").Value.ToString();
 
-                accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined, int.Parse(_RoleID), _Nickname, _AvtLink, int.Parse(_Ribbon), int.Parse(_Key)));
+                accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined, int.Parse(_RoleID), _Nickname, _AvtLink, int.Parse(_Ribbon), int.Parse(_Key), DateTime.Parse(_LastActive)));
             }
             Debug.Log("++++++++++++++++++++++++++++++ " + accounts.Count);
         }
@@ -380,7 +403,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    Account newAccount = new Account(0, email, password, name, false, 2, "", "", 0, 0){};
+                    Account newAccount = new Account(0, email, password, name, false, 2, "", "", 0, 0, DateTime.Now){};
 
                     UpdateInfoAccount(newAccount);         
                     ClearFields();              
@@ -409,11 +432,15 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
     {
         Debug.Log(accounts[0].Fullname);
         Account account = FindAccount(email, accounts);
-        if (account != null && account.IsOnlined)
+        if (account != null)
         {
-            // Account is already logged in
-            return true;
+            TimeSpan timeDifference = DateTime.Now - account.Lastactive;
+            return timeDifference.TotalSeconds < 10;
         }
+        /*        if (account != null && account.IsOnlined)
+                {
+                    return true;
+                }*/
         // Account is not logged in
         return false;
     }
