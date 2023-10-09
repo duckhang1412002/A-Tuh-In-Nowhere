@@ -2,12 +2,15 @@ using System.Collections;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using TMPro;
 using Firebase.Database;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using System.Threading.Tasks;
+
 public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
 {
     // Firebase variable
@@ -21,9 +24,6 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
     [SerializeField]
     FirebaseAuthentication firebaseAuth;
 
-
-    //Player Map variable
-    public List<PlayerMap> player_maps;
     public int? currentAccountID = null;
 
     public static PlayerMapAuthentication GetInstance()
@@ -43,9 +43,7 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
             currentAccountID = firebaseAuth.currentAccountID;
         }
 
-        FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(false);
-        player_maps = new List<PlayerMap>();
-        player_maps.Clear();
+        //FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(true);
 
         InitializeFirebase();
     }
@@ -62,79 +60,101 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(gameObject);
     }
 
-    public void InitializeFirebase()
+    public async void InitializeFirebase()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
-        {
-            if (task.Result == DependencyStatus.Available)
-            {
-                // Debug.Log("Firebase dependencies are available.");
-                // // Initialize the Firebase app
-                // FirebaseApp app = FirebaseApp.DefaultInstance;
-
-                // // Initialize the FirebaseAuth instance
-                // auth = FirebaseAuth.DefaultInstance;
-                // // Get the reference to the "Accounts" node
-                // accountsRef = FirebaseDatabase.DefaultInstance.RootReference;
-                GetPlayerMaps(accountsRef);
-            }
-            else
-            {
-                Debug.LogError("Could not resolve all Firebase dependencies: " + task.Result);
-            }
-        });
+        Task fetchTask = GetListPlayerMap(accountsRef);  
+        await fetchTask;
     }
 
-    private void GetPlayerMaps(DatabaseReference db)
+    private async Task<List<PlayerMap>> GetListPlayerMap(DatabaseReference db)
     {
-        player_maps.Clear();
-        // Read the data for each account
-        db.Child("PlayerMap").GetValueAsync().ContinueWith(readTask =>
+        List<PlayerMap> playerMaps = new List<PlayerMap>();
+
+        // Create a task to fetch data from the "accounts" node
+        Task<DataSnapshot> task = db.Child("PlayerMap").GetValueAsync();
+
+        // Wait for the task to complete
+        await task;
+
+        if (task.IsCompleted)
         {
-            if (readTask.IsFaulted)
+            // Retrieve the data snapshot
+            DataSnapshot snapshot = task.Result;
+
+            // Loop through the children of the "accounts" node
+            foreach (DataSnapshot accountSnapshot in snapshot.Children)
             {
-                Debug.LogError("Failed to read accounts data: " + readTask.Exception);
-            }
-            else if (readTask.IsCompleted)
-            {
-                DataSnapshot snapshot = readTask.Result;
+                // Parse and use the account data
+                string _AccountID = accountSnapshot.Child("AccountID").Value.ToString();
+                string _MapID = accountSnapshot.Child("MapID").Value.ToString();
+                string _StepNumber = accountSnapshot.Child("Stepnum").Value.ToString();
+                string _RestartNumber = accountSnapshot.Child("Restartnum").Value.ToString();
+                bool _IsVoted = Convert.ToBoolean(accountSnapshot.Child("IsVoted").GetValue(false));
+                bool _IsDeleted = Convert.ToBoolean(accountSnapshot.Child("IsDeleted").GetValue(false));
+                //string _DeletedDate = accountSnapshot.Child("DeletedDate").Value.ToString();
 
-                if (snapshot != null && snapshot.HasChildren)
-                {
-                    foreach (var accountSnapshot in snapshot.Children)
-                    {
-                        string accountID = accountSnapshot.Child("AccountID").Value.ToString();
-                        string mapID = accountSnapshot.Child("MapID").Value.ToString();
-                        string stepNumber = accountSnapshot.Child("Stepnum").Value.ToString();
-                        string restartNumber = accountSnapshot.Child("Restartnum").Value.ToString();
-                        bool isVoted = Convert.ToBoolean(accountSnapshot.Child("IsVoted").GetValue(false));
-
-                        player_maps.Add(
-                            new PlayerMap{
-                                AccountID = int.Parse(accountID),
-                                MapID = int.Parse(mapID),
-                                StepNumber = int.Parse(stepNumber),
-                                RestartNumber = int.Parse(restartNumber),
-                                IsVoted = isVoted
-                            }
-                        );
-                    }
-                }
-                else
-                {
-                    Debug.Log("No player maps data found.");
-                }
-            }
-        });
-    }
-
-    private void InitPlayerMapController(){
-        if(currentAccountID != null){
-            List<PlayerMap> current_player_maps = player_maps.Where(m => m.AccountID == currentAccountID).ToList();
-
-            //PlayerMapController playerMapController = new PlayerMapController(acc_id, current_player_maps);
-
-            Debug.Log("CHECK------------------------------------------------" + current_player_maps.Count);
+                playerMaps.Add(new PlayerMap(int.Parse(_AccountID), int.Parse(_MapID), int.Parse(_StepNumber), int.Parse(_RestartNumber), _IsVoted, _IsDeleted));
+            }          
         }
+        else
+        {
+            Debug.LogError("Failed to get accounts: " + task.Exception);
+        }
+
+        return playerMaps;
+    }
+
+    public async void UpdatePlayerMap(List<PlayerMap> playerMaps, int mapID, int restartNum, int stepNum)
+    {
+        //List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
+
+        //Call the coroutine
+        StartCoroutine(UpdatePlayerMapAsync(playerMaps, mapID, restartNum, stepNum));       
+    }
+
+    private IEnumerator UpdatePlayerMapAsync(List<PlayerMap> playerMaps, int mapID, int restartNum, int stepNum)
+    {
+        if(currentAccountID != null){
+            int accountID = (int)currentAccountID;
+            PlayerMap newPlayerMap = new PlayerMap(accountID, mapID, restartNum, stepNum, false, false){};
+            UpdateInfoPlayerMap(newPlayerMap);
+        } else yield break;
+    }
+
+    private async void UpdateInfoPlayerMap(PlayerMap map)
+    {
+        string Node = "PlayerMap";
+
+        StartCoroutine(UpdateData(Node, "AccountID", map.AccountID, map.MapID, currentAccountID.ToString()));
+        StartCoroutine(UpdateData(Node, "MapID", map.AccountID, map.MapID,  map.MapID.ToString()));
+        StartCoroutine(UpdateData(Node, "Stepnum", map.AccountID, map.MapID, map.StepNumber.ToString()));
+        StartCoroutine(UpdateData(Node, "Restartnum", map.AccountID, map.MapID, map.RestartNumber.ToString()));
+        StartCoroutine(UpdateData(Node, "IsVoted", map.AccountID, map.MapID, map.IsVoted.ToString()));
+        StartCoroutine(UpdateData(Node, "IsDeleted", map.AccountID, map.MapID, map.IsDeleted.ToString()));
+        StartCoroutine(UpdateData(Node, "DeletedDate", map.AccountID, map.MapID, map.DeletedDate.ToString()));
+    }
+
+    public IEnumerator UpdateData(string Node, string dataName, int accountID, int mapID, string data)
+    {
+        //Set the currently logged in user deaths
+        var DBTask = accountsRef.Child(Node).Child(accountID.ToString() + "_" + mapID.ToString()).Child(dataName).SetValueAsync(data);
+
+        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+        if (DBTask.Exception != null)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+        }
+        else
+        {
+            //Deaths are now updated
+        }
+    }
+
+    public async Task<List<PlayerMap>> GetCurrentPlayerMaps(){
+        List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
+
+        List<PlayerMap> currentPlayerMaps = playerMaps.Where(m => m.AccountID == currentAccountID).ToList();
+        return currentPlayerMaps;
     }
 }
