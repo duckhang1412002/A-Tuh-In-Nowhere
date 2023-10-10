@@ -89,6 +89,8 @@ public class LobbyMove : MonoBehaviour
     [SerializeField] private float moveSteps = 1.0f;
     [SerializeField] private float moveSpeed = 5.0f;
 
+    [SerializeField] private GameObject playerMapController;
+
     private AsyncOperation loadingOperation;
 
 
@@ -96,9 +98,21 @@ public class LobbyMove : MonoBehaviour
     void Start()
     {
         /*Add in-game interact object to Dictionary*/
-        GameObject[] foundObjects = FindObjectsWithNameContaining("GameObj");
+        GameObject[] foundObjects = FindObjectsWithNameContaining("GameObj_Ground");
         foreach(GameObject i in foundObjects){
             objectList.Add(i.transform.position, i);
+        }
+
+        foundObjects = null;
+        foundObjects = FindObjectsWithNameContaining("GameObj");
+        foreach(GameObject i in foundObjects){
+            if(i.name == "GameObj_Ground") continue;
+
+            if(objectList.ContainsKey(i.transform.position)){
+                objectList[i.transform.position] = i;
+            } else {
+                objectList.Add(i.transform.position, i);
+            }
         }
 
         /*Get canvas*/
@@ -261,13 +275,11 @@ public class LobbyMove : MonoBehaviour
             } else if(item.name.Contains("Info")){
                 if(SceneManager.GetActiveScene().name == "SingleLobby"){
                     if(item.name.Contains("Map")){
-                        InputManager.fileName = SplitText(item.name, 3) + ".txt";
-                        PhotonNetwork.OfflineMode = true;
-                        PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
                         PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
-                        SceneManager.LoadScene("Game");
+
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();               
                     }  
                 }
             }
@@ -316,12 +328,17 @@ public class LobbyMove : MonoBehaviour
         if (itemTag.Contains("Wall")) {
             return false;        
         }
+        else if (itemTag.Contains("MapBlock")) {
+            return false;        
+        }
         else if(!itemTag.Contains("Info")){
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 canvas_board_idle.enabled = true;
                 canvas_board_sing.enabled = false;
                 canvas_board_mult.enabled = false;
                 canvas_board_prof.enabled = false;
+            } else if (SceneManager.GetActiveScene().name == "SingleLobby"){
+                GameObject.Find("UIManager").GetComponent<UIManager>().HideConfirmMapUI();
             }
         }  
         else // Just ground

@@ -727,7 +727,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             //GameOverUI.SetActive(true);
             if (singleMode)
             {
-                SceneManager.LoadScene("Map");
+                SceneManager.LoadScene("SingleLobby");
             }
             else
             {
