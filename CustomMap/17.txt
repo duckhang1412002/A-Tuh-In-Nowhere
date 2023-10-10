@@ -1,0 +1,17 @@
+2
+7 7
+Wall Wall Wall DimensionOut:Top Wall Wall Wall
+Wall Socket_Blue PlayerM:0 Ground Ground Socket_Green Wall
+Wall Ground Ground Ground Ground Ground Wall
+DimensionOut:Left Ground Ground DimensionIn:1 Ground Ground DimensionOut:Right
+Wall Ground Ground Ground Ground Ground Wall
+Wall Socket_Yellow Ground Ground Ground Socket_Red Wall
+Wall Wall Wall DimensionOut:Bottom Wall Wall Wall
+7 7
+Wall Wall Wall DimensionOut:Top Wall Wall Wall
+Wall Socket_Red Ground Ground Wall Socket_Yellow Wall
+Wall Wall Wall Ground Wall Ground Wall
+DimensionOut:Left Ground Ground DimensionIn:0 Ground Ground DimensionOut:Right
+Wall Ground Wall Ground Wall Wall Wall
+Wall Socket_Green Wall Ground Ground Socket_Blue Wall
+Wall Wall Wall DimensionOut:Bottom Wall Wall Wall

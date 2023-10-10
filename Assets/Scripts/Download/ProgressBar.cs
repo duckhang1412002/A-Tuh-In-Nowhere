@@ -58,7 +58,7 @@ public class ProgressBar : MonoBehaviour
     private IEnumerator VerifyData()
     {
         // Load data
-        dataRef.Child("Maps").GetValueAsync().ContinueWith(readTask =>
+        dataRef.Child("Map").GetValueAsync().ContinueWith(readTask =>
         {
             if (readTask.IsFaulted)
             {
