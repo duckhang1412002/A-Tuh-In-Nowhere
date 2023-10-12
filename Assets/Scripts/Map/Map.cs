@@ -11,13 +11,12 @@ public class Map
 
     }
 
-    public Map(int _AccountID, int _MapID, string _MapName, string _MapType, string _MapThumbnail, string _Description, DateTime _CreatedDate, DateTime _ModifiedDate, bool _IsDeleted)
+    public Map(int _AccountID, int _MapID, string _MapName, string _MapType, string _Description, DateTime _CreatedDate, DateTime _ModifiedDate, bool _IsDeleted)
     {
         AccountID = _AccountID;
         MapID = _MapID;
         MapName = _MapName;
         MapType = _MapType;
-        MapThumbnail = _MapThumbnail;
         Description = _Description;
         CreatedDate = _CreatedDate;
         ModifiedDate = _ModifiedDate;
