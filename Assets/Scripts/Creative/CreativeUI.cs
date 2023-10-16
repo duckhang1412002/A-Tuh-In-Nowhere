@@ -32,12 +32,48 @@ public class CreativeUI : MonoBehaviour
     Text authorName;
     [SerializeField]
     Button playBtn, backBtn;
+    [SerializeField]
+    Button globalBtn, myBtn;
+
+    Dictionary<Map, GameObject> mapItemList = new Dictionary<Map, GameObject>();
+
+    private string mapMode;
     void Start()
     {
         auth = FirebaseAuthentication.GetInstance();
         dataRef = FirebaseDatabase.DefaultInstance.RootReference;
         backBtn.onClick.AddListener(hideMapInfo);
         StartCoroutine(GetListCreativeMap());
+        globalBtn.interactable = false;
+        mapMode = "Global";
+        myBtn.onClick.AddListener(switchToMyMaps);
+        globalBtn.onClick.AddListener(switchToGlobalMaps); ;
+    }
+
+    private void switchToGlobalMaps()
+    {
+        globalBtn.interactable = false;
+        myBtn.interactable = true;
+        foreach (var x in mapItemList)
+        {
+            if (x.Key.AccountID != auth.currentAccountID)
+            {
+                x.Value.SetActive(true);
+            }
+        }
+    }
+
+    private void switchToMyMaps()
+    {
+        globalBtn.interactable = true;
+        myBtn.interactable = false;
+        foreach (var x in mapItemList)
+        {
+            if (x.Key.AccountID != auth.currentAccountID)
+            {
+                x.Value.SetActive(false);
+            }
+        }
     }
 
     private void DuplicateObject(Map map)
@@ -79,6 +115,8 @@ public class CreativeUI : MonoBehaviour
             }
         }
         newObject.GetComponent<Button>().onClick.AddListener(() => showMapInfo(map));
+        newObject.gameObject.SetActive(true);
+        mapItemList.Add(map, newObject);
     }
 
     private void hideMapInfo()
@@ -150,7 +188,7 @@ public class CreativeUI : MonoBehaviour
                         string _StatusID = mapSnapShot.Child("StatusID").Value.ToString();
                         string _CreatedDate = mapSnapShot.Child("Createddate").Value.ToString();
 
-                        if (_MapType == "creative" && _StatusID == "map_approved" && _AccountID == auth.currentAccountID)
+                        if (_MapType == "creative" && _StatusID == "map_approved")
                         {
                             Debug.Log("Creative map: " + _MapID);
                             //DuplicateObject(_MapID);
@@ -175,6 +213,6 @@ public class CreativeUI : MonoBehaviour
         {
             DuplicateObject(map);
         }
-        Destroy(mapItem); //destroy the prototype
+        //Destroy(mapItem); //destroy the prototype
     }
 }
