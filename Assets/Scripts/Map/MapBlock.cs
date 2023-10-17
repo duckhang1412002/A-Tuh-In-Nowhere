@@ -55,4 +55,15 @@ public class MapBlock : MonoBehaviour {
     public int[] GetPreviousMapID(){
         return previousMapID;
     }
+
+    public void ChangeMapMachineStatus(bool status, GameObject obj){
+        Animator animator;  
+        animator = obj.GetComponent<Animator>();
+
+        if(status){
+            animator.SetTrigger("MCC-Blue");
+        } else {
+            animator.SetTrigger("MCC-Red");
+        }
+    }
 }

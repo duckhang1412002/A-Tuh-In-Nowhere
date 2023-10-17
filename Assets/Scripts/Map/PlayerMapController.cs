@@ -51,10 +51,12 @@ public class PlayerMapController : MonoBehaviour
                     int[] previousMapID = m.GetComponent<MapBlock>().GetPreviousMapID();
                     bool checkVar = true;
 
+                    m.GetComponent<MapBlock>().ChangeMapMachineStatus(m.GetComponent<MapBlock>().IsSolved, m);
+
                     foreach(int n in previousMapID){
                         GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + n);
                         if(singleMap != null){
-                            if(!singleMap.GetComponent<MapBlock>().IsSolved){
+                            if(!singleMap.GetComponent<MapBlock>().IsSolved){                            
                                 checkVar = false;
                                 break;
                             }
