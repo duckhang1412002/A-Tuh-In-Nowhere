@@ -58,7 +58,7 @@ public class ProgressBar : MonoBehaviour
     private IEnumerator VerifyData()
     {
         // Load data
-        dataRef.Child("Maps").GetValueAsync().ContinueWith(readTask =>
+        dataRef.Child("Map").GetValueAsync().ContinueWith(readTask =>
         {
             if (readTask.IsFaulted)
             {
@@ -136,26 +136,6 @@ public class ProgressBar : MonoBehaviour
 
         yield return new WaitUntil(() => slider.value >= 1f);
         SceneManager.LoadScene("Login");
-    }
-
-    IEnumerator Download(string url)
-    {
-        UnityWebRequest req = UnityWebRequest.Get(url);
-        req.SendWebRequest();
-
-        while(!req.isDone)
-        {
-            Debug.Log("Im downloading!");
-            yield return null;
-        }
-        if (req.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(req.error);
-        } else
-        {
-            Debug.Log("Download success!");
-        }
-        req.Dispose();
     }
 
     IEnumerator GetFileRequest(string url, string filePath, Action<UnityWebRequest> callback)

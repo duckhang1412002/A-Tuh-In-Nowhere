@@ -549,6 +549,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         catch (Exception ex)
         {
             Debug.LogError($"Error getting last account ID: {ex.Message}");
+            Debug.Log("");
         }
 
         // Return a default value (e.g., -1) if there was an error or no data found.

@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SingleLobby.unity
     guid: 8843d2d94db73464f9be19c2ffec69ed
   - enabled: 1
+    path: Assets/Scenes/CreativeLobby.unity
+    guid: 0208a329bbf6e6544bedb8628f375ec3
+  - enabled: 1
     path: Assets/Scenes/PlayMode.unity
     guid: 89b34736c8207fd41b2b0a48754680bd
   - enabled: 1

@@ -264,7 +264,7 @@ public class LobbyMove : MonoBehaviour
                 if(item.name.Contains("Sing")){
                     SceneManager.LoadScene("SingleLobby");
                 } else if(item.name.Contains("Mult")){
-                    SceneManager.LoadScene("Loading");
+                    SceneManager.LoadScene("CreativeLobby");
                 } else {
 
                 }     
