@@ -279,7 +279,7 @@ public class LobbyMove : MonoBehaviour
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
 
-                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();               
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
                     }  
                 }
             }

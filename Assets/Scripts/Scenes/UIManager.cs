@@ -18,9 +18,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ShowConfirmMapUI(bool isActive, MapBlock map){
+    public async void ShowConfirmMapUI(bool isActive, MapBlock map){
         confirmMapUI.SetActive(true);
-        confirmMapUI.GetComponent<ConfirmMapUI>().ConfirmMapUISetup(isActive, map);
+        await confirmMapUI.GetComponent<ConfirmMapUI>().ConfirmMapUISetup(isActive, map);
     }
 
     public void HideConfirmMapUI(){

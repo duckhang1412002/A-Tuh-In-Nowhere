@@ -5,29 +5,37 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
-public class LobbyManager : MonoBehaviourPunCallbacks
+public class LobbyManager2 : MonoBehaviourPunCallbacks
 {
-    [Header("Room Name")]
-    [SerializeField] private TMP_Text roomNameText;
+    /*bool connectedToMaster;
 
     private void Start()
     {
-        // Display the room name and default map name
-        roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+        PhotonNetwork.ConnectUsingSettings();
+        connectedToMaster = false;
     }
 
 
-    public void ConfirmSelection()
+    public override void OnConnectedToMaster()
+    {   
+        connectedToMaster = true;
+        PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby()
     {
-        // Transfer back to the room
-        PhotonNetwork.LoadLevel("Game");
-    }
+        if (connectedToMaster)
+        {
 
+        }
+    }*/
 
     /*---Test---*/
     public void CreateRoom(string roomName)
     {
+        Debug.Log("HÊ");
         PhotonNetwork.CreateRoom(roomName);
     }
 
@@ -39,11 +47,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnCreatedRoom()
     {
         // Called when a room is successfully created
+        SceneManager.LoadScene("MultiplayerLobby");
     }
 
     public override void OnJoinedRoom()
     {
         // Called when a player successfully joins a room
         // You can load the game scene here
+        SceneManager.LoadScene("MultiplayerLobby");
     }
 }

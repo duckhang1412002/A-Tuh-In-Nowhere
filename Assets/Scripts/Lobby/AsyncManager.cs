@@ -35,7 +35,7 @@ public class AsyncManager : MonoBehaviourPunCallbacks
     {
         if (connectedToMaster)
         {
-            SceneManager.LoadScene("Lobby");
+            SceneManager.LoadScene("LobbySetting");
         }
     }
 
