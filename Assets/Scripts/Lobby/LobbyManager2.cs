@@ -9,6 +9,31 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager2 : MonoBehaviourPunCallbacks
 {
+    private GameObject playerHost;
+    private GameObject playerClient;
+
+    void Start(){
+        playerHost = playerClient = null;
+
+        if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            if(PhotonNetwork.IsMasterClient && PhotonNetwork.PlayerList.Length == 1){
+                playerHost = GameObject.Find("PlayerM");
+            } else {
+                playerClient = GameObject.Find("PlayerF");
+            }
+
+
+            if (playerHost != null)
+            {
+                playerHost.GetComponent<LobbyMove>().enabled = true;
+            }
+            else if(playerClient != null)
+            {
+                playerClient.GetComponent<LobbyMove>().enabled = true;
+            }
+        }
+    }
+
     /*---Test---*/
     public void CreateRoom(string roomName)
     {
@@ -31,5 +56,23 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
         // Called when a player successfully joins a room
         // You can load the game scene here
         SceneManager.LoadScene("MultiplayerLobby");
+
+        if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            if(PhotonNetwork.IsMasterClient && PhotonNetwork.PlayerList.Length == 1){
+                playerHost = GameObject.Find("PlayerM");
+            } else {
+                playerClient = GameObject.Find("PlayerF");
+            }
+
+
+            if (playerHost != null)
+            {
+                playerHost.GetComponent<LobbyMove>().enabled = true;
+            }
+            else if(playerClient != null)
+            {
+                playerClient.GetComponent<LobbyMove>().enabled = true;
+            }
+        }
     }
 }
