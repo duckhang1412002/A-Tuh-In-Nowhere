@@ -7,7 +7,8 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.Playables;
 
-public class LobbyMove : MonoBehaviour
+
+public class LobbyMove : MonoBehaviourPunCallbacks
 {
     Camera worldCamera;
     Camera playerCamera;
@@ -91,7 +92,8 @@ public class LobbyMove : MonoBehaviour
 
     [SerializeField] private GameObject playerMapController;
 
-    private AsyncOperation loadingOperation;
+    private GameObject playerHost;
+    private GameObject playerClient;
 
 
     // Start is called before the first frame update
@@ -281,6 +283,14 @@ public class LobbyMove : MonoBehaviour
 
                         playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
                     }  
+                } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+                    if(item.name.Contains("Map")){
+                        PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
+                        PlayerMapController.RestartNumber = -1;
+                        PlayerMapController.StepNumber = 0;
+
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
+                    } 
                 }
             }
         }
@@ -386,4 +396,19 @@ public class LobbyMove : MonoBehaviour
     //     GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
     //     return (Vector2)this.transform.position == targetPos;
     // }
+
+    public override void OnJoinedRoom()
+    {
+        if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            // Check if the local player is the master client (host).
+            if (PhotonNetwork.IsMasterClient)
+            {
+                playerHost = GameObject.Find("PlayerM");
+            }
+            else
+            {
+                playerClient = GameObject.Find("PlayerF");
+            }
+        }
+    }
 }

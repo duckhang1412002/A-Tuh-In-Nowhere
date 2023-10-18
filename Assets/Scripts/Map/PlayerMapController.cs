@@ -99,8 +99,14 @@ public class PlayerMapController : MonoBehaviour
 
     public void StartTheMap(){
         InputManager.fileName = MapID + ".txt";
-        PhotonNetwork.OfflineMode = true;
-        PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+
+        if(SceneManager.GetActiveScene().name == "SingleLobby"){
+            PhotonNetwork.OfflineMode = true;
+            PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+        } else {
+
+        }
+
         SceneManager.LoadScene("Game"); 
     }
 }

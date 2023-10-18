@@ -9,33 +9,9 @@ using UnityEngine.SceneManagement;
 
 public class LobbyManager2 : MonoBehaviourPunCallbacks
 {
-    /*bool connectedToMaster;
-
-    private void Start()
-    {
-        PhotonNetwork.ConnectUsingSettings();
-        connectedToMaster = false;
-    }
-
-
-    public override void OnConnectedToMaster()
-    {   
-        connectedToMaster = true;
-        PhotonNetwork.JoinLobby();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        if (connectedToMaster)
-        {
-
-        }
-    }*/
-
     /*---Test---*/
     public void CreateRoom(string roomName)
     {
-        Debug.Log("HÊ");
         PhotonNetwork.CreateRoom(roomName);
     }
 
