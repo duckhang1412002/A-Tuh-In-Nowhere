@@ -13,10 +13,11 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Firebase.Extensions;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class ProgressBar : MonoBehaviour
 {
-
+    [SerializeField]
     private Slider slider;
     private float targetProgress;
     private long totalFile;
@@ -28,9 +29,18 @@ public class ProgressBar : MonoBehaviour
 
     DatabaseReference dataRef;
 
+    public static bool needRepair = false;
+
+    [SerializeField]
+    private Button repairBtn, yesBtn, noBtn;
+    [SerializeField]
+    private GameObject confirmPanel;
+    [SerializeField]
+    private TextMeshProUGUI askText;
+
     private void Awake()
     {
-        slider = gameObject.GetComponent<Slider>(); 
+        //slider = gameObject.GetComponent<Slider>(); 
     }
     private void Start()
     {
@@ -39,9 +49,47 @@ public class ProgressBar : MonoBehaviour
         folderPath = $"{Application.persistentDataPath}/Maps/";
         dataRef = FirebaseDatabase.DefaultInstance.RootReference;
         targetProgress = 0;
+        repairBtn.onClick.AddListener(Repair);
+        yesBtn.onClick.AddListener(AcceptDownload);
+        noBtn.onClick.AddListener(DenyDownload);
+        //StartCoroutine(VerifyData());
 
+    }
+
+    private void AcceptDownload()
+    {
+        confirmPanel.SetActive(false);
         StartCoroutine(VerifyData());
+    }
 
+    private void DenyDownload()
+    {
+        Application.Quit();
+    }
+
+    private void Repair()
+    {
+        askText.text = "Are you sure to start Repair?";
+        yesBtn.onClick.RemoveAllListeners();
+        noBtn.onClick.RemoveAllListeners();
+        yesBtn.onClick.AddListener(AcceptRepair);
+        noBtn.onClick.AddListener(DenyRepair);
+    }
+
+    private void AcceptRepair()
+    {
+        askText.text = "The repair process start! Please close the application and open again";
+        yesBtn.gameObject.SetActive(false);
+        noBtn.gameObject.SetActive(false);
+        StartCoroutine(RepairData());
+    }
+
+    private void DenyRepair()
+    {
+        yesBtn.onClick.RemoveAllListeners();
+        noBtn.onClick.RemoveAllListeners();
+        yesBtn.onClick.AddListener(AcceptDownload);
+        noBtn.onClick.AddListener(DenyDownload);
     }
 
     private void Update()
@@ -53,6 +101,27 @@ public class ProgressBar : MonoBehaviour
             slider.value += fillSpeed * Time.deltaTime;
         }
     }
+
+    private IEnumerator RepairData()
+    {
+        string mapsFolderPath = Path.Combine(Application.persistentDataPath, "Maps");
+        string thumbsFolderPath = Path.Combine(Application.persistentDataPath, "Thumbs");
+
+        if (Directory.Exists(mapsFolderPath))
+        {
+            Directory.Delete(mapsFolderPath, true); // The second parameter indicates whether to delete subdirectories.
+            Debug.Log("Maps folder deleted.");
+        }
+
+        if (Directory.Exists(thumbsFolderPath))
+        {
+            Directory.Delete(thumbsFolderPath, true);
+            Debug.Log("Thumbs folder deleted.");
+        }
+
+        yield return null;
+    }
+
     private List<string> filesToDownload = new List<string>();
     private bool isDataLoaded;
     private IEnumerator VerifyData()
