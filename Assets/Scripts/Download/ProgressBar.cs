@@ -75,18 +75,18 @@ public class ProgressBar : MonoBehaviour
 
                     foreach (var mapSnapShot in snapshot.Children)
                     {
-                        string fileName = mapSnapShot.Key + ".txt";
-                        string path = folderPath + fileName;
+                        string mapName = mapSnapShot.Key;
+                        string path = folderPath + mapName + ".txt";
 
                         if (File.Exists(path))
                         {
-                            Debug.Log("Found the " + fileName + " file locally, Loading!!!");
-                            checkedFile++;
+                            Debug.Log("Found the " + mapName + " file locally, Loading!!!");
+                            checkedFile+=2; //map txt and image
                         }
                         else
                         {
-                            Debug.Log("Adding " + fileName + " to download queue");
-                            filesToDownload.Add(fileName);
+                            Debug.Log("Adding " + mapName + " to download queue");
+                            filesToDownload.Add(mapName);
                         }
                     }
 
@@ -106,11 +106,11 @@ public class ProgressBar : MonoBehaviour
         // Now, you can proceed with the download
         if (filesToDownload.Count > 0)
         {
-            foreach(var file in filesToDownload)
+            foreach(var mapName in filesToDownload)
             {
-                string url = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{file}?alt=media";
-                string filePath = $"{Application.persistentDataPath}/Maps/{file}";
-                StartCoroutine(GetFileRequest(url, filePath, (UnityWebRequest req) =>
+                string urlMap = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{mapName}.txt?alt=media";
+                string fileMapPath = $"{Application.persistentDataPath}/Maps/{mapName}.txt";
+                StartCoroutine(GetFileRequest(urlMap, fileMapPath, (UnityWebRequest req) =>
                 {
                     if (req.isNetworkError || req.isHttpError)
                     {
@@ -125,7 +125,27 @@ public class ProgressBar : MonoBehaviour
                     }
                 }
 
-));
+                ));
+
+                // %2F = /
+                string urlThumb = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/Thumbnail%2F{mapName}.png?alt=media";
+                string thumbPath = $"{Application.persistentDataPath}/Thumbs/{mapName}.png";
+                StartCoroutine(GetFileRequest(urlThumb, thumbPath, (UnityWebRequest req) =>
+                {
+                    if (req.isNetworkError || req.isHttpError)
+                    {
+                        //Logging any errors that may happen
+                        Debug.Log($"{req.error} : {req.downloadHandler.text}");
+                    }
+
+                    else
+                    {
+                        Debug.Log("I end download here!");
+                        checkedFile++;
+                    }
+                }
+
+                ));
             }
 
         }
