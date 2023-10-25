@@ -16,6 +16,7 @@ public class AsyncManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         loadingBtn.text = "Connecting...";
+        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -28,7 +29,8 @@ public class AsyncManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {   
         connectedToMaster = true;
-        PhotonNetwork.JoinLobby();
+        if (!PhotonNetwork.InLobby)
+            PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()

@@ -19,7 +19,7 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     private GameObject playerClient;
 
     void Start(){
-        playerHost = playerClient = null;
+        /*playerHost = playerClient = null;
 
         if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
             Debug.Log("Player " + PhotonNetwork.LocalPlayer.ActorNumber);
@@ -37,7 +37,7 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
 
                 playerClient.GetComponent<LobbyMove>().enabled = true;
             }
-        }
+        }*/
     }
 
     /*---Test---*/
@@ -55,7 +55,9 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     {
         // Called when a room is successfully created
         if(SceneManager.GetActiveScene().name != "MultiplayerLobby"){
-            SceneManager.LoadScene("MultiplayerLobby");
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.LoadLevel("MultiplayerLobby");
+                //SceneManager.LoadScene("MultiplayerLobby");
         }
     }
 
@@ -63,9 +65,9 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
     {
         // Called when a player successfully joins a room
         // You can load the game scene here
-        if(SceneManager.GetActiveScene().name != "MultiplayerLobby"){
+/*        if(SceneManager.GetActiveScene().name != "MultiplayerLobby"){
             SceneManager.LoadScene("MultiplayerLobby");
-        }
+        }*/
     }
 
     [PunRPC]
@@ -128,10 +130,11 @@ public class LobbyManager2 : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-        Debug.Log("IS RUNNING PLAYER: " + newPlayer.ActorNumber);
+        photonView.RPC("SetPlayerM", RpcTarget.All);
+/*        Debug.Log("IS RUNNING PLAYER: " + newPlayer.ActorNumber);
         if(newPlayer.ActorNumber == 2 && PhotonNetwork.LocalPlayer.ActorNumber == 1){
             //SetPlayerM(playerHost.GetComponent<Player>().ID, (int)playerHost.GetComponent<Player>().CurrentPosition.x, (int)playerHost.GetComponent<Player>().CurrentPosition.y);
             PhotonView.Get(this).RPC("SetPlayerM", RpcTarget.OthersBuffered, playerHost.GetComponent<Player>().ID, (int)playerHost.GetComponent<Player>().CurrentPosition.x, (int)playerHost.GetComponent<Player>().CurrentPosition.y);
-        }     
+        }   */  
     }
 }
