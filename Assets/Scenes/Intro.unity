@@ -659,6 +659,7 @@ MonoBehaviour:
   yesBtn: {fileID: 1839194369}
   noBtn: {fileID: 440415320}
   confirmPanel: {fileID: 59056713}
+  askText: {fileID: 419190662}
 --- !u!1 &812667123
 GameObject:
   m_ObjectHideFlags: 0
