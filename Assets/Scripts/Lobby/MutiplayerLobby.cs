@@ -8,12 +8,28 @@ public class MutiplayerLobby : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] Transform parentTransform;
-    GameObject p1, p2; //player 1 - 2
+    GameObject myPlayer, otherPlayer;
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            InstantiatePlayerM(0, 1);
+            myPlayer = InstantiatePlayerM(0, 1);
+            Debug.Log("Player1 ID: " + myPlayer.GetComponent<PhotonView>().ViewID);
+            photonView.RPC("setOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
+        }
+    }
+
+    [PunRPC]
+    void setOtherPlayer(int viewID)
+    {
+        otherPlayer = PhotonView.Find(viewID).gameObject;
+    }
+
+    private void Update()
+    {
+        if (otherPlayer != null)
+        {
+            Debug.Log("OtherPlayer: " + otherPlayer); 
         }
     }
 
@@ -21,7 +37,9 @@ public class MutiplayerLobby : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("I joined room!");
-        InstantiatePlayerM(5, 1);
+        myPlayer = InstantiatePlayerM(5, 1);
+        Debug.Log("Player2 ID: " + myPlayer.GetComponent<PhotonView>().ViewID);
+        photonView.RPC("setOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
     }
 
     private GameObject InstantiatePlayerM(int x, int y)
