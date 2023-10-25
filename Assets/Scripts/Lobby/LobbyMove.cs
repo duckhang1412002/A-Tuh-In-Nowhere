@@ -330,19 +330,4 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     //     GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
     //     return (Vector2)player.transform.position == targetPos;
     // }
-
-    public override void OnJoinedRoom()
-    {
-        if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-            // Check if the local player is the master client (host).
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.PlayerList.Length == 1)
-            {
-                playerHost = GameObject.Find("PlayerM");
-            }
-            else
-            {
-                playerClient = GameObject.Find("PlayerF");
-            }
-        }
-    }
 }
