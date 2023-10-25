@@ -26,7 +26,7 @@ public class ConfirmMapUI : MonoBehaviour {
         RawImage imageComponent = this.gameObject.transform.Find("Board/Mask/Map Image").GetComponent<RawImage>();
         if (imageComponent != null)
         {
-            string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapID}.jpg";
+            string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapID}.png";
 
             if (File.Exists(imagePath))
             {
