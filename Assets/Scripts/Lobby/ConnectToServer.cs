@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class AsyncManager : MonoBehaviourPunCallbacks
+public class ConnectToServer : MonoBehaviourPunCallbacks
 {
     private bool connectedToMaster = false;
 
@@ -37,7 +37,7 @@ public class AsyncManager : MonoBehaviourPunCallbacks
     {
         if (connectedToMaster)
         {
-            SceneManager.LoadScene("LobbySetting");
+            SceneManager.LoadScene("Lobby");
         }
     }
 
