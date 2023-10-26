@@ -3818,7 +3818,6 @@ GameObject:
   - component: {fileID: 500891155}
   - component: {fileID: 500891154}
   - component: {fileID: 500891153}
-  - component: {fileID: 500891152}
   m_Layer: 5
   m_Name: Button_8
   m_TagString: Untagged
@@ -3847,23 +3846,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &500891152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 500891150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &500891153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3908,7 +3890,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 500891152}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -5251,8 +5233,6 @@ GameObject:
   - component: {fileID: 642808300}
   - component: {fileID: 642808299}
   - component: {fileID: 642808298}
-  - component: {fileID: 642808301}
-  - component: {fileID: 642808302}
   m_Layer: 5
   m_Name: Button_Create
   m_TagString: Untagged
@@ -5325,7 +5305,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 642808301}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: CreateLobby
         m_Mode: 1
@@ -5375,37 +5355,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642808296}
   m_CullTransparentMesh: 1
---- !u!114 &642808301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642808296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
---- !u!114 &642808302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642808296}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d584f5bce5bf0624f9d0ec098c2d43d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPrefabM: {fileID: 0}
-  playerPrefabF: {fileID: 0}
 --- !u!1 &646760944
 GameObject:
   m_ObjectHideFlags: 0
@@ -6063,8 +6012,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d584f5bce5bf0624f9d0ec098c2d43d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefabM: {fileID: 0}
-  playerPrefabF: {fileID: 0}
 --- !u!224 &737846249 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6064310881810812360, guid: 6ee739ad57335804e9693a62b3ea1aae, type: 3}
@@ -6082,7 +6029,6 @@ GameObject:
   - component: {fileID: 744191122}
   - component: {fileID: 744191121}
   - component: {fileID: 744191120}
-  - component: {fileID: 744191119}
   m_Layer: 5
   m_Name: Button_6
   m_TagString: Untagged
@@ -6111,23 +6057,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &744191119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 744191117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &744191120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6172,7 +6101,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 744191119}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -7878,7 +7807,6 @@ GameObject:
   - component: {fileID: 927892673}
   - component: {fileID: 927892672}
   - component: {fileID: 927892671}
-  - component: {fileID: 927892670}
   m_Layer: 5
   m_Name: Button_4
   m_TagString: Untagged
@@ -7907,23 +7835,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &927892670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927892668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &927892671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7968,7 +7879,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 927892670}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -8507,8 +8418,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d584f5bce5bf0624f9d0ec098c2d43d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefabM: {fileID: 0}
-  playerPrefabF: {fileID: 0}
 --- !u!1 &999239765
 GameObject:
   m_ObjectHideFlags: 0
@@ -9397,7 +9306,6 @@ GameObject:
   - component: {fileID: 1134286797}
   - component: {fileID: 1134286796}
   - component: {fileID: 1134286795}
-  - component: {fileID: 1134286794}
   m_Layer: 5
   m_Name: Button_7
   m_TagString: Untagged
@@ -9426,23 +9334,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1134286794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1134286792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &1134286795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9487,7 +9378,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1134286794}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -10505,8 +10396,6 @@ GameObject:
   - component: {fileID: 1345660192}
   - component: {fileID: 1345660191}
   - component: {fileID: 1345660190}
-  - component: {fileID: 1345660193}
-  - component: {fileID: 1345660194}
   m_Layer: 5
   m_Name: Button_Join
   m_TagString: Untagged
@@ -10579,7 +10468,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1345660193}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: JoinLobby
         m_Mode: 1
@@ -10629,37 +10518,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1345660188}
   m_CullTransparentMesh: 1
---- !u!114 &1345660193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1345660188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
---- !u!114 &1345660194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1345660188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d584f5bce5bf0624f9d0ec098c2d43d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPrefabM: {fileID: 0}
-  playerPrefabF: {fileID: 0}
 --- !u!1 &1366336063
 GameObject:
   m_ObjectHideFlags: 0
@@ -10908,7 +10766,6 @@ GameObject:
   - component: {fileID: 1446617458}
   - component: {fileID: 1446617457}
   - component: {fileID: 1446617456}
-  - component: {fileID: 1446617455}
   m_Layer: 5
   m_Name: Button_9
   m_TagString: Untagged
@@ -10937,23 +10794,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1446617455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1446617453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &1446617456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10998,7 +10838,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1446617455}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -11060,7 +10900,6 @@ GameObject:
   - component: {fileID: 1473861380}
   - component: {fileID: 1473861379}
   - component: {fileID: 1473861378}
-  - component: {fileID: 1473861377}
   m_Layer: 5
   m_Name: Button_1
   m_TagString: Untagged
@@ -11089,23 +10928,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1473861377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1473861375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &1473861378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11150,7 +10972,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1473861377}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -12399,7 +12221,6 @@ GameObject:
   - component: {fileID: 1606253547}
   - component: {fileID: 1606253546}
   - component: {fileID: 1606253545}
-  - component: {fileID: 1606253544}
   m_Layer: 5
   m_Name: Button_2
   m_TagString: Untagged
@@ -12428,23 +12249,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1606253544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1606253542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &1606253545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12489,7 +12293,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1606253544}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -12629,7 +12433,7 @@ GameObject:
   - component: {fileID: 1623618354}
   - component: {fileID: 1623618353}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: NumberKeyList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13529,7 +13333,6 @@ GameObject:
   - component: {fileID: 1716774816}
   - component: {fileID: 1716774815}
   - component: {fileID: 1716774814}
-  - component: {fileID: 1716774813}
   m_Layer: 5
   m_Name: Button_Remove
   m_TagString: Untagged
@@ -13557,23 +13360,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1716774813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716774811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &1716774814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13618,7 +13404,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1716774813}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: RemoveStringCode
         m_Mode: 1
@@ -14762,7 +14548,6 @@ GameObject:
   - component: {fileID: 1876525738}
   - component: {fileID: 1876525737}
   - component: {fileID: 1876525736}
-  - component: {fileID: 1876525735}
   m_Layer: 5
   m_Name: Button_3
   m_TagString: Untagged
@@ -14791,23 +14576,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1876525735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876525733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &1876525736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14852,7 +14620,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1876525735}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2
@@ -15569,7 +15337,6 @@ GameObject:
   - component: {fileID: 2015568364}
   - component: {fileID: 2015568363}
   - component: {fileID: 2015568362}
-  - component: {fileID: 2015568361}
   m_Layer: 5
   m_Name: Button_5
   m_TagString: Untagged
@@ -15598,23 +15365,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2015568361
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2015568359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b263dedaa143c9a4ba22be54dabd06f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputFieldObj: {fileID: 532099976}
-  lobbySettingBtnObj: {fileID: 0}
-  lobbyListBtnObj: {fileID: 0}
-  settingUIObj: {fileID: 0}
-  lobbyListUIObj: {fileID: 0}
 --- !u!114 &2015568362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15659,7 +15409,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2015568361}
+      - m_Target: {fileID: 1779944688}
         m_TargetAssemblyTypeName: LobbySettingUI, Assembly-CSharp
         m_MethodName: ConcatStringCode
         m_Mode: 2

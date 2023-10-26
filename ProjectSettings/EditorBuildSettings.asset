@@ -21,12 +21,6 @@ EditorBuildSettings:
     path: Assets/Scenes/CreativeLobby.unity
     guid: 0208a329bbf6e6544bedb8628f375ec3
   - enabled: 1
-    path: Assets/Scenes/PlayMode.unity
-    guid: 89b34736c8207fd41b2b0a48754680bd
-  - enabled: 0
-    path: Assets/Scenes/Map.unity
-    guid: 7626c5502f7677645a7c59b01492d291
-  - enabled: 1
     path: Assets/Scenes/Loading.unity
     guid: 05f09e110c855334daeccd3c8da41f38
   - enabled: 1

@@ -83,6 +83,9 @@ MonoBehaviour:
   - ActiveStartBtn
   - AddMapLoaded
   - CallPunPlayerM
+  - setP1
+  - setP
+  - setOtherPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

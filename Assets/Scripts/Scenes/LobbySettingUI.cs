@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
+using UnityEngine.SceneManagement;
 
-public class LobbySettingUI : MonoBehaviour
+public class LobbySettingUI : MonoBehaviourPunCallbacks
 {
     private static string codeName;
     [SerializeField] private GameObject inputFieldObj;
@@ -20,28 +20,71 @@ public class LobbySettingUI : MonoBehaviour
     private Button lobbySettingBtn;
     private Button lobbyListBtn;
 
+    public RoomOptions roomOptions = new RoomOptions(); // new RoomOption to create a room
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
+        if(!PhotonNetwork.IsConnected) 
+            PhotonNetwork.ConnectUsingSettings();
+
+
+        PhotonNetwork.JoinLobby(); // auto join lobby as the scene load
+
         inp_code = inputFieldObj.GetComponent<TMP_InputField>();
         inp_code.text = "";
         codeName = "";
+          
+        lobbySettingBtn = lobbySettingBtnObj.GetComponent<Button>();
+        lobbyListBtn = lobbyListBtnObj.GetComponent<Button>();
+        lobbyListUIObj.SetActive(false);
+        settingUIObj.SetActive(true);
+        lobbyListBtn.onClick.AddListener(SwitchToLobbyListUI);
+        lobbySettingBtn.onClick.AddListener(SwitchToLobbySettingUI);
+    }
 
-        if(this.gameObject.name == "LobbySettingUI"){            
-            lobbySettingBtn = lobbySettingBtnObj.GetComponent<Button>();
-            lobbyListBtn = lobbyListBtnObj.GetComponent<Button>();
-            lobbyListUIObj.SetActive(false);
-            settingUIObj.SetActive(true);
-            lobbyListBtn.onClick.AddListener(SwitchToLobbyList);
-            lobbySettingBtn.onClick.AddListener(SwitchToLobbySettings);
+    public override void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+
+    private void Update()
+    {
+
+    }
+    
+    // Call if enter a room fail
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        if (returnCode == ErrorCode.GameDoesNotExist)
+        {
+            //DisplayErrorText("The room does not exist!");
+        }
+        else
+        {
+            // Handle other join room failure cases
+            //DisplayErrorText("Failed to join the room: " + message);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnBacModeScene()
     {
-        
+        PhotonNetwork.LeaveLobby();
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("GameMode");
+    }
+
+
+    // enter the lobby_dual after create a room successfully
+    public override void OnJoinedRoom()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        PhotonNetwork.LoadLevel("MultiplayerLobby");
+    }
+
+    public void OnClickLeftRoom()
+    {
+        PhotonNetwork.LeaveRoom();
     }
 
     public void ConcatStringCode(GameObject btn){
@@ -57,7 +100,7 @@ public class LobbySettingUI : MonoBehaviour
     }
 
 
-    private void SwitchToLobbyList()
+    private void SwitchToLobbyListUI()
     {
         lobbySettingBtn.interactable = true;
         lobbyListBtn.interactable = false;
@@ -65,7 +108,7 @@ public class LobbySettingUI : MonoBehaviour
         settingUIObj.SetActive(false);
     }
 
-    private void SwitchToLobbySettings()
+    private void SwitchToLobbySettingUI()
     {
         lobbySettingBtn.interactable = false;
         lobbyListBtn.interactable = true;
@@ -83,16 +126,37 @@ public class LobbySettingUI : MonoBehaviour
     }
 
     public void CreateLobby(){
-        this.gameObject.GetComponent<LobbyManager2>().CreateRoom(AutoGenerateCode());
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            roomOptions.MaxPlayers = 2;
+            roomOptions.IsOpen = true;
+            PhotonNetwork.CreateRoom(AutoGenerateCode(), roomOptions, TypedLobby.Default); // enter the room
+        }
+        else
+        {
+
+        }
+
+        //this.gameObject.GetComponent<LobbyManager>().CreateRoom(AutoGenerateCode());
     }
 
     public void JoinLobby(){
-        this.gameObject.GetComponent<LobbyManager2>().JoinRoom(codeName);
-    }
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            if (string.IsNullOrEmpty(codeName) || codeName.Trim().Length != 6)
+            {
+                //DisplayErrorText("Please enter a valid room with 6 digits.");
+            }
+            else 
+            {
+                PhotonNetwork.JoinRoom(codeName);
+            }   
+        }
+        else
+        {
+            //DisplayErrorText("Not connected to the server!");
+        }
 
-    public void GetListLobby(){
-        /**/
-
-    /**/
+        //this.gameObject.GetComponent<LobbyManager>().JoinRoom(codeName);
     }
 }
