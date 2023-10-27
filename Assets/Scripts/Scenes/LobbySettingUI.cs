@@ -122,6 +122,8 @@ public class LobbySettingUI : MonoBehaviourPunCallbacks
             codeName += Random.Range(1, 9);
         }
 
+        Debug.Log(codeName);
+
         return codeName;
     }
 
@@ -136,8 +138,6 @@ public class LobbySettingUI : MonoBehaviourPunCallbacks
         {
 
         }
-
-        //this.gameObject.GetComponent<LobbyManager>().CreateRoom(AutoGenerateCode());
     }
 
     public void JoinLobby(){
@@ -156,7 +156,5 @@ public class LobbySettingUI : MonoBehaviourPunCallbacks
         {
             //DisplayErrorText("Not connected to the server!");
         }
-
-        //this.gameObject.GetComponent<LobbyManager>().JoinRoom(codeName);
     }
 }

@@ -11,39 +11,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Room Name")]
     [SerializeField] private TMP_Text roomNameText;
 
+    private GameObject playerHost;
+
     private void Start()
     {
         // Display the room name and default map name
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
-    }
-
-
-    public void ConfirmSelection()
-    {
-        // Transfer back to the room
-        PhotonNetwork.LoadLevel("Game");
-    }
-
-
-    /*---Test---*/
-    public void CreateRoom(string roomName)
-    {
-        PhotonNetwork.CreateRoom(roomName);
-    }
-
-    public void JoinRoom(string roomName)
-    {
-        PhotonNetwork.JoinRoom(roomName);
-    }
-
-    public override void OnCreatedRoom()
-    {
-        // Called when a room is successfully created
-    }
-
-    public override void OnJoinedRoom()
-    {
-        // Called when a player successfully joins a room
-        // You can load the game scene here
+        if(PhotonNetwork.LocalPlayer.ActorNumber == 1){
+            playerHost = GameObject.Find("PlayerM(Clone)");
+            playerHost.GetComponent<LobbyMove>().enabled = true;
+        }
     }
 }

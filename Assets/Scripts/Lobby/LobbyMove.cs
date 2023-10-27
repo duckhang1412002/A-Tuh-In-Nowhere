@@ -72,7 +72,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         /*Init 2 type cameras*/
         worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        playerCamera = this.gameObject.transform.Find("Target Camera").gameObject.GetComponent<Camera>();
+        playerCamera = this.gameObject.transform.Find("Camera").gameObject.GetComponent<Camera>();
 
         worldCamera.enabled = true;
         playerCamera.enabled = false;
