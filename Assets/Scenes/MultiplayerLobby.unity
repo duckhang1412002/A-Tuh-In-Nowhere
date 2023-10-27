@@ -2465,6 +2465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefabM: {fileID: 8180728363008695862, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
+  playerPrefabF: {fileID: 8749076344735605972, guid: 15b842ec11594bb4b9542fd0858db93d, type: 3}
   parentTransform: {fileID: 1634083583}
 --- !u!114 &452382443
 MonoBehaviour:

@@ -2259,7 +2259,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &233461324
 MonoBehaviour:
@@ -10336,7 +10336,7 @@ GameObject:
   - component: {fileID: 1024709191}
   - component: {fileID: 1024709190}
   m_Layer: 0
-  m_Name: Target Camera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -12176,7 +12176,7 @@ Transform:
   - {fileID: 435094497}
   - {fileID: 744809672}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1166518102
 GameObject:
@@ -13361,7 +13361,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 1
   moveSpeed: 5
-  playerMapController: {fileID: 233461322}
 --- !u!4 &1307350882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2775976767752157289, guid: 217e25996adb2e34da6af88f78fc18d4, type: 3}

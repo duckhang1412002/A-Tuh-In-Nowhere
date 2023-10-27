@@ -27,11 +27,11 @@ public class PlayerMapController : MonoBehaviour
     private TextMeshProUGUI Txt_RestartNum;
 
     public async void Start(){
-            playerMapAuthentication = PlayerMapAuthentication.GetInstance();
-            if(playerMapAuthentication != null){
-                ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();      
-                UpdatePlayerMap();
-            }
+        playerMapAuthentication = PlayerMapAuthentication.GetInstance();
+        if(playerMapAuthentication != null){
+            ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();      
+            UpdatePlayerMap();
+        }
 
         if(ActiveMapList != null){
             if(SceneManager.GetActiveScene().name != "SingleLobby" && MapID > 0){

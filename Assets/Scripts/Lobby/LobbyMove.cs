@@ -26,11 +26,10 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     [SerializeField] private float moveSteps = 1.0f;
     [SerializeField] private float moveSpeed = 5.0f;
 
-    [SerializeField] private GameObject playerMapController;
-
     private GameObject playerHost;
     private GameObject playerClient;
     private static RPCManager rpcManager;
+    private GameObject playerMapController;
 
 
     // Start is called before the first frame update
@@ -83,6 +82,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         /*Player part*/
         player = this.GetComponent<Player>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
+        playerMapController = GameObject.Find("PlayerMapController");
     }
 
     private void Update()
@@ -200,7 +200,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                 if(item.name.Contains("Sing")){
                     SceneManager.LoadScene("SingleLobby");
                 } else if(item.name.Contains("Mult")){
-                    SceneManager.LoadScene("CreativeLobby");
+                    SceneManager.LoadScene("Loading");
                 } else {
 
                 }     

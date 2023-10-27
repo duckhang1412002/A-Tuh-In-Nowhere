@@ -306,7 +306,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 1
   moveSpeed: 5
-  playerMapController: {fileID: 0}
 --- !u!1 &8180728363277563048
 GameObject:
   m_ObjectHideFlags: 0
