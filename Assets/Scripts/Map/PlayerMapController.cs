@@ -18,6 +18,7 @@ public class PlayerMapController : MonoBehaviour
     public static int MapID = -1;
     public static int RestartNumber = -1;
     public static int StepNumber = 0;
+    public static string MapRole = "";
 
     /*TextMeshPro fields*/
     [SerializeField]
@@ -34,10 +35,10 @@ public class PlayerMapController : MonoBehaviour
         }
 
         if(ActiveMapList != null){
-            if(SceneManager.GetActiveScene().name != "SingleLobby" && MapID > 0){
+            if(SceneManager.GetActiveScene().name == "Game" && MapID > 0){
                 Txt_Level.text = "Level " + MapID;
                 Txt_RestartNum.text = "Restart Number: " + ++RestartNumber;
-            } else if(SceneManager.GetActiveScene().name == "SingleLobby"){
+            } else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 foreach(PlayerMap m in ActiveMapList){
                     GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + m.MapID);
                     if(singleMap != null){
@@ -104,9 +105,18 @@ public class PlayerMapController : MonoBehaviour
             PhotonNetwork.OfflineMode = true;
             PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
         } else {
+            MultiplayerConfirmMap();
 
+            // InputManager.fileName = "mul-" + MapID + ".txt";
+            // PhotonNetwork.OfflineMode = false;
+            // PhotonNetwork.CreateRoom("multi", new RoomOptions(), TypedLobby.Default);
         }
 
         SceneManager.LoadScene("Game"); 
+    }
+
+    public void MultiplayerConfirmMap(){
+        GameObject lobbyManager = GameObject.Find("LobbyManager");
+        lobbyManager.GetComponent<MultiplayerLobby>().CheckBeforeStartTheMap(true, MapRole, MapID);
     }
 }

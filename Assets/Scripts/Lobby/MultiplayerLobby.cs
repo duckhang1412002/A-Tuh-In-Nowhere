@@ -3,15 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MutiplayerLobby : MonoBehaviourPunCallbacks
+public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] GameObject playerPrefabF;
     [SerializeField] Transform parentTransform;
     GameObject myPlayer, otherPlayer;
+
+    public bool IsReadyToStartTheMap{get; set;}
+    public string MapRole{get; set;}
+    public int CurrentChosingMap{get; set;}
+
     void Start()
     {
+        IsReadyToStartTheMap = false;
+        MapRole = "";
+        CurrentChosingMap = -1;
+
         if (PhotonNetwork.IsMasterClient)
         {
             myPlayer = InstantiatePlayerM(0, -4);
@@ -26,9 +35,21 @@ public class MutiplayerLobby : MonoBehaviourPunCallbacks
         otherPlayer = PhotonView.Find(viewID).gameObject;
     }
 
-    private void Update()
-    {
+    public void CheckBeforeStartTheMap(bool mineIsReady, string mineMapRole, int mineCurrentChosingMap){
+        IsReadyToStartTheMap = mineIsReady;
+        MapRole = mineMapRole;
+        CurrentChosingMap = mineCurrentChosingMap;
 
+        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
+    }
+
+    [PunRPC]
+    void Pun_CheckBeforeStartTheMap(bool otherIsReady, string otherMapRole, int otherCurrentChosingMap){
+        if(otherIsReady && IsReadyToStartTheMap){
+            if(otherMapRole != MapRole && otherCurrentChosingMap == CurrentChosingMap){
+                Debug.Log("Validate BEFORE JOIN MAP SUCCESSFULLY");
+            }
+        }
     }
 
     //other player join

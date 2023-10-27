@@ -8,9 +8,9 @@ using UnityEngine.UI;
 using System.IO;
 
 public class ConfirmMapUI : MonoBehaviour {
-    public async Task ConfirmMapUISetup(bool isActive, MapBlock map){
-        GameObject btn_Play = this.gameObject.transform.Find("Board").Find("Btn_Play").gameObject;
+    [SerializeField] private GameObject btn_Play;
 
+    public async Task ConfirmMapUISetup(bool isActive, MapBlock map){
         if(!isActive){
             btn_Play.GetComponent<Button>().interactable = false;
         } else {
@@ -18,7 +18,11 @@ public class ConfirmMapUI : MonoBehaviour {
         }
 
         this.gameObject.SetActive(true);
-        await ShowMapInfo(map);  
+        await ShowMapInfo(map);
+
+        if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            if(btn_Play.GetComponent<Button>().interactable) btn_Play.GetComponent<Button>().interactable = false;
+        }
     }
 
     private async Task ShowMapInfo(MapBlock map)
@@ -42,10 +46,5 @@ public class ConfirmMapUI : MonoBehaviour {
                 Debug.LogError("Image file not found: " + imagePath);
             }
         }
-
-        // playBtn.onClick.AddListener(() => LoadGameByID(map.MapID));
-        // mapName.text = map.MapName;
-        // authorName.text = $"Made by ID: {map.AccountID}";
-        // mapPopUp.SetActive(true);
     }
 }

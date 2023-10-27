@@ -222,6 +222,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
+                        PlayerMapController.MapRole = SplitText(item.name, 4);
 
                         playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
                     } 
@@ -281,7 +282,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                 canvas_board_sing.enabled = false;
                 canvas_board_mult.enabled = false;
                 canvas_board_prof.enabled = false;
-            } else if (SceneManager.GetActiveScene().name == "SingleLobby"){
+            } else if (SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 GameObject.Find("UIManager").GetComponent<UIManager>().HideConfirmMapUI();
             }
         }  
