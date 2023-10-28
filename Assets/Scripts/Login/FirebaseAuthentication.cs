@@ -10,7 +10,6 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using System.Threading.Tasks;
-using UnityEditor.Experimental.GraphView;
 
 public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 {

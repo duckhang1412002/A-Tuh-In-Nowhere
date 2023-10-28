@@ -176,6 +176,26 @@ public class ChangeRoom : MonoBehaviourPunCallbacks
 
     }
 
+    public void JoinLobby(string lobbyCode)
+    {
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            if (string.IsNullOrEmpty(lobbyCode) || lobbyCode.Trim().Length != 6)
+            {
+                DisplayErrorText("Please enter a valid room with 6 digits.");
+            }
+            else 
+            {
+                PhotonNetwork.JoinRoom(lobbyCode);
+            }   
+        }
+        else
+        {
+            DisplayErrorText("Not connected to the server!");
+        }
+
+    }
+
     private bool IsValidCharacter(char character)
     {
         return character >= '1' && character <= '5';
@@ -449,7 +469,8 @@ public class ChangeRoom : MonoBehaviourPunCallbacks
     // enter the lobby_dual after create a room successfully
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("Game");
+        if (PhotonNetwork.IsMasterClient)
+        PhotonNetwork.LoadLevel("MultiplayerLobby");
     }
 
     public void OnClickLeftRoom()

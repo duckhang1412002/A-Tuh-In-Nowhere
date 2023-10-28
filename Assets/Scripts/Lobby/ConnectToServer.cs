@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class AsyncManager : MonoBehaviourPunCallbacks
+public class ConnectToServer : MonoBehaviourPunCallbacks
 {
     private bool connectedToMaster = false;
 
@@ -16,6 +16,7 @@ public class AsyncManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         loadingBtn.text = "Connecting...";
+        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -28,14 +29,15 @@ public class AsyncManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {   
         connectedToMaster = true;
-        PhotonNetwork.JoinLobby();
+        if (!PhotonNetwork.InLobby)
+            PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()
     {
         if (connectedToMaster)
         {
-            SceneManager.LoadScene("Lobby");
+            SceneManager.LoadScene("LobbySetting");
         }
     }
 

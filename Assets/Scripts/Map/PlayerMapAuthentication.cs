@@ -33,6 +33,7 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        this.gameObject.AddComponent<PlayerMapController>();
         firebaseAuth = FirebaseAuthentication.GetInstance();
         if (firebaseAuth != null)
         {

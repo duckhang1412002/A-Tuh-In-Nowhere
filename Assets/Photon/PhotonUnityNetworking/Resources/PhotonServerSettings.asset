@@ -87,7 +87,6 @@ MonoBehaviour:
   - setP
   - SetOtherPlayer
   - CheckBeforeStartTheMap
-  - Pun_CheckBeforeStartTheMap
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

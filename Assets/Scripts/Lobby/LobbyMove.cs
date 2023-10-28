@@ -7,7 +7,8 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.Playables;
 
-public class LobbyMove : MonoBehaviour
+
+public class LobbyMove : MonoBehaviourPunCallbacks
 {
     Camera worldCamera;
     Camera playerCamera;
@@ -15,72 +16,8 @@ public class LobbyMove : MonoBehaviour
     Canvas canvas_screen, canvas_board_idle, canvas_board_sing, canvas_board_mult, canvas_board_prof;
     private Dictionary<Vector2,GameObject> objectList = new Dictionary<Vector2,GameObject>();
 
-    public int ID { get; set; }
-    public string TempNextKey { get; set; }
-    public string PreviousMove { get; set; }
-    public Vector2 PreviousDirection { get; set; }
-    public float DefaultZAxis { get; set; }
 
-    private Vector2 currentPos;
-    private Vector2 targetPos;
-    private Vector2 previousPos;
-    private Vector2 tempCurrentPos;
-    private Vector2 tempTargetPos;
-    public Vector2 CurrentPosition
-    {
-        get => currentPos;
-        set
-        {
-            currentPos = value;
-            SetCurrentPosition(currentPos.x, currentPos.y);
-        }
-    }
-
-    public Vector2 PreviousPosition
-    {
-        get => previousPos;
-        set
-        {
-            previousPos = value;
-            SetPreviousPosition(previousPos.x, previousPos.y);
-        }
-    }
-
-    public Vector2 TargetPosition
-    {
-        get => targetPos;
-        set
-        {
-            targetPos = value;
-            SetTargetPosition(targetPos.x, targetPos.y);
-        }
-    }
-
-    public Vector2 TempCurrentPosition
-    {
-        get; set;
-    }
-
-    public Vector2 TempTargetPosition
-    {
-        get; set;
-    }
-
-    private void SetCurrentPosition(float x, float y)
-    {
-        currentPos = new Vector2(x, y);
-    }
-
-    private void SetPreviousPosition(float x, float y)
-    {
-        currentPos = new Vector2(x, y);
-    }
-
-    private void SetTargetPosition(float x, float y)
-    {
-        targetPos = new Vector2(x, y);
-    }
-
+    /*MoveController*/
     private bool isPauseGame, enableMove, isMoving;
     private Player player;
     private bool allowInput = true;
@@ -89,16 +26,31 @@ public class LobbyMove : MonoBehaviour
     [SerializeField] private float moveSteps = 1.0f;
     [SerializeField] private float moveSpeed = 5.0f;
 
-    private AsyncOperation loadingOperation;
+    private GameObject playerHost;
+    private GameObject playerClient;
+    private static RPCManager rpcManager;
+    private GameObject playerMapController;
 
 
     // Start is called before the first frame update
     void Start()
     {
         /*Add in-game interact object to Dictionary*/
-        GameObject[] foundObjects = FindObjectsWithNameContaining("GameObj");
+        GameObject[] foundObjects = FindObjectsWithNameContaining("GameObj_Ground");
         foreach(GameObject i in foundObjects){
             objectList.Add(i.transform.position, i);
+        }
+
+        foundObjects = null;
+        foundObjects = FindObjectsWithNameContaining("GameObj");
+        foreach(GameObject i in foundObjects){
+            if(i.name == "GameObj_Ground") continue;
+
+            if(objectList.ContainsKey(i.transform.position)){
+                objectList[i.transform.position] = i;
+            } else {
+                objectList.Add(i.transform.position, i);
+            }
         }
 
         /*Get canvas*/
@@ -119,7 +71,7 @@ public class LobbyMove : MonoBehaviour
 
         /*Init 2 type cameras*/
         worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        playerCamera = this.gameObject.transform.Find("Target Camera").gameObject.GetComponent<Camera>();
+        playerCamera = this.gameObject.transform.Find("Camera").gameObject.GetComponent<Camera>();
 
         worldCamera.enabled = true;
         playerCamera.enabled = false;
@@ -128,14 +80,9 @@ public class LobbyMove : MonoBehaviour
         enableMove = true;
 
         /*Player part*/
-        CurrentPosition = this.transform.position;
-        TargetPosition = new Vector2(this.transform.position.x, this.transform.position.y);
-        TempCurrentPosition = this.transform.position;
-        TempTargetPosition = this.transform.position;
-        DefaultZAxis = 6f;
-        TempNextKey = "";
-        PreviousMove = "";
-        PreviousDirection = Vector2.zero;
+        player = this.GetComponent<Player>();
+        rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
+        playerMapController = GameObject.Find("PlayerMapController");
     }
 
     private void Update()
@@ -152,23 +99,23 @@ public class LobbyMove : MonoBehaviour
         }
         if (isMoving && enableMove) //case dashing in the same direction
         {
-            Vector2 newPosition = this.CurrentPosition + this.PreviousDirection * moveSteps;
+            Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
             //Debug.Log("is moving!");
             //check if the next position is valid to move in or else it will return here
-            if (!IsPositionValid(newPosition, this.PreviousDirection))
+            if (!IsPositionValid(newPosition, player.PreviousDirection))
             {
                 //Debug.Log("not moving anymore!");
                 isMoving = false;
                 return;
             }
             enableMove = false;
-            this.PreviousDirection = this.PreviousDirection;
-            this.TargetPosition = newPosition;
+            player.PreviousDirection = player.PreviousDirection;
+            player.TargetPosition = newPosition;
         }
         else if (enableMove && allowInput && !isMoving)
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
-            GameObject item = GetItemAtPosition(this.CurrentPosition);
+            GameObject item = GetItemAtPosition(player.CurrentPosition);
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 moveDirection = Vector2.up;
@@ -189,13 +136,16 @@ public class LobbyMove : MonoBehaviour
             }
 
             if (moveDirection != Vector2.zero)
-            {           
+            {     
+                if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
                 moveDirection.Normalize();
-                Vector2 newPosition = this.CurrentPosition + moveDirection * moveSteps;
+                Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
                 //check if the next position is valid to move in or else it will return here
                 if (!IsPositionValid(newPosition, moveDirection)) return;
-                this.PreviousDirection = moveDirection;
-                this.TargetPosition = newPosition;
+                player.PreviousDirection = moveDirection;
+                player.TargetPosition = newPosition;
                 enableMove = false; // Disable movement until the target position is reached
                 allowInput = false; // Disable input for the delay periods
             }
@@ -205,22 +155,22 @@ public class LobbyMove : MonoBehaviour
 
     private void MovePlayer()
     {
-        Vector3 newTargetPosition = new Vector3(this.TargetPosition.x, this.TargetPosition.y, this.DefaultZAxis);
+        Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
         
-        this.transform.position = Vector3.MoveTowards(transform.position, newTargetPosition, moveSpeed * Time.deltaTime);
+        player.transform.position = Vector3.MoveTowards(transform.position, newTargetPosition, moveSpeed * Time.deltaTime);
 
-        if (this.transform.position == newTargetPosition && !enableMove)
+        if (player.transform.position == newTargetPosition && !enableMove)
         {
-            //Debug.Log("Test call: " + this.transform.position + " == " + newTargetPosition);
+            //Debug.Log("Test call: " + player.transform.position + " == " + newTargetPosition);
             enableMove = true; // Re-enable movement once the target position is reached   
 
-            this.PreviousPosition = this.CurrentPosition;
-            this.CurrentPosition = newTargetPosition;
+            player.PreviousPosition = player.CurrentPosition;
+            player.CurrentPosition = newTargetPosition;
             // if (dimensionIn != null || dimensionOut != null)
             // {
             //     TeleportPlayer();
             // }
-            GameObject item = GetItemAtPosition((Vector2)this.transform.position);
+            GameObject item = GetItemAtPosition((Vector2)player.transform.position);
 
             if(item.name.Contains("Info")){
                 if(SceneManager.GetActiveScene().name == "GameMode"){
@@ -250,7 +200,7 @@ public class LobbyMove : MonoBehaviour
                 if(item.name.Contains("Sing")){
                     SceneManager.LoadScene("SingleLobby");
                 } else if(item.name.Contains("Mult")){
-                    SceneManager.LoadScene("CreativeLobby");
+                    SceneManager.LoadScene("Loading");
                 } else {
 
                 }     
@@ -261,14 +211,21 @@ public class LobbyMove : MonoBehaviour
             } else if(item.name.Contains("Info")){
                 if(SceneManager.GetActiveScene().name == "SingleLobby"){
                     if(item.name.Contains("Map")){
-                        InputManager.fileName = SplitText(item.name, 3) + ".txt";
-                        PhotonNetwork.OfflineMode = true;
-                        PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
                         PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
-                        SceneManager.LoadScene("Game");
+
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
                     }  
+                } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+                    if(item.name.Contains("Map")){
+                        PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
+                        PlayerMapController.RestartNumber = -1;
+                        PlayerMapController.StepNumber = 0;
+                        PlayerMapController.MapRole = SplitText(item.name, 4);
+
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
+                    } 
                 }
             }
         }
@@ -316,12 +273,17 @@ public class LobbyMove : MonoBehaviour
         if (itemTag.Contains("Wall")) {
             return false;        
         }
+        else if (itemTag.Contains("MapBlock")) {
+            return false;        
+        }
         else if(!itemTag.Contains("Info")){
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 canvas_board_idle.enabled = true;
                 canvas_board_sing.enabled = false;
                 canvas_board_mult.enabled = false;
                 canvas_board_prof.enabled = false;
+            } else if (SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+                GameObject.Find("UIManager").GetComponent<UIManager>().HideConfirmMapUI();
             }
         }  
         else // Just ground
@@ -330,11 +292,11 @@ public class LobbyMove : MonoBehaviour
             // ...
         }
 
-        GameObject previousItem = GetItemAtPosition(this.transform.position);        
+        GameObject previousItem = GetItemAtPosition(player.transform.position);        
         if(SceneManager.GetActiveScene().name == "GameMode" && previousItem.name.Contains("CameraSwitch")){
             canvas_screen.renderMode = RenderMode.ScreenSpaceCamera;
             
-            if(this.transform.position.y - item.transform.position.y < 0){
+            if(player.transform.position.y - item.transform.position.y < 0){
             /*Player go to entrance*/
             canvas_screen.worldCamera = playerCamera;
             playerCamera.enabled = true;
@@ -367,6 +329,6 @@ public class LobbyMove : MonoBehaviour
     //     //get other player
     //     if (gameManager.PlayerF == null) return false;
     //     GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-    //     return (Vector2)this.transform.position == targetPos;
+    //     return (Vector2)player.transform.position == targetPos;
     // }
 }

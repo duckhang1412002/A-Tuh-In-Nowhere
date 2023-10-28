@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviourPun
 {
@@ -31,7 +32,9 @@ public class Player : MonoBehaviourPun
         set
         {
             currentPos = value;
-            photonView.RPC("SetCurrentPosition", RpcTarget.Others, currentPos.x, currentPos.y);
+            if(SceneManager.GetActiveScene().name != "SingleLobby"
+            && SceneManager.GetActiveScene().name != "GameMode") 
+                photonView.RPC("SetCurrentPosition", RpcTarget.Others, currentPos.x, currentPos.y);
         }
     }
 
@@ -41,7 +44,9 @@ public class Player : MonoBehaviourPun
         set
         {
             previousPos = value;
-            photonView.RPC("SetPreviousPosition", RpcTarget.Others, previousPos.x, previousPos.y);
+            if(SceneManager.GetActiveScene().name != "SingleLobby"
+            && SceneManager.GetActiveScene().name != "GameMode")
+                photonView.RPC("SetPreviousPosition", RpcTarget.Others, previousPos.x, previousPos.y);
         }
     }
 
@@ -51,7 +56,9 @@ public class Player : MonoBehaviourPun
         set
         {
             targetPos = value;
-            photonView.RPC("SetTargetPosition", RpcTarget.Others, targetPos.x, targetPos.y);
+            if(SceneManager.GetActiveScene().name != "SingleLobby"
+            && SceneManager.GetActiveScene().name != "GameMode") 
+                photonView.RPC("SetTargetPosition", RpcTarget.Others, targetPos.x, targetPos.y);
         }
     }
 
