@@ -23,7 +23,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            myPlayer = InstantiatePlayerM(0, -4);
+            myPlayer = PhotonInstantiate(playerPrefabM, 0, -4);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
         }
@@ -55,36 +55,21 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //other player join
     public override void OnJoinedRoom()
     {
-        myPlayer = InstantiatePlayerF(5, -4);
+        myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
         myPlayer.GetComponent<LobbyMove>().enabled = true;
         photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
     }
 
-    private GameObject InstantiatePlayerM(int x, int y)
+    private GameObject PhotonInstantiate(GameObject prefab, int x, int y)
     {
-        Quaternion rotation = playerPrefabM.transform.rotation;
+        Quaternion rotation = prefab.transform.rotation;
 
         // Calculate the child's local position relative to the parent's position
         Vector3 localPosition = new Vector3(x, y, 0);
 
         // Set the child's position relative to the parent
-        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(playerPrefabM.name, Vector3.zero, rotation) as GameObject;
+        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(prefab.name, Vector3.zero, rotation) as GameObject;
         instantiatedPrefab.transform.localPosition = localPosition;
-
-        return instantiatedPrefab;
-    }
-
-        private GameObject InstantiatePlayerF(int x, int y)
-    {
-        Quaternion rotation = playerPrefabF.transform.rotation;
-
-        // Calculate the child's local position relative to the parent's position
-        Vector3 localPosition = new Vector3(x, y, 0);
-
-        // Set the child's position relative to the parent
-        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(playerPrefabF.name, Vector3.zero, rotation) as GameObject;
-        instantiatedPrefab.transform.localPosition = localPosition;
-        instantiatedPrefab.transform.localScale = new Vector3(-instantiatedPrefab.transform.localScale.x, instantiatedPrefab.transform.localScale.y, instantiatedPrefab.transform.localScale.z);
 
         return instantiatedPrefab;
     }
