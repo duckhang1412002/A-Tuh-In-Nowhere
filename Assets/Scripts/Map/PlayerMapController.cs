@@ -104,6 +104,7 @@ public class PlayerMapController : MonoBehaviour
         if(SceneManager.GetActiveScene().name == "SingleLobby"){
             PhotonNetwork.OfflineMode = true;
             PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+            SceneManager.LoadScene("Game");
         } else {
             MultiplayerConfirmMap();
 
@@ -111,8 +112,6 @@ public class PlayerMapController : MonoBehaviour
             // PhotonNetwork.OfflineMode = false;
             // PhotonNetwork.CreateRoom("multi", new RoomOptions(), TypedLobby.Default);
         }
-
-        SceneManager.LoadScene("Game"); 
     }
 
     public void MultiplayerConfirmMap(){
