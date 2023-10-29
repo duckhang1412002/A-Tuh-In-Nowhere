@@ -31,14 +31,9 @@ public class InputManager : MonoBehaviour
     StorageReference mapInfo;
     UnityEvent onComplete;
 
-    void Start()
+    private void Awake()
     {
-        //Application.persistDataPath stores the data at runtime to a specific location as per the platform
-        //More details at:- https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html
-
         filePath = $"{Application.persistentDataPath}/Maps/{fileName}";
-        Debug.Log("File path:" + filePath);
-
         //initialize storage reference
         storage = FirebaseStorage.DefaultInstance;
         storageReference = storage.GetReferenceFromUrl("gs://atuhinnowhere-testing.appspot.com");
@@ -47,21 +42,21 @@ public class InputManager : MonoBehaviour
         gameManager = this.gameObject.GetComponent<GameManager>();
 
     }
-
     public void DownloadFile(UnityEvent onComplete)
     {
         string path = filePath;      //GetFilePath(url); 
-        string url = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{fileName}?alt=media";
+        
         if (File.Exists(path))
         {
             Debug.Log("Found the same file locally, Loading!!!");
 
             //StartCoroutine(LoadModelAsync(path));
-            LoadModel(path);
+            LoadModel();
             onComplete.Invoke();
             return;
         }
 
+       /* string url = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{fileName}?alt=media";
         StartCoroutine(GetFileRequest(url, (UnityWebRequest req) =>
         {
             if (req.isNetworkError || req.isHttpError)
@@ -73,7 +68,7 @@ public class InputManager : MonoBehaviour
             else
             {
                 //Save the model fetched from firebase into spaceShip 
-                LoadModel(path);
+                LoadModel();
                 Debug.Log("I end download here!");
                 onComplete.Invoke();
                 //StartCoroutine(LoadModelAsync(path));
@@ -81,7 +76,7 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        ));
+        ));*/
         //this.onComplete = onComplete;
     }
 
@@ -98,24 +93,17 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    void LoadModel(string path)
+    public void LoadModel()
     {
         string[] lines = File.ReadAllLines(filePath);
         gameManager.inputList = ConvertLinesToListMap(lines);
-        //onComplete.Invoke();
     }
 
-    IEnumerator LoadModelAsync(string path)
+    public void LoadModelAsync(UnityEvent onComplete)
     {
-        using (var streamReader = new StreamReader(path))
-        {
-            string fileContent = streamReader.ReadToEnd();
-            string[] lines = fileContent.Split('\n');
-            gameManager.inputList = ConvertLinesToListMap(lines);
-        }
-
-        // Yield a frame to allow other Unity tasks to run
-        yield return null;
+        string[] lines = File.ReadAllLines(filePath);
+        gameManager.inputList = ConvertLinesToListMap(lines);
+        onComplete.Invoke();
     }
     private List<string[,]> ConvertLinesToListMap(string[] lines)
     {

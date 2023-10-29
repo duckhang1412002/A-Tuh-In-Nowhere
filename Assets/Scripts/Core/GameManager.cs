@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private bool singleMode;
     private int isMapLoaded;
 
-    public UnityEvent downloadCompleteEvent;
+    public UnityEvent downloadCompleteEvent, loadMapCompleteEvent;
     //public UnityEvent everyoneDownloadComplete;
 
     public void Start()
@@ -74,23 +74,25 @@ public class GameManager : MonoBehaviourPunCallbacks
         singleMode = PhotonNetwork.OfflineMode;
         startBtn.gameObject.SetActive(false); //true if single mode and false if multiplayer
         Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
-        if (singleMode)
-        {
-            Debug.Log("Single mode!");
-            roomName.text = PhotonNetwork.CurrentRoom.Name;
-            //view.RPC("InitializeMapRPC", RpcTarget.All);
-            view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
-        }
-        else if (PhotonNetwork.IsConnectedAndReady)
-        {
-            Debug.Log("Multiplayer mode!");
-            roomName.text = PhotonNetwork.CurrentRoom.Name;
-        }
-        else
-        {
-            Debug.Log("Not Connected");
-            roomName.text = "There's nothing here";
-        }
+
+        /*        if (singleMode)
+                {
+                    Debug.Log("Single mode!");
+                    roomName.text = PhotonNetwork.CurrentRoom.Name;
+                    //view.RPC("InitializeMapRPC", RpcTarget.All);
+                    view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
+                }
+                else if (PhotonNetwork.IsConnectedAndReady)
+                {
+                    Debug.Log("Multiplayer mode!");
+                    roomName.text = PhotonNetwork.CurrentRoom.Name;
+                }
+                else
+                {
+                    Debug.Log("Not Connected");
+                    roomName.text = "There's nothing here";
+                }*/
+        photonView.RPC("StartDownloadOnClients", RpcTarget.All);
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
     }
 
@@ -136,13 +138,20 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void CallInitializeMapRPC()
     {
-        downloadCompleteEvent.AddListener(() =>
+        /*        downloadCompleteEvent.AddListener(() =>
+                {
+                    // Place your additional code here
+                    Debug.Log("Download completed! Additional code executed.");
+                    view.RPC("AddMapLoaded", RpcTarget.All);
+                });
+                inputManager.DownloadFile(downloadCompleteEvent);*/
+        loadMapCompleteEvent.AddListener(() =>
         {
             // Place your additional code here
-            Debug.Log("Download completed! Additional code executed.");
+            Debug.Log("Load map completed!");
             view.RPC("AddMapLoaded", RpcTarget.All);
         });
-        inputManager.DownloadFile(downloadCompleteEvent);
+        inputManager.LoadModelAsync(loadMapCompleteEvent);
     }
 
     [PunRPC]

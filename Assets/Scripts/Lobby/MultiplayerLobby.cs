@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking.Types;
 
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
@@ -39,10 +40,10 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         IsReadyToStartTheMap = mineIsReady;
         MapRole = mineMapRole;
         CurrentChosingMap = mineCurrentChosingMap;
-
+        InputManager.fileName = 100 + ".txt"; //map 100 for multiple 1 instead for choosingMap;
         Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap);
 
-        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
+        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.All, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
     }
 
     [PunRPC]
@@ -50,6 +51,8 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         if(otherIsReady && IsReadyToStartTheMap){
             if(otherMapRole != MapRole && otherCurrentChosingMap == CurrentChosingMap){
                 Debug.Log("Validate BEFORE JOIN MAP SUCCESSFULLY");
+                if (PhotonNetwork.IsMasterClient)
+                    PhotonNetwork.LoadLevel("Game");
             }
         }
     }
