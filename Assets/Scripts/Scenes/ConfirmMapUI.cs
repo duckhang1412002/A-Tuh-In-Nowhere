@@ -19,10 +19,6 @@ public class ConfirmMapUI : MonoBehaviour {
 
         this.gameObject.SetActive(true);
         await ShowMapInfo(map);
-
-        if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-            if(btn_Play.GetComponent<Button>().interactable) btn_Play.GetComponent<Button>().interactable = false;
-        }
     }
 
     private async Task ShowMapInfo(MapBlock map)

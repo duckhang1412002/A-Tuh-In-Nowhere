@@ -40,6 +40,8 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         MapRole = mineMapRole;
         CurrentChosingMap = mineCurrentChosingMap;
 
+        Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap);
+
         photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
     }
 
