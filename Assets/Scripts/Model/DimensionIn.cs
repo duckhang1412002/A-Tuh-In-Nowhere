@@ -94,7 +94,7 @@ public class DimensionIn : MonoBehaviour
     }
 
     public void RenderSprite(){
-        Debug.Log(HasTop() + " " + HasRight() + " " + HasBottom() + " " + HasLeft());
+        //Debug.Log(HasTop() + " " + HasRight() + " " + HasBottom() + " " + HasLeft());
         SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
         Transform transform = this.gameObject.GetComponent<Transform>();    
 

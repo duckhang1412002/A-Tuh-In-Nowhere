@@ -7,7 +7,8 @@ using Photon.Pun.Demo.PunBasics;
 
 public class Socket : MonoBehaviour
 {
-    public string Color { get; set; }
+    [SerializeField]
+    public string Color;
 
     public bool IsConnect { get; set; }
     public bool IsEndPoint { get; set; }

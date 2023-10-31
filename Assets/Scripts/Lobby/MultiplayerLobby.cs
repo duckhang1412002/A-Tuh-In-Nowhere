@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking.Types;
+using UnityEngine.UI;
 
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
@@ -10,6 +11,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] GameObject playerPrefabF;
     [SerializeField] Transform parentTransform;
+    [SerializeField] Text roomName;
     GameObject myPlayer, otherPlayer;
 
     public bool IsReadyToStartTheMap{get; set;}
@@ -21,7 +23,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         IsReadyToStartTheMap = false;
         MapRole = "";
         CurrentChosingMap = -1;
-
+        roomName.text = PhotonNetwork.CurrentRoom.Name;
         if (PhotonNetwork.IsMasterClient)
         {
             myPlayer = PhotonInstantiate(playerPrefabM, 0, -4);
@@ -40,15 +42,16 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         IsReadyToStartTheMap = mineIsReady;
         MapRole = mineMapRole;
         CurrentChosingMap = mineCurrentChosingMap;
-        InputManager.fileName = 100 + ".txt"; //map 100 for multiple 1 instead for choosingMap;
-        Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap);
+        //InputManager.fileName = 101 + ".txt"; //map 100 for multiple 1 instead for choosingMap;
+        Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap + " viewID: " + photonView.ViewID);
 
-        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.All, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
+        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
+        PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"] = MapRole;
     }
 
     [PunRPC]
     void Pun_CheckBeforeStartTheMap(bool otherIsReady, string otherMapRole, int otherCurrentChosingMap){
-        if(otherIsReady && IsReadyToStartTheMap){
+        if (otherIsReady && IsReadyToStartTheMap){
             if(otherMapRole != MapRole && otherCurrentChosingMap == CurrentChosingMap){
                 Debug.Log("Validate BEFORE JOIN MAP SUCCESSFULLY");
                 if (PhotonNetwork.IsMasterClient)
@@ -56,6 +59,8 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
             }
         }
     }
+
+
 
     //other player join
     public override void OnJoinedRoom()

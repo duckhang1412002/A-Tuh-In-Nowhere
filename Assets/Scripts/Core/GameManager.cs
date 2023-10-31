@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public List<string[,]> inputList { get; set; }
 
     private InputManager inputManager;
-    private GameObject player;
+    private Vector2 otherPlayerInitPos;
 
 
     public List<GameObject[,]> MapGridList { get; set; }
@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private Dictionary<int, GameObject> doorButtonList;
     public Dictionary<Vector2, bool> WireMap { get; set; }
+    private ChangeColor changeColor;
 
     private bool openPauseUI = false;
     private bool openGuideUI = false;
@@ -64,9 +65,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void Start()
     {
+        Debug.Log("This map from Custom Prop: " + PhotonNetwork.LocalPlayer.CustomProperties["MapID"]);
+        Debug.Log("Gender for this player: " + PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"]);
         isMapLoaded = 0;
         view = this.gameObject.GetComponent<PhotonView>();
         inputManager = this.gameObject.GetComponent<InputManager>();
+        changeColor = this.gameObject.GetComponent<ChangeColor>();
+        WireMap = new Dictionary<Vector2, bool>();
         doorButtonList = new Dictionary<int, GameObject>();
         Score = 0;
         IsCameraTargetPlayer = true;
@@ -162,7 +167,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isMapLoaded == PhotonNetwork.CurrentRoom.PlayerCount)
         {
             Debug.Log("Everyone downloaded the game!");
-            view.RPC("InitializeMapRPC", RpcTarget.All);
+            //view.RPC("InitializeMapRPC", RpcTarget.All);
+            InitializeMapRPC();
         }
     }
 
@@ -178,9 +184,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetPlayerM(int playerID, int x, int y)
     {
-        if (PlayerM == null && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        if (singleMode || (PlayerM == null && PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"].ToString() == "M"))
         {
             PlayerM = InstantiatePlayerM(playerID, x, y);
+            Debug.Log("Instantiated M");
+            TempTargetCamera(PlayerM);
             PlayerM.GetComponent<Player>().ID = playerID;
 
             // Synchronize the player object across the network
@@ -195,9 +203,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetPlayerF(int playerID, int x, int y)
     {
-        if (PlayerF == null && PhotonNetwork.LocalPlayer.ActorNumber == 2)
+        if (PlayerF == null && PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"].ToString() == "F")
         {
             PlayerF = InstantiatePlayerF(playerID, x, y);
+            Debug.Log("Instantiated F");
+            TempTargetCamera(PlayerF);
             PlayerF.GetComponent<Player>().ID = playerID;
 
             // Synchronize the player object across the network
@@ -216,6 +226,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Quaternion rotation = prefab.transform.rotation;
         float z = prefab.transform.position.z;
         GameObject instantiatedPrefab = Instantiate(prefab, new Vector3(x, y, z), rotation) as GameObject;
+        //GameObject instantiatedPrefab = PhotonNetwork.Instantiate($"Prefabs/{prefabName}", new Vector3(x, y, z), rotation) as GameObject;
         return instantiatedPrefab;
     }
 
@@ -287,81 +298,23 @@ public class GameManager : MonoBehaviourPunCallbacks
                     string d = (j > 0) ? randomMap[i, j - 1] : "Null";
                     string u = (j + 1 < n) ? randomMap[i, j + 1] : "Null";
 
-                    //Check lai truong hop DOut
                     if (randomMap[i, j].Contains("Wall"))
                     {
-                        //case 0: 4 cell adj is not wall or null
-                        if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:0:0";
-                        }
-                        //case 1: 3 cell adj is ground
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:1";
-                        }
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:3";
-                        }
-                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:2";
-                        }
-                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:0";
-                        }
-                        //case 2: 2 adj cell is wall NOT Opposite
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:0";
-                        }
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:1";
-                        }
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:3";
-                        }
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:2";
-                        }
-                        //case 3: 3 adj cell is wall
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:1";
-                        }
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:3";
-                        }
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:0";
-                        }
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:2";
-                        }
-                        //case 4: 4 adj is all wall
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:4:0";
-                        }
-                        //case 5: 2 opposite cell is wall
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:5:1";
-                        }
-                        else
-                        {
-                            randomMap[i, j] = "Wall:5:0";
-                        }
+                        if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:0:0";
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:1:1";
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:1:3";
+                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:1:0";
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:2:0";
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:2:1";
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:2:3";
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:2:2";
+                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:3:1";
+                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:3:3";
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:3:0";
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:3:2";
+                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:5:1";
+                        else randomMap[i, j] = "Wall:5:0";
                     }
-
                 }
             }
 
@@ -383,7 +336,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                     //Init ground
                     if (!item.Contains("Wall"))
                     {
-                        GameObject groundObject = Instantiate(ground, new Vector3(x + offset, y, groundZ), groundRotate);
+                        //GameObject groundObject = Instantiate(ground, new Vector3(x + offset, y, groundZ), groundRotate);
+                        GameObject groundObject = InstantiatePrefab("Ground", x+offset, y);
                         grid[x, y] = groundObject;
                     }
                     GameObject prefab;
@@ -395,7 +349,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                         //change color
                         GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-                        ChangeColor changeColor = new ChangeColor();
                         instantiatedPrefab.GetComponent<Socket>().Color = hexCode;
 
                         changeColor.ChangeSpriteColor(instantiatedPrefab, hexCode);
@@ -404,34 +357,13 @@ public class GameManager : MonoBehaviourPunCallbacks
                     }
                     else if (item.Contains("PlayerM"))
                     {
-                        // store ground instead of player
-
-                        if (PhotonNetwork.LocalPlayer.ActorNumber == 1)
-                        {
-                            int id = int.Parse(item.Split(':')[1]);
-                            item = "Player";
-
-                            //PlayerM = InstantiatePlayerM(id, x + offset, y);
-                            //SetPlayerM(id, x + offset, y);
-                            view.RPC("SetPlayerM", RpcTarget.All, id, x + offset, y);
-                            PlayerM.GetComponent<Player>().ID = id;
-                            TempTargetCamera(PlayerM);
-                        }
+                        int id = int.Parse(item.Split(':')[1]);
+                        view.RPC("SetPlayerM", RpcTarget.All, id, x + offset, y);
                     }
                     else if (item.Contains("PlayerF"))
                     {
-                        // store ground instead of player
-                        if (PhotonNetwork.LocalPlayer.ActorNumber == 2)
-                        {
-                            int id = int.Parse(item.Split(':')[1]);
-                            item = "Player";
-
-                            //PlayerF = InstantiatePlayerF(id, x + offset, y);
-                            //SetPlayerF(id, x + offset, y);
-                            view.RPC("SetPlayerF", RpcTarget.All, id, x + offset, y);
-                            PlayerF.GetComponent<Player>().ID = id;
-                            TempTargetCamera(PlayerF);
-                        }
+                        int id = int.Parse(item.Split(':')[1]);
+                        view.RPC("SetPlayerF", RpcTarget.All, id, x + offset, y);
                     }
                     else if (item.Contains("Bridge"))
                     {
@@ -544,7 +476,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                     //     grid[x, y] = instantiatedPrefab;
                     // }
-                    else
+                    else if (!item.Contains("Ground"))
                     {
                         //Have Ice here
                         GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
@@ -555,6 +487,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             MapGridList.Add(grid);
             offset += 100;
             ++currentMap;
+            Debug.Log("Socket Amount: " + SocketAmount);
         }
     }
 
@@ -617,7 +550,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
         PlayGridList = MapGridList;
-        if (PlayerM != null)
+        photonView.RPC("EnableMove", RpcTarget.All);
+/*        if (PlayerM != null)
         {
             //PlayerM.GetComponent<Step>().enabled = true;
             PlayerM.GetComponent<MoveController>().enabled = true;
@@ -625,6 +559,20 @@ public class GameManager : MonoBehaviourPunCallbacks
         else
         {
             //PlayerF.GetComponent<Step>().enabled = true;
+            PlayerF.GetComponent<MoveController>().enabled = true;
+        }*/
+    }
+
+    [PunRPC]
+    private void EnableMove()
+    {
+        PlayGridList = MapGridList;
+        if (PlayerM != null)
+        {
+            PlayerM.GetComponent<MoveController>().enabled = true;
+        }
+        else
+        {
             PlayerF.GetComponent<MoveController>().enabled = true;
         }
     }

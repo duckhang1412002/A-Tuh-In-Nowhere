@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Photon.Pun;
 
 public class ScenesManager : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class ScenesManager : MonoBehaviour
     }
 
     public void BackToLobbyScene(GameObject mode){
+        if (PhotonNetwork.InRoom) PhotonNetwork.LeaveRoom();
         if(mode.GetComponent<TextMeshProUGUI>().text == "Single Mode"){
             SceneManager.LoadScene("SingleLobby");
         } else if(mode.GetComponent<TextMeshProUGUI>().text == "Multiplayer Mode"){

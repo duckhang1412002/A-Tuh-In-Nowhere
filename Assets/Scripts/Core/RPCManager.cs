@@ -49,6 +49,7 @@ public class RPCManager : MonoBehaviourPunCallbacks
     private void AddScore()
     {
         gameManager.Score++;
+        Debug.Log("Score: " + gameManager.Score);
     }
 
     public GameObject CallRenderWire(Vector2 playerPosition, float z, int spriteIndex, int rotationIndex, string color)
@@ -90,16 +91,16 @@ public class RPCManager : MonoBehaviourPunCallbacks
 
     public void CallChangePlayerColor(int photonViewID, Vector2 socketPos)
     {
-        Debug.Log("PhotonViewID " + photonViewID);
+        //Debug.Log("PhotonViewID " + photonViewID);
         view.RPC("ChangePlayerColor", RpcTarget.All, photonViewID, socketPos.x, socketPos.y);
     }
 
     [PunRPC]
     private void ChangePlayerColor(int photonViewId, float x, float y) {
         Player player = GetPlayerByPhotonID(photonViewId);
-        Debug.Log("Change cl of " + player);
+        //Debug.Log("Change cl of " + player);
         Socket socket = GetItemAtPosition(new Vector2(x, y)).GetComponent<Socket>();
-        Debug.Log("Get the socket at " + socket);
+        //Debug.Log("Get the socket at " + socket);
         socket.ChangePlayerColor(player);
     }
 

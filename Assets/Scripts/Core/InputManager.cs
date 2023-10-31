@@ -1,5 +1,6 @@
 using Firebase.Extensions;
 using Firebase.Storage;
+using Photon.Pun;
 using Photon.Pun.Demo.Asteroids;
 using Photon.Pun.Demo.SlotRacer.Utils;
 using System;
@@ -33,6 +34,7 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+        //fileName = PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString();
         filePath = $"{Application.persistentDataPath}/Maps/{fileName}";
         //initialize storage reference
         storage = FirebaseStorage.DefaultInstance;
@@ -101,6 +103,8 @@ public class InputManager : MonoBehaviour
 
     public void LoadModelAsync(UnityEvent onComplete)
     {
+        fileName = PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString()+".txt";
+        filePath = $"{Application.persistentDataPath}/Maps/{fileName}";
         string[] lines = File.ReadAllLines(filePath);
         gameManager.inputList = ConvertLinesToListMap(lines);
         onComplete.Invoke();
