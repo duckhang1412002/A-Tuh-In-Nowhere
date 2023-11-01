@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void Start()
     {
         Debug.Log("This map from Custom Prop: " + PhotonNetwork.LocalPlayer.CustomProperties["MapID"]);
-        Debug.Log("Gender for this player: " + PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"]);
+        Debug.Log("Gender for this player: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
         isMapLoaded = 0;
         view = this.gameObject.GetComponent<PhotonView>();
         inputManager = this.gameObject.GetComponent<InputManager>();
@@ -184,7 +184,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetPlayerM(int playerID, int x, int y)
     {
-        if (singleMode || (PlayerM == null && PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"].ToString() == "M"))
+        if (singleMode || (PlayerM == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "M"))
         {
             PlayerM = InstantiatePlayerM(playerID, x, y);
             Debug.Log("Instantiated M");
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetPlayerF(int playerID, int x, int y)
     {
-        if (PlayerF == null && PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"].ToString() == "F")
+        if (PlayerF == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "F")
         {
             PlayerF = InstantiatePlayerF(playerID, x, y);
             Debug.Log("Instantiated F");
@@ -368,18 +368,18 @@ public class GameManager : MonoBehaviourPunCallbacks
                             {
                                 if (renderTime == PhotonNetwork.LocalPlayer.ActorNumber)
                                 {
-                                    view.RPC($"SetPlayer{PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"]}", RpcTarget.All, id, x + offset, y);
+                                    view.RPC($"SetPlayer{PhotonNetwork.LocalPlayer.CustomProperties["Gender"]}", RpcTarget.All, id, x + offset, y);
                                 }
                             }
                             else
                             {
-                                view.RPC("SetPlayerM", RpcTarget.All, id, x + offset, y);
+                                view.RPC("SetPlayerM", RpcTarget.AllBuffered, id, x + offset, y);
                             }
                         }
                         else if (item.Contains("PlayerF"))
                         {
                             int id = int.Parse(item.Split(':')[1]);
-                            view.RPC("SetPlayerF", RpcTarget.All, id, x + offset, y);
+                            view.RPC("SetPlayerF", RpcTarget.AllBuffered, id, x + offset, y);
                         }
                         else if (item.Contains("Bridge"))
                         {

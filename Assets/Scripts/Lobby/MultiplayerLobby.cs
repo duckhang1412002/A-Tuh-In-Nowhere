@@ -53,7 +53,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap + " viewID: " + photonView.ViewID);
 
         photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
-        PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"] = MapRole;
+        PhotonNetwork.LocalPlayer.CustomProperties[$"Gender"] = MapRole;
         if (mineCurrentChosingMap < 100)
             PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
     }

@@ -47,7 +47,7 @@ public class MoveController : MonoBehaviourPun
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
-        //Debug.Log("Player : " + player);
+        Debug.Log("Player MoveController ID : " + photonViewID + " LocalActor Gender: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
     }
 
     private void MovePlayer()
