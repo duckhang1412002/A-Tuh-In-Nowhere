@@ -47,7 +47,7 @@ public class MoveController : MonoBehaviourPun
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
-        //Debug.Log("Player : " + player);
+        Debug.Log("Player MoveController ID : " + photonViewID + " LocalActor Gender: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
     }
 
     private void MovePlayer()
@@ -118,7 +118,7 @@ public class MoveController : MonoBehaviourPun
         /* !!!!! CHECK HERE !!!!! */
         player.PreviousPosition =  CalculatePrevious(player.transform.position, player.PreviousDirection);
         
-        Debug.Log("Previous move after teleport:" + player.PreviousPosition);
+        //Debug.Log("Previous move after teleport:" + player.PreviousPosition);
         player.CurrentPosition = player.transform.position;
         player.TargetPosition = player.transform.position;
         //player.PreviousPosition = player.CurrentPosition = player.TargetPosition = player.transform.position;
@@ -281,150 +281,153 @@ public class MoveController : MonoBehaviourPun
 
     private void Update()
     {
-        if (isPauseGame) return; // Disable movement game is paused
-        if (!allowInput)
+        if (photonView.IsMine)
         {
-            inputDelayTimer += Time.deltaTime;
-            if (inputDelayTimer >= inputDelay)
+            if (isPauseGame) return; // Disable movement game is paused
+            if (!allowInput)
             {
-                inputDelayTimer = 0.0f;
-                allowInput = true; // Enable input after the delay
-            }
-        }
-        if (isMoving && enableMove) //case dashing in the same direction
-        {
-            Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
-            //Debug.Log("is moving!");
-            //check if the next position is valid to move in or else it will return here
-            if (!IsPositionValid(newPosition, player.PreviousDirection))
-            {
-                //Debug.Log("not moving anymore!");
-                isMoving = false;
-                return;
-            }
-            enableMove = false;
-            player.PreviousDirection = player.PreviousDirection;
-            player.TargetPosition = newPosition;
-        }
-        else if (enableMove && allowInput && !isMoving)
-        { // Enable move if player is allowed to move
-            Vector2 moveDirection = Vector2.zero;
-            GameObject item = GetItemAtPosition(player.CurrentPosition);
-
-            // Check for touch input
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-
-                switch (touch.phase)
+                inputDelayTimer += Time.deltaTime;
+                if (inputDelayTimer >= inputDelay)
                 {
-                    case TouchPhase.Began:
-                        // Record the start position of the touch
-                        touchStartPos = touch.position;
-                        isSwiping = true;
-                        break;
-
-                    case TouchPhase.Moved:
-                        // Determine the direction of the swipe
-                        touchEndPos = touch.position;
-                        Vector2 swipeDirection = touchEndPos - touchStartPos;
-
-                        // Check if the swipe distance exceeds the threshold
-                        if (isSwiping && swipeDirection.magnitude > minSwipeDistance)
-                        {
-                            // Normalize the swipe direction to get a consistent movement speed
-                            swipeDirection.Normalize();
-
-                            // Determine the dominant axis of the swipe
-                            if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
-                            {
-                                // Horizontal swipe
-                                if (swipeDirection.x > 0)
-                                {
-                                    // Swipe right
-                                    // Move your player right here
-                                    moveDirection = Vector2.right;
-                                }
-                                else
-                                {
-                                    // Swipe left
-                                    moveDirection = Vector2.left;
-                                }
-                            }
-                            else
-                            {
-                                // Vertical swipe
-                                if (swipeDirection.y > 0)
-                                {
-                                    // Swipe up
-                                    moveDirection = Vector2.up;
-                                }
-                                else
-                                {
-                                    // Swipe down
-                                    moveDirection = Vector2.down;
-                                }
-                            }
-
-                            // Reset the isSwiping flag
-                            isSwiping = false;
-                        }
-                        break;
-
-                    case TouchPhase.Ended:
-                        isSwiping = false;
-                        break;
+                    inputDelayTimer = 0.0f;
+                    allowInput = true; // Enable input after the delay
                 }
             }
-
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (isMoving && enableMove) //case dashing in the same direction
             {
-                moveDirection = Vector2.up;
-            }
-            else if (Input.GetKey(KeyCode.DownArrow))
-            {
-                moveDirection = Vector2.down;
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveDirection += Vector2.left;
-                this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
-            }
-            else if (Input.GetKey(KeyCode.RightArrow))
-            {
-                moveDirection += Vector2.right;
-                this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            }
-
-            if (moveDirection != Vector2.zero)
-            {
-               // Debug.Log("Current: " + player.CurrentPosition);
-                if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
-                if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                if (item.GetComponent<Bridge>() != null)
-                {
-                    Bridge bridge = item.GetComponent<Bridge>();
-                    bool isHorizontal = bridge.IsHorizontal();
-                    bool isVertical = bridge.IsVertical();
-
-                    if ((isHorizontal && player.DefaultZAxis == 2f && moveDirection.y != 0) ||
-                        (isVertical && player.DefaultZAxis == 2f && moveDirection.x != 0) ||
-                        (isHorizontal && player.DefaultZAxis == 5f && moveDirection.x != 0) ||
-                        (isVertical && player.DefaultZAxis == 5f && moveDirection.y != 0))
-                        return;
-                    
-                }
-                moveDirection.Normalize();
-                Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
+                Vector2 newPosition = player.CurrentPosition + player.PreviousDirection * moveSteps;
+                //Debug.Log("is moving!");
                 //check if the next position is valid to move in or else it will return here
-                if (!IsPositionValid(newPosition, moveDirection)) return;
-                player.PreviousDirection = moveDirection;
+                if (!IsPositionValid(newPosition, player.PreviousDirection))
+                {
+                    //Debug.Log("not moving anymore!");
+                    isMoving = false;
+                    return;
+                }
+                enableMove = false;
+                player.PreviousDirection = player.PreviousDirection;
                 player.TargetPosition = newPosition;
-                enableMove = false; // Disable movement until the target position is reached
-                allowInput = false; // Disable input for the delay periods
             }
+            else if (enableMove && allowInput && !isMoving)
+            { // Enable move if player is allowed to move
+                Vector2 moveDirection = Vector2.zero;
+                GameObject item = GetItemAtPosition(player.CurrentPosition);
+
+                // Check for touch input
+                if (Input.touchCount > 0)
+                {
+                    Touch touch = Input.GetTouch(0);
+
+                    switch (touch.phase)
+                    {
+                        case TouchPhase.Began:
+                            // Record the start position of the touch
+                            touchStartPos = touch.position;
+                            isSwiping = true;
+                            break;
+
+                        case TouchPhase.Moved:
+                            // Determine the direction of the swipe
+                            touchEndPos = touch.position;
+                            Vector2 swipeDirection = touchEndPos - touchStartPos;
+
+                            // Check if the swipe distance exceeds the threshold
+                            if (isSwiping && swipeDirection.magnitude > minSwipeDistance)
+                            {
+                                // Normalize the swipe direction to get a consistent movement speed
+                                swipeDirection.Normalize();
+
+                                // Determine the dominant axis of the swipe
+                                if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+                                {
+                                    // Horizontal swipe
+                                    if (swipeDirection.x > 0)
+                                    {
+                                        // Swipe right
+                                        // Move your player right here
+                                        moveDirection = Vector2.right;
+                                    }
+                                    else
+                                    {
+                                        // Swipe left
+                                        moveDirection = Vector2.left;
+                                    }
+                                }
+                                else
+                                {
+                                    // Vertical swipe
+                                    if (swipeDirection.y > 0)
+                                    {
+                                        // Swipe up
+                                        moveDirection = Vector2.up;
+                                    }
+                                    else
+                                    {
+                                        // Swipe down
+                                        moveDirection = Vector2.down;
+                                    }
+                                }
+
+                                // Reset the isSwiping flag
+                                isSwiping = false;
+                            }
+                            break;
+
+                        case TouchPhase.Ended:
+                            isSwiping = false;
+                            break;
+                    }
+                }
+
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    moveDirection = Vector2.up;
+                }
+                else if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    moveDirection = Vector2.down;
+                }
+                else if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    moveDirection += Vector2.left;
+                    this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                }
+                else if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    moveDirection += Vector2.right;
+                    this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                }
+
+                if (moveDirection != Vector2.zero)
+                {
+                    // Debug.Log("Current: " + player.CurrentPosition);
+                    if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                    if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    if (item.GetComponent<Bridge>() != null)
+                    {
+                        Bridge bridge = item.GetComponent<Bridge>();
+                        bool isHorizontal = bridge.IsHorizontal();
+                        bool isVertical = bridge.IsVertical();
+
+                        if ((isHorizontal && player.DefaultZAxis == 2f && moveDirection.y != 0) ||
+                            (isVertical && player.DefaultZAxis == 2f && moveDirection.x != 0) ||
+                            (isHorizontal && player.DefaultZAxis == 5f && moveDirection.x != 0) ||
+                            (isVertical && player.DefaultZAxis == 5f && moveDirection.y != 0))
+                            return;
+
+                    }
+                    moveDirection.Normalize();
+                    Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
+                    //check if the next position is valid to move in or else it will return here
+                    if (!IsPositionValid(newPosition, moveDirection)) return;
+                    player.PreviousDirection = moveDirection;
+                    player.TargetPosition = newPosition;
+                    enableMove = false; // Disable movement until the target position is reached
+                    allowInput = false; // Disable input for the delay periods
+                }
+            }
+            MovePlayer();
         }
-        MovePlayer();
     }
 
     private bool HaveOtherPlayer(Vector2 targetPos)

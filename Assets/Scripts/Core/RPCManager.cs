@@ -13,13 +13,13 @@ public class RPCManager : MonoBehaviourPunCallbacks
     private PhotonView view;
     private GameManager gameManager;
     private Wire wireManager;
-    private int photonViewID;
+    private int actorNumber;
     GameObject newWire;
     public void Start()
     {
         view = this.gameObject.GetComponent<PhotonView>();
         gameManager= this.gameObject.GetComponent<GameManager>();
-        photonViewID = PhotonNetwork.LocalPlayer.ActorNumber;
+        actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
         wireManager = this.gameObject.GetComponent<Wire>();
         
     }
@@ -42,13 +42,23 @@ public class RPCManager : MonoBehaviourPunCallbacks
 
     public void CallAddScore()
     {
-        view.RPC("AddScore", RpcTarget.All);
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+        {
+            int score = int.Parse(PhotonNetwork.LocalPlayer.CustomProperties["Score"].ToString());
+            PhotonNetwork.LocalPlayer.CustomProperties["Score"] = ++score;
+            Debug.Log("New score: " + PhotonNetwork.LocalPlayer.CustomProperties["Score"]);
+        }
+        else
+        {
+            view.RPC("AddScore", RpcTarget.All);
+        }
     }
 
     [PunRPC]
     private void AddScore()
     {
         gameManager.Score++;
+        Debug.Log("Score: " + gameManager.Score);
     }
 
     public GameObject CallRenderWire(Vector2 playerPosition, float z, int spriteIndex, int rotationIndex, string color)
@@ -90,16 +100,16 @@ public class RPCManager : MonoBehaviourPunCallbacks
 
     public void CallChangePlayerColor(int photonViewID, Vector2 socketPos)
     {
-        Debug.Log("PhotonViewID " + photonViewID);
+        Debug.Log("CallChangePlayerColor parameters " + photonViewID + " - " + socketPos);
         view.RPC("ChangePlayerColor", RpcTarget.All, photonViewID, socketPos.x, socketPos.y);
     }
 
     [PunRPC]
     private void ChangePlayerColor(int photonViewId, float x, float y) {
         Player player = GetPlayerByPhotonID(photonViewId);
-        Debug.Log("Change cl of " + player);
+        Debug.Log("Change color of " + player);
         Socket socket = GetItemAtPosition(new Vector2(x, y)).GetComponent<Socket>();
-        Debug.Log("Get the socket at " + socket);
+        //Debug.Log("Get the socket at " + socket);
         socket.ChangePlayerColor(player);
     }
 

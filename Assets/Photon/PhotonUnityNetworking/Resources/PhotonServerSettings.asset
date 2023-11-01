@@ -88,6 +88,10 @@ MonoBehaviour:
   - SetOtherPlayer
   - CheckBeforeStartTheMap
   - Pun_CheckBeforeStartTheMap
+  - EnableMove
+  - Pun_SetGender
+  - Pun_LoadGame
+  - CallWinGameVSMode
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

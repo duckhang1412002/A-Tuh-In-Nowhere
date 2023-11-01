@@ -5137,6 +5137,7 @@ MonoBehaviour:
   loginPanel: {fileID: 398904325}
   RegisterPanel: {fileID: 1187554279}
   dependencyStatus: 0
+  currentAccountID: -1
   emailLoginField: {fileID: 965056234}
   passwordLoginField: {fileID: 548011528}
   nameRegisterField: {fileID: 1595922883}

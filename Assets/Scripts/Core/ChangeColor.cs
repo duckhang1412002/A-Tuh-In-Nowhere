@@ -26,7 +26,7 @@ public class ChangeColor : MonoBehaviour
 
     Dictionary<string, Color> colorConvertMap = new Dictionary<string, Color>();
 
-    public ChangeColor(){
+    public void Awake(){
         colorConvertMap["Default"] = COLOR_DEFAULT;
         colorConvertMap["Opacity"] = COLOR_OPACITY;
         colorConvertMap["None"] = COLOR_NONE;

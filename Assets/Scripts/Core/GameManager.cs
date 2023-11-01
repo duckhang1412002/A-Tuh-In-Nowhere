@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public List<string[,]> inputList { get; set; }
 
     private InputManager inputManager;
-    private GameObject player;
+    private Vector2 otherPlayerInitPos;
 
 
     public List<GameObject[,]> MapGridList { get; set; }
@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private Dictionary<int, GameObject> doorButtonList;
     public Dictionary<Vector2, bool> WireMap { get; set; }
+    private ChangeColor changeColor;
 
     private bool openPauseUI = false;
     private bool openGuideUI = false;
@@ -59,14 +60,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     private bool singleMode;
     private int isMapLoaded;
 
-    public UnityEvent downloadCompleteEvent;
+    public UnityEvent downloadCompleteEvent, loadMapCompleteEvent;
     //public UnityEvent everyoneDownloadComplete;
 
     public void Start()
     {
+        Debug.Log("This map from Custom Prop: " + PhotonNetwork.LocalPlayer.CustomProperties["MapID"]);
+        Debug.Log("Gender for this player: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
         isMapLoaded = 0;
         view = this.gameObject.GetComponent<PhotonView>();
         inputManager = this.gameObject.GetComponent<InputManager>();
+        changeColor = this.gameObject.GetComponent<ChangeColor>();
+        WireMap = new Dictionary<Vector2, bool>();
         doorButtonList = new Dictionary<int, GameObject>();
         Score = 0;
         IsCameraTargetPlayer = true;
@@ -74,23 +79,25 @@ public class GameManager : MonoBehaviourPunCallbacks
         singleMode = PhotonNetwork.OfflineMode;
         startBtn.gameObject.SetActive(false); //true if single mode and false if multiplayer
         Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
-        if (singleMode)
-        {
-            Debug.Log("Single mode!");
-            roomName.text = PhotonNetwork.CurrentRoom.Name;
-            //view.RPC("InitializeMapRPC", RpcTarget.All);
-            view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
-        }
-        else if (PhotonNetwork.IsConnectedAndReady)
-        {
-            Debug.Log("Multiplayer mode!");
-            roomName.text = PhotonNetwork.CurrentRoom.Name;
-        }
-        else
-        {
-            Debug.Log("Not Connected");
-            roomName.text = "There's nothing here";
-        }
+
+        /*        if (singleMode)
+                {
+                    Debug.Log("Single mode!");
+                    roomName.text = PhotonNetwork.CurrentRoom.Name;
+                    //view.RPC("InitializeMapRPC", RpcTarget.All);
+                    view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
+                }
+                else if (PhotonNetwork.IsConnectedAndReady)
+                {
+                    Debug.Log("Multiplayer mode!");
+                    roomName.text = PhotonNetwork.CurrentRoom.Name;
+                }
+                else
+                {
+                    Debug.Log("Not Connected");
+                    roomName.text = "There's nothing here";
+                }*/
+        photonView.RPC("StartDownloadOnClients", RpcTarget.All);
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
     }
 
@@ -136,13 +143,20 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void CallInitializeMapRPC()
     {
-        downloadCompleteEvent.AddListener(() =>
+        /*        downloadCompleteEvent.AddListener(() =>
+                {
+                    // Place your additional code here
+                    Debug.Log("Download completed! Additional code executed.");
+                    view.RPC("AddMapLoaded", RpcTarget.All);
+                });
+                inputManager.DownloadFile(downloadCompleteEvent);*/
+        loadMapCompleteEvent.AddListener(() =>
         {
             // Place your additional code here
-            Debug.Log("Download completed! Additional code executed.");
+            Debug.Log("Load map completed!");
             view.RPC("AddMapLoaded", RpcTarget.All);
         });
-        inputManager.DownloadFile(downloadCompleteEvent);
+        inputManager.LoadModelAsync(loadMapCompleteEvent);
     }
 
     [PunRPC]
@@ -153,7 +167,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (isMapLoaded == PhotonNetwork.CurrentRoom.PlayerCount)
         {
             Debug.Log("Everyone downloaded the game!");
-            view.RPC("InitializeMapRPC", RpcTarget.All);
+            //view.RPC("InitializeMapRPC", RpcTarget.All);
+            InitializeMapRPC();
         }
     }
 
@@ -169,9 +184,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetPlayerM(int playerID, int x, int y)
     {
-        if (PlayerM == null && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        if (singleMode || (PlayerM == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "M"))
         {
             PlayerM = InstantiatePlayerM(playerID, x, y);
+            Debug.Log("Instantiated M");
+            TempTargetCamera(PlayerM);
             PlayerM.GetComponent<Player>().ID = playerID;
 
             // Synchronize the player object across the network
@@ -186,9 +203,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetPlayerF(int playerID, int x, int y)
     {
-        if (PlayerF == null && PhotonNetwork.LocalPlayer.ActorNumber == 2)
+        if (PlayerF == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "F")
         {
             PlayerF = InstantiatePlayerF(playerID, x, y);
+            Debug.Log("Instantiated F");
+            TempTargetCamera(PlayerF);
             PlayerF.GetComponent<Player>().ID = playerID;
 
             // Synchronize the player object across the network
@@ -207,6 +226,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Quaternion rotation = prefab.transform.rotation;
         float z = prefab.transform.position.z;
         GameObject instantiatedPrefab = Instantiate(prefab, new Vector3(x, y, z), rotation) as GameObject;
+        //GameObject instantiatedPrefab = PhotonNetwork.Instantiate($"Prefabs/{prefabName}", new Vector3(x, y, z), rotation) as GameObject;
         return instantiatedPrefab;
     }
 
@@ -249,10 +269,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         MapGridList = new List<GameObject[,]>();
         int offset = 0;
         int currentMap = 0;
-        /*        foreach(var o in prefabList)
-                {
-                    Debug.Log("prefab: " + o);
-                }*/
+        int playerCount = 1;
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+        {
+            playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+        }
+            
+        Debug.Log("P count: " + playerCount);
         foreach (string[,] inputMap in inputList)
         {
             int n = inputMap.GetLength(0);
@@ -268,278 +291,218 @@ public class GameManager : MonoBehaviourPunCallbacks
                 }
             }
 
-            //check Wall type
-            for (int i = 0; i < m; ++i)
-            {
-                for (int j = 0; j < n; ++j)
-                {
-                    string l = (i > 0) ? randomMap[i - 1, j] : "Null";
-                    string r = (i + 1 < m) ? randomMap[i + 1, j] : "Null";
-                    string d = (j > 0) ? randomMap[i, j - 1] : "Null";
-                    string u = (j + 1 < n) ? randomMap[i, j + 1] : "Null";
 
-                    //Check lai truong hop DOut
-                    if (randomMap[i, j].Contains("Wall"))
+                //check Wall type
+                for (int i = 0; i < m; ++i)
+                {
+                    for (int j = 0; j < n; ++j)
                     {
-                        //case 0: 4 cell adj is not wall or null
-                        if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
+                        string l = (i > 0) ? randomMap[i - 1, j] : "Null";
+                        string r = (i + 1 < m) ? randomMap[i + 1, j] : "Null";
+                        string d = (j > 0) ? randomMap[i, j - 1] : "Null";
+                        string u = (j + 1 < n) ? randomMap[i, j + 1] : "Null";
+
+                        if (randomMap[i, j].Contains("Wall"))
                         {
-                            randomMap[i, j] = "Wall:0:0";
-                        }
-                        //case 1: 3 cell adj is ground
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:1";
-                        }
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:3";
-                        }
-                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:2";
-                        }
-                        else if (!IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:1:0";
-                        }
-                        //case 2: 2 adj cell is wall NOT Opposite
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:0";
-                        }
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:1";
-                        }
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:3";
-                        }
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:2:2";
-                        }
-                        //case 3: 3 adj cell is wall
-                        else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:1";
-                        }
-                        else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:3";
-                        }
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:0";
-                        }
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:3:2";
-                        }
-                        //case 4: 4 adj is all wall
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:4:0";
-                        }
-                        //case 5: 2 opposite cell is wall
-                        else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d))
-                        {
-                            randomMap[i, j] = "Wall:5:1";
-                        }
-                        else
-                        {
-                            randomMap[i, j] = "Wall:5:0";
+                            if (!IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:0:0";
+                            else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:1:1";
+                            else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:1:3";
+                            else if (!IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:1:0";
+                            else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:2:0";
+                            else if (IsEdgeObject(l) && !IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:2:1";
+                            else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:2:3";
+                            else if (!IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:2:2";
+                            else if (!IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:3:1";
+                            else if (IsEdgeObject(l) && !IsEdgeObject(r) && IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:3:3";
+                            else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && IsEdgeObject(d)) randomMap[i, j] = "Wall:3:0";
+                            else if (IsEdgeObject(l) && IsEdgeObject(r) && IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:3:2";
+                            else if (IsEdgeObject(l) && IsEdgeObject(r) && !IsEdgeObject(u) && !IsEdgeObject(d)) randomMap[i, j] = "Wall:5:1";
+                            else randomMap[i, j] = "Wall:5:0";
                         }
                     }
-
                 }
-            }
-
-
-            grid = new GameObject[m, n];
-            GameObject ground = prefabList.FirstOrDefault(o => o.name == "Ground");
-            float groundZ = ground.transform.position.z;
-            Quaternion groundRotate = ground.transform.rotation;
-            for (int x = 0; x < m; ++x)
+                grid = new GameObject[m, (playerCount-1)*100 + n];
+                GameObject ground = prefabList.FirstOrDefault(o => o.name == "Ground");
+                float groundZ = ground.transform.position.z;
+                Quaternion groundRotate = ground.transform.rotation;
+            for (int renderTime = 1; renderTime <= playerCount; ++renderTime)
             {
-                for (int y = 0; y < n; ++y)
+                for (int xx = 0; xx < m; ++xx)
                 {
-                    string item = randomMap[x, y];
-                    if (item.Contains("Null"))
+                    for (int yy = 0; yy < n; ++yy)
                     {
-                        grid[x, y] = null;
-                        continue;
-                    }
-                    //Init ground
-                    if (!item.Contains("Wall"))
-                    {
-                        GameObject groundObject = Instantiate(ground, new Vector3(x + offset, y, groundZ), groundRotate);
-                        grid[x, y] = groundObject;
-                    }
-                    GameObject prefab;
+                        string item = randomMap[xx, yy];
+                        int x = xx;
+                        int y = yy + (renderTime - 1) * 100;
+                        if (item.Contains("Null"))
+                        {
+                            grid[x, y] = null;
+                            continue;
+                        }
+                        //Init ground
+                        if (!item.Contains("Wall"))
+                        {
+                            //GameObject groundObject = Instantiate(ground, new Vector3(x + offset, y, groundZ), groundRotate);
+                            GameObject groundObject = InstantiatePrefab("Ground", x + offset, y);
+                            grid[x, y] = groundObject;
+                        }
+                        GameObject prefab;
 
-                    if (item.Contains("Socket"))
-                    {
-                        string hexCode = item.Split("_")[1];
-                        item = "Socket";
+                        if (item.Contains("Socket"))
+                        {
+                            string hexCode = item.Split("_")[1];
+                            item = "Socket";
 
-                        //change color
-                        GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-                        ChangeColor changeColor = new ChangeColor();
-                        instantiatedPrefab.GetComponent<Socket>().Color = hexCode;
+                            //change color
+                            GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
+                            instantiatedPrefab.GetComponent<Socket>().Color = hexCode;
 
-                        changeColor.ChangeSpriteColor(instantiatedPrefab, hexCode);
-                        grid[x, y] = instantiatedPrefab;
-                        SocketAmount++;
-                    }
-                    else if (item.Contains("PlayerM"))
-                    {
-                        // store ground instead of player
-
-                        if (PhotonNetwork.LocalPlayer.ActorNumber == 1)
+                            changeColor.ChangeSpriteColor(instantiatedPrefab, hexCode);
+                            grid[x, y] = instantiatedPrefab;
+                            SocketAmount++;
+                        }
+                        else if (item.Contains("PlayerM"))
                         {
                             int id = int.Parse(item.Split(':')[1]);
-                            item = "Player";
-
-                            //PlayerM = InstantiatePlayerM(id, x + offset, y);
-                            //SetPlayerM(id, x + offset, y);
-                            view.RPC("SetPlayerM", RpcTarget.All, id, x + offset, y);
-                            PlayerM.GetComponent<Player>().ID = id;
-                            TempTargetCamera(PlayerM);
+                            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+                            {
+                                if (renderTime == PhotonNetwork.LocalPlayer.ActorNumber)
+                                {
+                                    view.RPC($"SetPlayer{PhotonNetwork.LocalPlayer.CustomProperties["Gender"]}", RpcTarget.All, id, x + offset, y);
+                                }
+                            }
+                            else
+                            {
+                                view.RPC("SetPlayerM", RpcTarget.AllBuffered, id, x + offset, y);
+                            }
                         }
-                    }
-                    else if (item.Contains("PlayerF"))
-                    {
-                        // store ground instead of player
-                        if (PhotonNetwork.LocalPlayer.ActorNumber == 2)
+                        else if (item.Contains("PlayerF"))
                         {
                             int id = int.Parse(item.Split(':')[1]);
-                            item = "Player";
-
-                            //PlayerF = InstantiatePlayerF(id, x + offset, y);
-                            //SetPlayerF(id, x + offset, y);
-                            view.RPC("SetPlayerF", RpcTarget.All, id, x + offset, y);
-                            PlayerF.GetComponent<Player>().ID = id;
-                            TempTargetCamera(PlayerF);
+                            view.RPC("SetPlayerF", RpcTarget.AllBuffered, id, x + offset, y);
                         }
-                    }
-                    else if (item.Contains("Bridge"))
-                    {
-                        string direction = item.Split('_')[0];
-                        item = "Bridge";
-
-                        GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-                        if (direction == "H")
+                        else if (item.Contains("Bridge"))
                         {
-                            instantiatedPrefab.GetComponent<Bridge>().Direction = "Horizontal";
+                            string direction = item.Split('_')[0];
+                            item = "Bridge";
+
+                            GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
+                            if (direction == "H")
+                            {
+                                instantiatedPrefab.GetComponent<Bridge>().Direction = "Horizontal";
+                            }
+                            else
+                            {
+                                instantiatedPrefab.GetComponent<Bridge>().Direction = "Vertical";
+                                instantiatedPrefab.GetComponent<Bridge>().RenderSprite();
+                            }
+
+                            grid[x, y] = instantiatedPrefab;
                         }
-                        else
+                        else if (item.Contains("Dimension"))
                         {
-                            instantiatedPrefab.GetComponent<Bridge>().Direction = "Vertical";
-                            instantiatedPrefab.GetComponent<Bridge>().RenderSprite();
+                            string[] dimension = item.Split(':');
+                            string dimensionWay = dimension[0];
+
+                            GameObject instantiatedPrefab = InstantiatePrefab(dimensionWay, x + offset, y);
+                            if (dimensionWay == "DimensionIn")
+                            {
+                                int dimensionID = int.Parse(dimension[1]);
+                                dimensionID += (renderTime - 1) * 100; //for versus mode
+                                instantiatedPrefab.GetComponent<DimensionIn>().ID = dimensionID;
+                            }
+                            else
+                            {
+                                instantiatedPrefab.GetComponent<DimensionOut>().OutDirection = dimension[1];
+                                instantiatedPrefab.GetComponent<DimensionOut>().RenderSprite(dimension[1]);
+                            }
+                            grid[x, y] = instantiatedPrefab;
                         }
-                         
-                        grid[x, y] = instantiatedPrefab;
-                    }
-                    else if (item.Contains("Dimension"))
-                    {
-                        string[] dimension = item.Split(':');
-                        string dimensionWay = dimension[0];
-
-                        GameObject instantiatedPrefab = InstantiatePrefab(dimensionWay, x + offset, y);
-                        if (dimensionWay == "DimensionIn")
+                        else if (item.Contains("DoorButton"))
                         {
-                            instantiatedPrefab.GetComponent<DimensionIn>().ID = int.Parse(dimension[1]);
+                            int buttonID = int.Parse(item.Split(':')[1]);
+                            buttonID += (renderTime - 1) * 100; //for versus mode
+                            item = "DoorButton";
+                            GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
+                            instantiatedPrefab.GetComponent<DoorButton>().Start();
+                            instantiatedPrefab.GetComponent<DoorButton>().ID = buttonID;
+                            grid[x, y] = instantiatedPrefab;
+                            doorButtonList[buttonID] = instantiatedPrefab;
                         }
-                        else
+                        else if (item.Contains("Door"))
                         {
-                            instantiatedPrefab.GetComponent<DimensionOut>().OutDirection = dimension[1];
-                            instantiatedPrefab.GetComponent<DimensionOut>().RenderSprite(dimension[1]);
+                            string direction = item.Split('_')[0];
+                            int doorID = int.Parse(item.Split(':')[1]);
+                            doorID += (renderTime - 1) * 100; //for versus mode
+                            GameObject instantiatedPrefab = InstantiatePrefab("Door", x + offset, y);
+                            instantiatedPrefab.GetComponent<Door>().ID = doorID;
+                            instantiatedPrefab.GetComponent<Door>().DoorOpenDirection = item.Split(':')[2];
+
+                            if (direction == "H") //only need to rotate if Horizontal
+                            {
+                                //rotate 90 deg
+                                instantiatedPrefab.transform.Rotate(0f, 0f, 90f);
+                            }
+
+                            instantiatedPrefab.GetComponent<Door>().isReverseDoor = item.Contains("Reverse");
+
+                            instantiatedPrefab.GetComponent<Door>().Init();
+                            grid[x, y] = instantiatedPrefab;
                         }
-                        grid[x, y] = instantiatedPrefab;
-                    }
-                    else if (item.Contains("DoorButton"))
-                    {
-                        int buttonID = int.Parse(item.Split(':')[1]);
-                        item = "DoorButton";
-                        GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-                        instantiatedPrefab.GetComponent<DoorButton>().Start();
-                        instantiatedPrefab.GetComponent<DoorButton>().ID = buttonID;
-                        grid[x, y] = instantiatedPrefab;
-                        doorButtonList[buttonID] = instantiatedPrefab;
-                    }
-                    else if (item.Contains("Door"))
-                    {
-                        string direction = item.Split('_')[0];
-                        int doorID = int.Parse(item.Split(':')[1]);
-                        GameObject instantiatedPrefab = InstantiatePrefab("Door", x + offset, y);
-                        instantiatedPrefab.GetComponent<Door>().ID = doorID;
-                        instantiatedPrefab.GetComponent<Door>().DoorOpenDirection = item.Split(':')[2];
-
-                        if (direction == "H") //only need to rotate if Horizontal
+                        else if (item.Contains("Wall"))
                         {
-                            //rotate 90 deg
-                            instantiatedPrefab.transform.Rotate(0f, 0f, 90f);
+                            GameObject instantiatedPrefab = InstantiatePrefab("Wall", x + offset, y);
+                            if (item != "Wall")
+                            {
+                                int spriteIndex = int.Parse(item.Split(':')[1]);
+                                int rotationIndex = int.Parse(item.Split(':')[2]);
+                                instantiatedPrefab.GetComponent<Wall>().RenderSprite(spriteIndex, rotationIndex);
+                            } //have more attribute
+
+                            grid[x, y] = instantiatedPrefab;
                         }
+                        // else if (item.Contains("EscButton"))
+                        // {
+                        //     item = "EscButton";
 
-                        instantiatedPrefab.GetComponent<Door>().isReverseDoor = item.Contains("Reverse");
+                        //     GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
+                        //     instantiatedPrefab.GetComponent<EscButton>().Start();
 
-                        instantiatedPrefab.GetComponent<Door>().Init();
-                        grid[x, y] = instantiatedPrefab;
-                    } else if (item.Contains("Wall"))
-                    {
-                        GameObject instantiatedPrefab = InstantiatePrefab("Wall", x + offset, y);
-                        if (item != "Wall")
+                        //     btn=instantiatedPrefab;
+
+                        //     grid[x, y] = instantiatedPrefab;
+                        // }
+                        // else if (item.Contains("Escalator"))
+                        // {
+                        //     string direction = item.Split(':')[1];
+                        //     item = "Escalator";
+
+                        //     GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
+
+                        //     if(direction == "U"){
+                        //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Up";
+                        //     } else if(direction == "D"){
+                        //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Down";
+                        //     } else if(direction == "L"){
+                        //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Left";
+                        //     } else if(direction == "R"){
+                        //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Right";
+                        //     }
+
+                        //     instantiatedPrefab.GetComponent<Escalator>().Start();
+                        //     instantiatedPrefab.GetComponent<Escalator>().RenderSprite();
+
+                        //     esc=instantiatedPrefab;
+                        //     esc.GetComponent<Escalator>().button = btn.GetComponent<EscButton>();
+
+                        //     grid[x, y] = instantiatedPrefab;
+                        // }
+                        else if (!item.Contains("Ground"))
                         {
-                            int spriteIndex = int.Parse(item.Split(':')[1]);
-                            int rotationIndex = int.Parse(item.Split(':')[2]);
-                            instantiatedPrefab.GetComponent<Wall>().RenderSprite(spriteIndex, rotationIndex);
-                        } //have more attribute
-
-                        grid[x, y] = instantiatedPrefab;
-                    }
-                    // else if (item.Contains("EscButton"))
-                    // {
-                    //     item = "EscButton";
-
-                    //     GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-                    //     instantiatedPrefab.GetComponent<EscButton>().Start();
-
-                    //     btn=instantiatedPrefab;
-
-                    //     grid[x, y] = instantiatedPrefab;
-                    // }
-                    // else if (item.Contains("Escalator"))
-                    // {
-                    //     string direction = item.Split(':')[1];
-                    //     item = "Escalator";
-
-                    //     GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-
-                    //     if(direction == "U"){
-                    //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Up";
-                    //     } else if(direction == "D"){
-                    //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Down";
-                    //     } else if(direction == "L"){
-                    //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Left";
-                    //     } else if(direction == "R"){
-                    //         instantiatedPrefab.GetComponent<Escalator>().Direction = "Right";
-                    //     }
-
-                    //     instantiatedPrefab.GetComponent<Escalator>().Start();
-                    //     instantiatedPrefab.GetComponent<Escalator>().RenderSprite();
-
-                    //     esc=instantiatedPrefab;
-                    //     esc.GetComponent<Escalator>().button = btn.GetComponent<EscButton>();
-
-                    //     grid[x, y] = instantiatedPrefab;
-                    // }
-                    else
-                    {
-                        //Have Ice here
-                        GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
-                        grid[x, y] = instantiatedPrefab;
+                            //Have Ice here
+                            GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
+                            grid[x, y] = instantiatedPrefab;
+                        }
                     }
                 }
             }
@@ -559,13 +522,16 @@ public class GameManager : MonoBehaviourPunCallbacks
                 //Connect Dimension In and Out
                 if (item.tag == "DimensionIn")
                 {
-                    int dimension = item.GetComponent<DimensionIn>().ID;
-                    foreach (GameObject insideItem in MapGridList[dimension])
+                    int factor = item.GetComponent<DimensionIn>().ID / 100; 
+                    int dimensionID = item.GetComponent<DimensionIn>().ID % 100;
+                    foreach (GameObject insideItem in MapGridList[dimensionID])
                     {
                         int ok = 0;
                         if (insideItem == null) continue;
                         if (insideItem.tag == "DimensionOut")
                         {
+                            int yFactor = (int)insideItem.transform.position.y / 100;
+                            if (yFactor != factor) continue;
                             string dir = insideItem.GetComponent<DimensionOut>().OutDirection;
                             if (dir == "Left")
                             {
@@ -595,27 +561,50 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else if (item.tag == "Door")
                 {
                     int doorID = item.GetComponent<Door>().ID;
+                    int factor = doorID / 100;
                     if (item.GetComponent<Door>().isReverseDoor)
                     {
                         //item.GetComponent<Door>().DoorTransition();
                         item.GetComponent<Door>().DebugPosition();
                     }
-                    foreach (int btnID in inputManager.ListDoor[doorID])
+                    foreach (int btnID in inputManager.ListDoor[doorID%100])
                     {
-                        item.GetComponent<Door>().Button = doorButtonList[btnID].GetComponent<DoorButton>();
+                        item.GetComponent<Door>().Button = doorButtonList[btnID+(factor * 100)].GetComponent<DoorButton>();
                     }
                 }
             }
         }
         PlayGridList = MapGridList;
+        photonView.RPC("EnableMove", RpcTarget.All);
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+        {
+            PhotonNetwork.LocalPlayer.CustomProperties["Score"] = 0; //set score for VS mode
+            SocketAmount /= PhotonNetwork.CurrentRoom.PlayerCount;
+        }
+
+        Debug.Log("Socket Amount: " + SocketAmount);
+        /*        if (PlayerM != null)
+                {
+                    //PlayerM.GetComponent<Step>().enabled = true;
+                    PlayerM.GetComponent<MoveController>().enabled = true;
+                }
+                else
+                {
+                    //PlayerF.GetComponent<Step>().enabled = true;
+                    PlayerF.GetComponent<MoveController>().enabled = true;
+                }*/
+    }
+
+    [PunRPC]
+    private void EnableMove()
+    {
+        PlayGridList = MapGridList;
         if (PlayerM != null)
         {
-            //PlayerM.GetComponent<Step>().enabled = true;
             PlayerM.GetComponent<MoveController>().enabled = true;
         }
         else
         {
-            //PlayerF.GetComponent<Step>().enabled = true;
             PlayerF.GetComponent<MoveController>().enabled = true;
         }
     }
@@ -721,6 +710,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         //     openGuideUI = !openGuideUI;
         //     GuideUI.SetActive(openGuideUI);
         // }
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+        {
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("Score"))
+            {
+                int playerScore = int.Parse(PhotonNetwork.LocalPlayer.CustomProperties["Score"].ToString());
+                if (playerScore == SocketAmount / 2 && SocketAmount != 0)
+                {
+                    photonView.RPC("CallWinGameVSMode", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+                    //Debug.Log("Player win: " + PhotonNetwork.LocalPlayer.ActorNumber);
+                }
+            }
+
+        }
         if (Score == SocketAmount / 2 && SocketAmount != 0)
         {
             Debug.Log("Win game " + singleMode);
@@ -731,8 +733,15 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                view.RPC("CallScene", RpcTarget.All, "Loading");
-                PhotonNetwork.LeaveRoom();
+                //Debug.Log("We won the game!");
+                if (PhotonNetwork.IsMasterClient)
+                    PhotonNetwork.LoadLevel("MultiplayerLobby");
+                /*                view.RPC("CallScene", RpcTarget.All, "Loading");
+                                // Clear custom properties before leaving the room
+                                ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
+                                customProps.Clear();
+                                PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
+                                PhotonNetwork.LeaveRoom();*/
             }
         }
     }
@@ -746,13 +755,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void CallLeaveRoom()
     {
+        // Clear custom properties before leaving the room
+        ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
+        customProps.Clear();
+        PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
         PhotonNetwork.LeaveRoom();
     }
 
     [PunRPC]
-    private void CallWinGameTwoPlayer()
+    private void CallWinGameVSMode(int actorNumber)
     {
-        SceneManager.LoadScene("Lobby");
+        Debug.Log($"Player {actorNumber} win the game!!");
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel("MultiplayerLobby");
     }
 
     [PunRPC]

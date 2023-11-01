@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
+using ExitGames.Client.Photon;
 
 public class PlayerMapController : MonoBehaviour
 {
@@ -112,13 +113,19 @@ public class PlayerMapController : MonoBehaviour
     }
 
     public void StartTheMap(){
-        InputManager.fileName = MapID + ".txt";
+        //InputManager.fileName = MapID + ".txt";
 
         if(SceneManager.GetActiveScene().name == "SingleLobby"){
             PhotonNetwork.OfflineMode = true;
             PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+            Hashtable myProperties = new Hashtable();
+            myProperties["MapID"] = MapID;
+            PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
             SceneManager.LoadScene("Game");
         } else {
+            Hashtable myProperties = new Hashtable();
+            myProperties["MapID"] = MapID;
+            PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
             MultiplayerConfirmMap();
 
             // InputManager.fileName = "mul-" + MapID + ".txt";

@@ -144,18 +144,18 @@ public class ProgressBar : MonoBehaviour
 
                     foreach (var mapSnapShot in snapshot.Children)
                     {
-                        string mapName = mapSnapShot.Key;
-                        string path = folderPath + mapName + ".txt";
+                        string mapID = mapSnapShot.Child("MapID").Value.ToString();
+                        string path = folderPath + mapID + ".txt";
 
                         if (File.Exists(path))
                         {
-                            Debug.Log("Found the " + mapName + " file locally, Loading!!!");
+                            Debug.Log("Found the " + mapID + " file locally, Loading!!!");
                             checkedFile+=2; //map txt and image
                         }
                         else
                         {
-                            Debug.Log("Adding " + mapName + " to download queue");
-                            filesToDownload.Add(mapName);
+                            Debug.Log("Adding " + mapID + " to download queue");
+                            filesToDownload.Add(mapID);
                         }
                     }
 

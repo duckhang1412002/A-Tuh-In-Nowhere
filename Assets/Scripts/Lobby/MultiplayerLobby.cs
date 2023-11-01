@@ -2,6 +2,9 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking.Types;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
@@ -9,6 +12,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] GameObject playerPrefabF;
     [SerializeField] Transform parentTransform;
+    [SerializeField] Text roomName;
     GameObject myPlayer, otherPlayer;
 
     public bool IsReadyToStartTheMap{get; set;}
@@ -20,12 +24,18 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         IsReadyToStartTheMap = false;
         MapRole = "";
         CurrentChosingMap = -1;
-
+        roomName.text = PhotonNetwork.CurrentRoom.Name;
         if (PhotonNetwork.IsMasterClient)
         {
-            myPlayer = InstantiatePlayerM(0, -4);
+            myPlayer = PhotonInstantiate(playerPrefabM, 0, -4);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
+        } else
+        {
+            myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
+            myPlayer.GetComponent<LobbyMove>().enabled = true;
+            photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
+            Debug.Log("I'm not master client!");
         }
     }
 
@@ -39,17 +49,22 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         IsReadyToStartTheMap = mineIsReady;
         MapRole = mineMapRole;
         CurrentChosingMap = mineCurrentChosingMap;
-
-        Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap);
+        //InputManager.fileName = 101 + ".txt"; //map 100 for multiple 1 instead for choosingMap;
+        Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap + " viewID: " + photonView.ViewID);
 
         photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
+        PhotonNetwork.LocalPlayer.CustomProperties[$"Gender"] = MapRole;
+        if (mineCurrentChosingMap < 100)
+            PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
     }
 
     [PunRPC]
     void Pun_CheckBeforeStartTheMap(bool otherIsReady, string otherMapRole, int otherCurrentChosingMap){
-        if(otherIsReady && IsReadyToStartTheMap){
+        if (otherIsReady && IsReadyToStartTheMap){
             if(otherMapRole != MapRole && otherCurrentChosingMap == CurrentChosingMap){
                 Debug.Log("Validate BEFORE JOIN MAP SUCCESSFULLY");
+                if (PhotonNetwork.IsMasterClient)
+                    PhotonNetwork.LoadLevel("Game");
             }
         }
     }
@@ -57,36 +72,21 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //other player join
     public override void OnJoinedRoom()
     {
-        myPlayer = InstantiatePlayerF(5, -4);
+/*        myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
         myPlayer.GetComponent<LobbyMove>().enabled = true;
-        photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
+        photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);*/
     }
 
-    private GameObject InstantiatePlayerM(int x, int y)
+    private GameObject PhotonInstantiate(GameObject prefab, int x, int y)
     {
-        Quaternion rotation = playerPrefabM.transform.rotation;
+        Quaternion rotation = prefab.transform.rotation;
 
         // Calculate the child's local position relative to the parent's position
         Vector3 localPosition = new Vector3(x, y, 0);
 
         // Set the child's position relative to the parent
-        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(playerPrefabM.name, Vector3.zero, rotation) as GameObject;
+        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(prefab.name, Vector3.zero, rotation) as GameObject;
         instantiatedPrefab.transform.localPosition = localPosition;
-
-        return instantiatedPrefab;
-    }
-
-        private GameObject InstantiatePlayerF(int x, int y)
-    {
-        Quaternion rotation = playerPrefabF.transform.rotation;
-
-        // Calculate the child's local position relative to the parent's position
-        Vector3 localPosition = new Vector3(x, y, 0);
-
-        // Set the child's position relative to the parent
-        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(playerPrefabF.name, Vector3.zero, rotation) as GameObject;
-        instantiatedPrefab.transform.localPosition = localPosition;
-        instantiatedPrefab.transform.localScale = new Vector3(-instantiatedPrefab.transform.localScale.x, instantiatedPrefab.transform.localScale.y, instantiatedPrefab.transform.localScale.z);
 
         return instantiatedPrefab;
     }
