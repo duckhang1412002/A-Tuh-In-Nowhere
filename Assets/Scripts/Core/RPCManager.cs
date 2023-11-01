@@ -42,7 +42,16 @@ public class RPCManager : MonoBehaviourPunCallbacks
 
     public void CallAddScore()
     {
-        view.RPC("AddScore", RpcTarget.All);
+        if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+        {
+            int score = int.Parse(PhotonNetwork.LocalPlayer.CustomProperties["Score"].ToString());
+            PhotonNetwork.LocalPlayer.CustomProperties["Score"] = ++score;
+            Debug.Log("New score: " + PhotonNetwork.LocalPlayer.CustomProperties["Score"]);
+        }
+        else
+        {
+            view.RPC("AddScore", RpcTarget.All);
+        }
     }
 
     [PunRPC]

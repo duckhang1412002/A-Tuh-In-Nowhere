@@ -64,6 +64,10 @@ public class AllAceneSettingUI : MonoBehaviourPunCallbacks
         }
         else if (PhotonNetwork.IsConnected && SceneManager.GetActiveScene().name == "Game")
         {
+            // Clear custom properties before leaving the room
+            ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
+            customProps.Clear();
+            PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
             PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene("Lobby");
         } 

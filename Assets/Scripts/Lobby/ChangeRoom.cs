@@ -475,6 +475,10 @@ public class ChangeRoom : MonoBehaviourPunCallbacks
 
     public void OnClickLeftRoom()
     {
+        // Clear custom properties before leaving the room
+        ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
+        customProps.Clear();
+        PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
         PhotonNetwork.LeaveRoom();
     }
 

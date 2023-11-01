@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking.Types;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
@@ -29,6 +30,12 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
             myPlayer = PhotonInstantiate(playerPrefabM, 0, -4);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
+        } else
+        {
+            myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
+            myPlayer.GetComponent<LobbyMove>().enabled = true;
+            photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
+            Debug.Log("I'm not master client!");
         }
     }
 
@@ -47,6 +54,8 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
         photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
         PhotonNetwork.LocalPlayer.CustomProperties[$"Gender_{PhotonNetwork.LocalPlayer.ActorNumber}"] = MapRole;
+        if (mineCurrentChosingMap < 100)
+            PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
     }
 
     [PunRPC]
@@ -60,14 +69,12 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         }
     }
 
-
-
     //other player join
     public override void OnJoinedRoom()
     {
-        myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
+/*        myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
         myPlayer.GetComponent<LobbyMove>().enabled = true;
-        photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
+        photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);*/
     }
 
     private GameObject PhotonInstantiate(GameObject prefab, int x, int y)

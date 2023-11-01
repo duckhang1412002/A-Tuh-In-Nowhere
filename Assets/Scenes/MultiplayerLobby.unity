@@ -902,7 +902,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 533290313306199947, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_Name
-      value: GameObj_MapBlock_Map_102
+      value: GameObj_MapBlock_Map_5
       objectReference: {fileID: 0}
     - target: {fileID: 6358502588727977089, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: previousMapID.Array.size
@@ -4647,7 +4647,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2775976767752157289, guid: 217e25996adb2e34da6af88f78fc18d4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 5.02
       objectReference: {fileID: 0}
     - target: {fileID: 2775976767752157289, guid: 217e25996adb2e34da6af88f78fc18d4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5518,7 +5518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_102_M
+      value: GameObj_Info_Map_5_M
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
@@ -9649,7 +9649,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_102_F
+      value: GameObj_Info_Map_5_F
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
