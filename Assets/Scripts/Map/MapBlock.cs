@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MapBlock : MonoBehaviour {
     [SerializeField]
@@ -24,13 +25,15 @@ public class MapBlock : MonoBehaviour {
 
 
     void Start(){
-        IsUnlocked = false;
-        IsSolved = false;
-        MapID = int.Parse(this.gameObject.name.Split('_')[3].Trim());
-        wireList = new List<GameObject[]>();
+        if(this.gameObject.name != "Projector"){
+            IsUnlocked = false;
+            IsSolved = false;
+            MapID = int.Parse(this.gameObject.name.Split('_')[3].Trim());
+            wireList = new List<GameObject[]>();
 
-        GameObject[] foundWire = FindObjectsWithNameContaining("Wire_Map_" + MapID);    
-        wireList.Add(foundWire);
+            GameObject[] foundWire = FindObjectsWithNameContaining("Wire_Map_" + MapID);    
+            wireList.Add(foundWire);
+        }
     }
 
     // Custom method to find game objects by name containing a specific string
