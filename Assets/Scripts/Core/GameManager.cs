@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] GameObject playerPrefabF;
     [SerializeField] private TMP_Text roomName;
-    [SerializeField] Button startBtn;
     [PunRPC]
     public GameObject PlayerM { get; set; }
 
@@ -77,7 +76,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         IsCameraTargetPlayer = true;
         prefabList = FindAllPrefabs();
         singleMode = PhotonNetwork.OfflineMode;
-        startBtn.gameObject.SetActive(false); //true if single mode and false if multiplayer
         Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
 
         /*        if (singleMode)
@@ -85,7 +83,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                     Debug.Log("Single mode!");
                     roomName.text = PhotonNetwork.CurrentRoom.Name;
                     //view.RPC("InitializeMapRPC", RpcTarget.All);
-                    view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
                 }
                 else if (PhotonNetwork.IsConnectedAndReady)
                 {
@@ -110,13 +107,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             //view.RPC("InitializeMapRPC", RpcTarget.All);
             view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
         }
-    }
-
-    [PunRPC]
-    private void ActiveStartBtn(bool status)
-    {
-        startBtn.gameObject.SetActive(status);
-        startBtn.onClick.AddListener(OnStartButtonClicked);
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player leftPlayer)
