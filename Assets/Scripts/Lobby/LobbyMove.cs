@@ -184,16 +184,24 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         canvas_board_sing.enabled = false;
                         canvas_board_mult.enabled = true;
                         canvas_board_prof.enabled = false;
-                    } else {
+                    } else if(item.name.Contains("Crea")){
+                        canvas_board_idle.enabled = false;
+                        canvas_board_sing.enabled = false;
+                        canvas_board_mult.enabled = false;
+                        canvas_board_prof.enabled = true;
+                    } else if(item.name.Contains("Prof")){
                         canvas_board_idle.enabled = false;
                         canvas_board_sing.enabled = false;
                         canvas_board_mult.enabled = false;
                         canvas_board_prof.enabled = true;
                     }
                 }
-                if(item.name.Contains("Cut")){
-                    StartCoroutine(LoadCutScene());
-                }              
+                if(item.name.Contains("Cut_1")){
+                    StartCoroutine(LoadCutScene_1());
+                }
+                if(item.name.Contains("Cut_2")){
+                    StartCoroutine(LoadCutScene_2());
+                }       
             }
 
             if(item.name.Contains("Entrance")){
@@ -202,7 +210,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                 } else if(item.name.Contains("Mult")){
                     SceneManager.LoadScene("Loading");
                 } else {
-
+                    SceneManager.LoadScene("CreativeLobby");
                 }     
             } else if(item.name.Contains("Outrance")){
                 if(item.name.Contains("Sing")){
@@ -237,7 +245,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         return splitArray[index];
     }
 
-    private IEnumerator LoadCutScene(){
+    private IEnumerator LoadCutScene_1(){
         Camera mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         Camera cutScene_1 = GameObject.Find("Camera_Cut_1").GetComponent<Camera>();
         mainCamera.enabled = false;
@@ -250,6 +258,21 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         mainCamera.enabled = true;
         cutScene_1.enabled = false;
+    }
+
+    private IEnumerator LoadCutScene_2(){
+        Camera mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        Camera cutScene_2 = GameObject.Find("Camera_Cut_2").GetComponent<Camera>();
+        mainCamera.enabled = false;
+        cutScene_2.enabled = true;
+
+        PlayableDirector timeline = GameObject.Find("Camera_Cut_2").GetComponent<PlayableDirector>();
+        timeline.Play();
+
+        yield return new WaitForSeconds(7f);
+
+        mainCamera.enabled = true;
+        cutScene_2.enabled = false;
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)
@@ -270,7 +293,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         
         //if (HaveOtherPlayer(targetPos)) return false;
 
-        if (itemTag.Contains("Wall")) {
+        if (itemTag.Contains("Wall") || itemTag.Contains("Hidden")) {
             return false;        
         }
         else if (itemTag.Contains("MapBlock")) {

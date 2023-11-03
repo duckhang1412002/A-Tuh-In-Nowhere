@@ -31,15 +31,28 @@ public class PlayerMapController : MonoBehaviour
     public async void Start(){
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         if(playerMapAuthentication != null){
-            ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();      
+            ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();    
             UpdatePlayerMap();
         }
 
         if(ActiveMapList != null){
-            if(SceneManager.GetActiveScene().name == "Game" && MapID > 0){
+            if(SceneManager.GetActiveScene().name == "GameMode"){
+                foreach(PlayerMap m in ActiveMapList){
+                    if(m.MapID == 1){
+                        GameMode.IsUnlockMultiplayerMode = true;
+                        GameMode.CheckIsUnlockMultiplayerMode();
+                    }
+                    if(m.MapID == 2){
+                        GameMode.IsUnlockCreativeMode = true;
+                        GameMode.CheckIsUnlockCreativeMode();
+                    }
+                }
+            }
+            else if(SceneManager.GetActiveScene().name == "Game" && MapID > 0){
                 Txt_Level.text = "Level " + MapID;
                 Txt_RestartNum.text = "Restart Number: " + ++RestartNumber;
-            } else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            } 
+            else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 foreach(PlayerMap m in ActiveMapList){
                     GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + m.MapID);
                     if(singleMap != null){
@@ -73,7 +86,7 @@ public class PlayerMapController : MonoBehaviour
     }
 
     public async void UpdatePlayerMap(){
-        if(SceneManager.GetActiveScene().name != "SingleLobby"){
+        if(SceneManager.GetActiveScene().name == "Game"){
             playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, MapID, RestartNumber, StepNumber);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
