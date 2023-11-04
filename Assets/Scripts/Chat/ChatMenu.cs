@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChatMenu : MonoBehaviour
+public class ChatMenu : MonoBehaviourPun
 {
     public Vector2 spacing;
     Button mainBtn;
@@ -14,6 +15,7 @@ public class ChatMenu : MonoBehaviour
     int itemCnt;
 
     public Text otherChatMessage;
+    public MessagePU messagePU;
 
     void Start()
     {
@@ -64,6 +66,15 @@ public class ChatMenu : MonoBehaviour
         ResetPosition();
         isExpand = false;
         //Debug.Log(chatMessages[index].message.text);
+        photonView.RPC("SendMessage", RpcTarget.Others, chatMessages[index].message.text.ToString());
+    }
+
+    [PunRPC]
+    private void SendMessage(string msg)
+    {
+        otherChatMessage.text = msg;
+        otherChatMessage.gameObject.SetActive(true);
+        messagePU.IsActive = true;
     }
 
     private void OnDestroy()
