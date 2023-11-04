@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.Playables;
+using TMPro;
 
 
 public class LobbyMove : MonoBehaviourPunCallbacks
@@ -31,10 +32,27 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     private static RPCManager rpcManager;
     private GameObject playerMapController;
 
+    public static Vector2 PositionBeforePlay{get; set;}
+    public static Vector2 PositionPlayMap{get; set;}
+
 
     // Start is called before the first frame update
     void Start()
     {
+        /*Player part*/
+        player = this.gameObject.GetComponent<Player>();
+        rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
+        playerMapController = GameObject.Find("PlayerMapController");
+        if(PlayerMapController.MapID != -1 && SceneManager.GetActiveScene().name == "SingleLobby"){
+            player.DefaultZAxis = 6f;
+            player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
+            player.CurrentPosition = PositionBeforePlay;
+            player.TargetPosition = PositionBeforePlay;
+            if(player.transform.position.x > player.TargetPosition.x){
+                player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
+            }
+        }
+
         /*Add in-game interact object to Dictionary*/
         GameObject[] foundObjects = FindObjectsWithNameContaining("GameObj_Ground");
         foreach(GameObject i in foundObjects){
@@ -79,10 +97,14 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         isPauseGame = isMoving = false;
         enableMove = true;
 
-        /*Player part*/
-        player = this.GetComponent<Player>();
-        rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
-        playerMapController = GameObject.Find("PlayerMapController");
+        /*Cutscene check part*/
+        if(PlayerMapController.MapID == 1 && GameMode.ShowCutSceneMultiplayerMode && SceneManager.GetActiveScene().name == "SingleLobby"){
+            GameMode.ShowCutSceneMultiplayerMode = false;
+            StartCoroutine(LoadCutScene_1());
+        } else if(PlayerMapController.MapID == 2 && GameMode.ShowCutSceneCreativeMode && SceneManager.GetActiveScene().name == "SingleLobby"){
+            GameMode.ShowCutSceneCreativeMode = false;
+            StartCoroutine(LoadCutScene_2());
+        }
     }
 
     private void Update()
@@ -127,18 +149,18 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
                 moveDirection += Vector2.left;
-                this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
                 moveDirection += Vector2.right;
-                this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                player.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f);
             }
 
             if (moveDirection != Vector2.zero)
             {     
-                if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
-                if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                if (moveDirection == Vector2.left) player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
+                if (moveDirection == Vector2.right) player.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f);
 
                 moveDirection.Normalize();
                 Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
@@ -156,8 +178,9 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     private void MovePlayer()
     {
         Vector3 newTargetPosition = new Vector3(player.TargetPosition.x, player.TargetPosition.y, player.DefaultZAxis);
+        //Debug.Log(player.TargetPosition + "---NEW");
         
-        player.transform.position = Vector3.MoveTowards(transform.position, newTargetPosition, moveSpeed * Time.deltaTime);
+        player.transform.position = Vector3.MoveTowards(this.transform.position, newTargetPosition, moveSpeed * Time.deltaTime);
 
         if (player.transform.position == newTargetPosition && !enableMove)
         {
@@ -195,13 +218,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         canvas_board_mult.enabled = false;
                         canvas_board_prof.enabled = true;
                     }
-                }
-                if(item.name.Contains("Cut_1")){
-                    StartCoroutine(LoadCutScene_1());
-                }
-                if(item.name.Contains("Cut_2")){
-                    StartCoroutine(LoadCutScene_2());
-                }       
+                }     
             }
 
             if(item.name.Contains("Entrance")){
@@ -223,7 +240,9 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
 
-                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();
+                        PositionBeforePlay = player.PreviousPosition;    
+                        PositionPlayMap = player.CurrentPosition;                
                     }  
                 } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                     if(item.name.Contains("Map")){
@@ -232,7 +251,9 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.StepNumber = 0;
                         PlayerMapController.MapRole = SplitText(item.name, 4);
 
-                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();           
+                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();    
+                        PositionBeforePlay = player.PreviousPosition;
+                        PositionPlayMap = player.CurrentPosition;   
                     } 
                 }
             }
@@ -246,6 +267,11 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     }
 
     private IEnumerator LoadCutScene_1(){
+        GameObject reactionObj = GameObject.Find("Reaction");
+        reactionObj.GetComponent<Animator>().SetTrigger("Reaction-Popup");
+
+        yield return new WaitForSeconds(1.5f);
+        isPauseGame = true;
         Camera mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         Camera cutScene_1 = GameObject.Find("Camera_Cut_1").GetComponent<Camera>();
         mainCamera.enabled = false;
@@ -258,9 +284,18 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         mainCamera.enabled = true;
         cutScene_1.enabled = false;
+        isPauseGame = false;
+
+        TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
+        txt_charMessage.text = "Multiplayer Mode is unlocked!";
     }
 
     private IEnumerator LoadCutScene_2(){
+        GameObject reactionObj = GameObject.Find("Reaction");
+        reactionObj.GetComponent<Animator>().SetTrigger("Reaction-Popup");
+
+        yield return new WaitForSeconds(1.5f);
+        isPauseGame = true;
         Camera mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         Camera cutScene_2 = GameObject.Find("Camera_Cut_2").GetComponent<Camera>();
         mainCamera.enabled = false;
@@ -273,6 +308,10 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         mainCamera.enabled = true;
         cutScene_2.enabled = false;
+        isPauseGame = false;
+
+        TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
+        txt_charMessage.text = "Creative Mode is unlocked!";
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)
@@ -287,7 +326,6 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     {
         GameObject item = GetItemAtPosition(targetPos);
         string itemTag = item.name;
-        Debug.Log(item.transform.position);
         //Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false
         
@@ -346,12 +384,4 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         return matchingObjects;
     }
-
-    // private bool HaveOtherPlayer(Vector2 targetPos)
-    // {
-    //     //get other player
-    //     if (gameManager.PlayerF == null) return false;
-    //     GameObject player = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
-    //     return (Vector2)player.transform.position == targetPos;
-    // }
 }

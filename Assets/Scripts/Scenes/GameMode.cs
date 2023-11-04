@@ -6,6 +6,8 @@ public class GameMode : MonoBehaviour
 {
     public static bool IsUnlockMultiplayerMode{get; set;}
     public static bool IsUnlockCreativeMode{get; set;}
+    public static bool ShowCutSceneMultiplayerMode{get; set;}
+    public static bool ShowCutSceneCreativeMode{get; set;}
     private static GameObject hiddenBlock_Mult;
     private static GameObject hiddenBlock_Crea;
     private static GameObject board;
@@ -16,11 +18,11 @@ public class GameMode : MonoBehaviour
     void Start()
     {
         projectors = FindObjectsOfType<MapBlock>();
-        CheckIsUnlockMultiplayerMode();
-        CheckIsUnlockCreativeMode();
+        UpdateMultiplayerMode();
+        UpdateCreativeMode();
     }
 
-    public static void CheckIsUnlockMultiplayerMode(){
+    public static void UpdateMultiplayerMode(){
         if(IsUnlockMultiplayerMode){
             hiddenBlock_Mult = GameObject.Find("GameObj_Hidden_Mult");
 
@@ -31,7 +33,7 @@ public class GameMode : MonoBehaviour
         }
     }
 
-    public static void CheckIsUnlockCreativeMode(){
+    public static void UpdateCreativeMode(){
         if(IsUnlockCreativeMode){
             hiddenBlock_Crea = GameObject.Find("GameObj_Hidden_Crea");
 
