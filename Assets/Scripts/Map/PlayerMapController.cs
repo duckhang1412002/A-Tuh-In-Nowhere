@@ -38,13 +38,13 @@ public class PlayerMapController : MonoBehaviour
         if(ActiveMapList != null){
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 foreach(PlayerMap m in ActiveMapList){
-                    if(m.MapID == 1){
+                    if(m.MapID == 10){
                         GameMode.IsUnlockMultiplayerMode = true;
-                        GameMode.CheckIsUnlockMultiplayerMode();
+                        GameMode.UpdateMultiplayerMode();
                     }
                     if(m.MapID == 2){
                         GameMode.IsUnlockCreativeMode = true;
-                        GameMode.CheckIsUnlockCreativeMode();
+                        GameMode.UpdateCreativeMode();
                     }
                 }
             }
@@ -87,6 +87,24 @@ public class PlayerMapController : MonoBehaviour
 
     public async void UpdatePlayerMap(){
         if(SceneManager.GetActiveScene().name == "Game"){
+            bool isActivateCut_1 = true;
+            bool isActivateCut_2 = true;
+            foreach(PlayerMap m in ActiveMapList){
+                if(m.MapID == 1 && PlayerMapController.MapID == 1){
+                    isActivateCut_1 = false;
+                    break;
+                }
+            }
+            foreach(PlayerMap m in ActiveMapList){
+                if(m.MapID == 2 && PlayerMapController.MapID == 2){
+                    isActivateCut_2 = false; 
+                    break;
+                }
+            }
+
+            GameMode.ShowCutSceneMultiplayerMode = isActivateCut_1;
+            GameMode.ShowCutSceneCreativeMode = isActivateCut_2;
+
             playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, MapID, RestartNumber, StepNumber);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }

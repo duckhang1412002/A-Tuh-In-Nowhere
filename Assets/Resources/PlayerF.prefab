@@ -334,7 +334,7 @@ SpriteRenderer:
   m_Size: {x: 2.16, y: 2.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &643240204482962461
@@ -480,12 +480,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8749076344735605973}
   - component: {fileID: 110056011811881705}
-  - component: {fileID: 8749076344735605975}
   - component: {fileID: 1925605195654088238}
   - component: {fileID: 3860473415059805866}
   - component: {fileID: 6907405160804493834}
   - component: {fileID: -4804162023725420952}
   - component: {fileID: 7026724809149422170}
+  - component: {fileID: 5316912762677420564}
   m_Layer: 0
   m_Name: PlayerF
   m_TagString: Player
@@ -533,21 +533,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &8749076344735605975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8749076344735605972}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f531ced68df48b7458a691c791be45d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSteps: 1
-  moveSpeed: 5
-  view: {fileID: 110056011811881705}
 --- !u!114 &1925605195654088238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,6 +622,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 1
   moveSpeed: 5
+--- !u!114 &5316912762677420564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8749076344735605972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3973f56ce7681d419fcd4d9ba02655d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8749076344877536312
 GameObject:
   m_ObjectHideFlags: 0

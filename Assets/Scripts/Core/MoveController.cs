@@ -390,19 +390,20 @@ public class MoveController : MonoBehaviourPun
                 else if (Input.GetKey(KeyCode.LeftArrow))
                 {
                     moveDirection += Vector2.left;
-                    this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+                    this.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);                 
+                    
                 }
                 else if (Input.GetKey(KeyCode.RightArrow))
                 {
                     moveDirection += Vector2.right;
-                    this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    this.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f); 
                 }
 
                 if (moveDirection != Vector2.zero)
                 {
                     // Debug.Log("Current: " + player.CurrentPosition);
-                    if (moveDirection == Vector2.left) this.transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
-                    if (moveDirection == Vector2.right) this.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    if (moveDirection == Vector2.left) this.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f); 
+                    if (moveDirection == Vector2.right) this.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f); 
                     if (item.GetComponent<Bridge>() != null)
                     {
                         Bridge bridge = item.GetComponent<Bridge>();

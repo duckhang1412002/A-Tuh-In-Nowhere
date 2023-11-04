@@ -12,7 +12,7 @@ public class CharacterAnimation : MonoBehaviour {
     void Start () {
         IsMoving = false;
 
-        GameObject wholePlayerObject = this.gameObject.transform.Find("WholePlayerObject").gameObject;
+        GameObject wholePlayerObject = this.gameObject.transform.Find("PlayerInner").transform.Find("WholePlayerObject").gameObject;
         animator = wholePlayerObject.GetComponent<Animator>();
     }
  
