@@ -873,7 +873,7 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 1
   OwnershipTransfer: 0
-  observableSearch: 0
+  observableSearch: 2
   ObservedComponents:
   - {fileID: 6907405160804493834}
   sceneViewId: 0
@@ -907,6 +907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d539c0a362dc049439df046b9598bc9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 0
 --- !u!114 &6907405160804493834
 MonoBehaviour:
   m_ObjectHideFlags: 0

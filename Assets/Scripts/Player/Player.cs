@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviourPun
 {
-    public int ID { get; set; }
+    public int ID;
     public string[] CompletedMapID {get; set;}
 
 
@@ -21,8 +21,11 @@ public class Player : MonoBehaviourPun
     public float DefaultZAxis { get; set; }
     public bool IsAtSocket { get; set; }
 
+    [SerializeField]
     private Vector2 currentPos;
+    [SerializeField]
     private Vector2 targetPos;
+    [SerializeField]
     private Vector2 previousPos;
     private Vector2 tempCurrentPos;
     private Vector2 tempTargetPos;
@@ -89,8 +92,8 @@ public class Player : MonoBehaviourPun
     {
         targetPos = new Vector2(x, y);
     }
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         IsNotPickWire = true;
         IsAtSocket = false;
@@ -104,8 +107,11 @@ public class Player : MonoBehaviourPun
         PreviousMove = "";
         HandleWireColor = "Default";
         PreviousDirection = Vector2.zero;
-        PhotonNetwork.SendRate = 40; // Adjust the send rate as needed
-        PhotonNetwork.SerializationRate = 40; // Adjust the serialization rate as needed
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+
     }
 
     // Update is called once per frame

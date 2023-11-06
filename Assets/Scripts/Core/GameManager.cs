@@ -25,11 +25,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] GameObject playerPrefabF;
     [SerializeField] private TMP_Text roomName;
-    [PunRPC]
-    public GameObject PlayerM { get; set; }
-
-    [PunRPC]
-    public GameObject PlayerF { get; set; }
+    public GameObject PlayerM;
+    public GameObject PlayerF;
 
     private GameObject[,] grid;
 
@@ -56,7 +53,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private bool IsCameraTargetPlayer { get; set; }
 
     private PhotonView view;
-    private bool singleMode;
+    private bool singleMode, versusMode, duoMode;
     private int isMapLoaded;
 
     public UnityEvent downloadCompleteEvent, loadMapCompleteEvent;
@@ -76,6 +73,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         IsCameraTargetPlayer = true;
         prefabList = FindAllPrefabs();
         singleMode = PhotonNetwork.OfflineMode;
+        versusMode = (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus");
         Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
 
         /*        if (singleMode)
@@ -94,7 +92,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                     Debug.Log("Not Connected");
                     roomName.text = "There's nothing here";
                 }*/
-        photonView.RPC("StartDownloadOnClients", RpcTarget.All);
+        //photonView.RPC("StartDownloadOnClients", RpcTarget.All);
+        StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
     }
 
@@ -116,12 +115,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Disconnect();
             view.RPC("CallScene", RpcTarget.All, "Loading");
         }
-    }
-
-    private void OnStartButtonClicked()
-    {
-        // Inform all clients to start downloading
-        photonView.RPC("StartDownloadOnClients", RpcTarget.All);
     }
 
     [PunRPC]
@@ -171,7 +164,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
 
-    [PunRPC]
+/*    [PunRPC]
     public void SetPlayerM(int playerID, int x, int y)
     {
         if (singleMode || (PlayerM == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "M"))
@@ -207,7 +200,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             PlayerF = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault(go => go.name.Contains("PlayerF"));
         }
-    }
+    }*/
 
 
     public GameObject InstantiatePrefab(string prefabName, int x, int y)
@@ -241,6 +234,45 @@ public class GameManager : MonoBehaviourPunCallbacks
         GameObject instantiatedPrefab = PhotonNetwork.Instantiate(playerPrefabF.name, flooredPosition, rotation) as GameObject;
         instantiatedPrefab.transform.position = flooredPosition;
         return instantiatedPrefab;
+    }
+
+    private void CallCreatePlayerM(int x, int y)
+    {
+        int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
+        PlayerM = InstantiatePlayerM(playerID, x, y);
+        Debug.Log("Instantiated M");
+        TempTargetCamera(PlayerM);
+        PlayerM.GetComponent<Player>().ID = playerID;
+
+        // Synchronize the player object across the network
+        if (!singleMode)
+        photonView.RPC("SetPlayerM", RpcTarget.OthersBuffered, PlayerM.GetComponent<PhotonView>().ViewID, playerID);
+    }
+
+    [PunRPC] 
+    private void SetPlayerM(int viewID, int playerID)
+    {
+       this.PlayerM = PhotonView.Find(viewID).gameObject;
+       PlayerM.GetComponent<Player>().ID = playerID;
+    }
+
+    private void CallCreatePlayerF(int x, int y)
+    {
+        int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
+        PlayerF = InstantiatePlayerF(playerID, x, y);
+        Debug.Log("Instantiated F");
+        TempTargetCamera(PlayerF);
+        PlayerF.GetComponent<Player>().ID = playerID;
+
+        // Synchronize the player object across the network
+        photonView.RPC("SetPlayerF", RpcTarget.OthersBuffered, PlayerF.GetComponent<PhotonView>().ViewID, playerID);
+    }
+
+    [PunRPC]
+    private void SetPlayerF(int viewID, int playerID)
+    {
+        this.PlayerF = PhotonView.Find(viewID).gameObject;
+        PlayerF.GetComponent<Player>().ID = playerID;
     }
 
     // Function to count the number of walls among adjacent cells
@@ -354,7 +386,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                         else if (item.Contains("PlayerM"))
                         {
                             int id = int.Parse(item.Split(':')[1]);
-                            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+                            /*if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
                             {
                                 if (renderTime == PhotonNetwork.LocalPlayer.ActorNumber)
                                 {
@@ -364,12 +396,28 @@ public class GameManager : MonoBehaviourPunCallbacks
                             else
                             {
                                 view.RPC("SetPlayerM", RpcTarget.AllBuffered, id, x + offset, y);
+                            }*/
+                            if (versusMode)
+                            {
+                                if (renderTime == PhotonNetwork.LocalPlayer.ActorNumber)
+                                {
+                                    if (PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "M") CallCreatePlayerM(x + offset, y);
+                                    else CallCreatePlayerF(x + offset, y);
+                                }
+                            }
+                            else if (singleMode || PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "M")
+                            {
+                                CallCreatePlayerM(x + offset, y);
                             }
                         }
                         else if (item.Contains("PlayerF"))
                         {
                             int id = int.Parse(item.Split(':')[1]);
-                            view.RPC("SetPlayerF", RpcTarget.AllBuffered, id, x + offset, y);
+                            /*view.RPC("SetPlayerF", RpcTarget.AllBuffered, id, x + offset, y);*/
+                            if (PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "F")
+                            {
+                                CallCreatePlayerF(x + offset, y);
+                            }
                         }
                         else if (item.Contains("Bridge"))
                         {
@@ -660,7 +708,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (Input.GetKeyDown(KeyCode.R))
         {
             PhotonView view = this.gameObject.GetComponent<PhotonView>();
-            view.RPC("ResetTheGame", RpcTarget.All);
+            view.RPC("ResetTheGame", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -707,8 +755,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                 int playerScore = int.Parse(PhotonNetwork.LocalPlayer.CustomProperties["Score"].ToString());
                 if (playerScore == SocketAmount / 2 && SocketAmount != 0)
                 {
-                    photonView.RPC("CallWinGameVSMode", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-                    //Debug.Log("Player win: " + PhotonNetwork.LocalPlayer.ActorNumber);
+                    Debug.Log("Player win: " + PhotonNetwork.LocalPlayer.ActorNumber + " prepare to call RPC");
+                    photonView.RPC("CallWinGameVSMode", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+                    
                 }
             }
 
@@ -761,9 +810,14 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void ResetTheGame()
+    private void ResetTheGame(int actorID)
     {
-        SceneManager.LoadScene("Game");
+        if (versusMode)
+        {
+            Debug.Log($"{actorID} surrendered!!");
+            PhotonNetwork.LoadLevel("MultiplayerLobby");
+        }
+        else PhotonNetwork.LoadLevel("Game");
     }
 
     public GameObject[,] GetGrid()

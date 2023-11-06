@@ -48,6 +48,7 @@ public class MoveController : MonoBehaviourPun
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         player = this.GetComponent<Player>();
         Debug.Log("Player MoveController ID : " + photonViewID + " LocalActor Gender: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
+        Debug.Log($"PlayerM: {gameManager.PlayerM} + PlayerF: {gameManager.PlayerF}");
     }
 
     private void MovePlayer()
@@ -435,7 +436,9 @@ public class MoveController : MonoBehaviourPun
     {
         //get other player
         if (gameManager.PlayerF == null || gameManager.PlayerM == null) return false;
-        GameObject playerGO = (photonViewID == 1) ? gameManager.PlayerF : gameManager.PlayerM;
+        GameObject playerGO;
+        if (PhotonNetwork.OfflineMode == true || gameManager.PlayerM.GetComponent<Player>().ID == photonViewID) playerGO = gameManager.PlayerM;
+        else playerGO = gameManager.PlayerF;
         Player targetPlayer = playerGO.GetComponent<Player>();
         return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
     }

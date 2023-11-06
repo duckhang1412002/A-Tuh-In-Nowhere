@@ -32,6 +32,8 @@ public class ChatMenu : MonoBehaviourPun
         mainBtnPos = mainBtn.GetComponent<RectTransform>().anchoredPosition;
 
         ResetPosition();
+
+        mainBtnPos.y -= 25;
     }
 
     private void ResetPosition()
@@ -72,6 +74,7 @@ public class ChatMenu : MonoBehaviourPun
     [PunRPC]
     private void SendMessage(string msg)
     {
+        Debug.Log("Other say: " + msg);
         otherChatMessage.text = msg;
         otherChatMessage.gameObject.SetActive(true);
         messagePU.IsActive = true;

@@ -36,7 +36,11 @@ public class RPCManager : MonoBehaviourPunCallbacks
 
     private Player GetPlayerByPhotonID(int photonViewID)
     {
-        GameObject player = (photonViewID == 1) ? gameManager.PlayerM : gameManager.PlayerF;
+        Debug.Log($"RPC Class:: PlayerM: {gameManager.PlayerM} + PlayerF: {gameManager.PlayerF}");
+        GameObject player;
+        if (PhotonNetwork.OfflineMode == true || gameManager.PlayerM.GetComponent<Player>().ID == photonViewID) player = gameManager.PlayerM;
+        else player = gameManager.PlayerF;
+        //GameObject player = (photonViewID == 1) ? gameManager.PlayerM : gameManager.PlayerF;
         return player.GetComponent<Player>();
     }
 
@@ -107,9 +111,9 @@ public class RPCManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void ChangePlayerColor(int photonViewId, float x, float y) {
         Player player = GetPlayerByPhotonID(photonViewId);
-        Debug.Log("Change color of " + player);
+        Debug.Log("Change color of " + player + " with ID: " + photonViewId);
         Socket socket = GetItemAtPosition(new Vector2(x, y)).GetComponent<Socket>();
-        //Debug.Log("Get the socket at " + socket);
+        Debug.Log("Get the socket at " + socket);
         socket.ChangePlayerColor(player);
     }
 
