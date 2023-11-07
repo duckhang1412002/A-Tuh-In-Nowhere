@@ -908,6 +908,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 0
+  currentPos: {x: 0, y: 0}
+  targetPos: {x: 0, y: 0}
+  previousPos: {x: 0, y: 0}
 --- !u!114 &6907405160804493834
 MonoBehaviour:
   m_ObjectHideFlags: 0

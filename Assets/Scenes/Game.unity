@@ -5180,6 +5180,7 @@ MonoBehaviour:
   mainBtnPos: {x: 0, y: 0}
   otherChatMessage: {fileID: 777649294}
   messagePU: {fileID: 1272090917}
+  otherAvatar: {fileID: 450873347}
 --- !u!114 &2036917029
 MonoBehaviour:
   m_ObjectHideFlags: 0

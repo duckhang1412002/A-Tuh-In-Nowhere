@@ -768,6 +768,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             //GameOverUI.SetActive(true);
             if (singleMode)
             {
+                PhotonNetwork.LeaveRoom();
                 SceneManager.LoadScene("SingleLobby");
             }
             else

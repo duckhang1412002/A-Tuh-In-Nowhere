@@ -16,6 +16,7 @@ public class ChatMenu : MonoBehaviourPun
 
     public Text otherChatMessage;
     public MessagePU messagePU;
+    public Image otherAvatar;
 
     void Start()
     {
@@ -64,6 +65,7 @@ public class ChatMenu : MonoBehaviourPun
 
     public void OnItemClick(int index)
     {
+        if (messagePU.gameObject.activeSelf) return; //there is already a message showing
         otherChatMessage.text = chatMessages[index].message.text;
         ResetPosition();
         isExpand = false;
@@ -76,8 +78,12 @@ public class ChatMenu : MonoBehaviourPun
     {
         Debug.Log("Other say: " + msg);
         otherChatMessage.text = msg;
-        otherChatMessage.gameObject.SetActive(true);
-        messagePU.IsActive = true;
+
+        /*        Transform parentTransform = otherChatMessage.transform.parent;
+                GameObject otherChatObject = parentTransform.gameObject;
+                otherChatObject.SetActive(true);*/
+
+        messagePU.gameObject.SetActive(true); 
     }
 
     private void OnDestroy()
