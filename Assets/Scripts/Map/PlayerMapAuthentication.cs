@@ -24,7 +24,7 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
     [SerializeField]
     FirebaseAuthentication firebaseAuth;
 
-    public int? currentAccountID = null;
+    public Account currentAccount = null;
 
     public static PlayerMapAuthentication GetInstance()
     {
@@ -41,7 +41,7 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
             auth = firebaseAuth.auth;
             user = firebaseAuth.user;
             accountsRef = firebaseAuth.accountsRef;
-            currentAccountID = firebaseAuth.currentAccountID;
+            currentAccount = firebaseAuth.currentAccount;
         }
 
         //FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(true);
@@ -115,9 +115,8 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
 
     private IEnumerator UpdatePlayerMapAsync(List<PlayerMap> playerMaps, int mapID, int restartNum, int stepNum)
     {
-        if(currentAccountID != null){
-            int accountID = (int)currentAccountID;
-            PlayerMap newPlayerMap = new PlayerMap(accountID, mapID, restartNum, stepNum, false, false){};
+        if(currentAccount != null){
+            PlayerMap newPlayerMap = new PlayerMap(currentAccount.AccountID, mapID, restartNum, stepNum, false, false){};
             UpdateInfoPlayerMap(newPlayerMap);
         } else yield break;
     }
@@ -126,7 +125,7 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
     {
         string Node = "PlayerMap";
 
-        StartCoroutine(UpdateData(Node, "AccountID", map.AccountID, map.MapID, currentAccountID.ToString()));
+        StartCoroutine(UpdateData(Node, "AccountID", map.AccountID, map.MapID, currentAccount.AccountID.ToString()));
         StartCoroutine(UpdateData(Node, "MapID", map.AccountID, map.MapID,  map.MapID.ToString()));
         StartCoroutine(UpdateData(Node, "Stepnum", map.AccountID, map.MapID, map.StepNumber.ToString()));
         StartCoroutine(UpdateData(Node, "Restartnum", map.AccountID, map.MapID, map.RestartNumber.ToString()));
@@ -155,7 +154,7 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
     public async Task<List<PlayerMap>> GetCurrentPlayerMaps(){
         List<PlayerMap> playerMaps = await GetListPlayerMap(accountsRef);
 
-        List<PlayerMap> currentPlayerMaps = playerMaps.Where(m => m.AccountID == currentAccountID).ToList();
+        List<PlayerMap> currentPlayerMaps = playerMaps.Where(m => m.AccountID == currentAccount.AccountID).ToList();
         return currentPlayerMaps;
     }
 }

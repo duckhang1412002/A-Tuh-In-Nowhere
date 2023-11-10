@@ -21,13 +21,6 @@ public class PlayerMapController : MonoBehaviour
     public static int StepNumber = 0;
     public static string MapRole = "";
 
-    /*TextMeshPro fields*/
-    [SerializeField]
-    private TextMeshProUGUI Txt_Level;
-
-    [SerializeField]
-    private TextMeshProUGUI Txt_RestartNum;
-
     public async void Start(){
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         if(playerMapAuthentication != null){
@@ -48,9 +41,8 @@ public class PlayerMapController : MonoBehaviour
                     }
                 }
             }
-            else if(SceneManager.GetActiveScene().name == "Game" && MapID > 0){
-                Txt_Level.text = "Level " + MapID;
-                Txt_RestartNum.text = "Restart Number: " + ++RestartNumber;
+            else if(SceneManager.GetActiveScene().name == "Game" && MapID != -1){
+                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("Single Mode", MapID, ++RestartNumber, playerMapAuthentication.currentAccount.Fullname);
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 foreach(PlayerMap m in ActiveMapList){

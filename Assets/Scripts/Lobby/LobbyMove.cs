@@ -51,6 +51,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             if(player.transform.position.x > player.TargetPosition.x){
                 player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
             }
+            PlayerMapController.MapID = -1;
         }
 
         /*Add in-game interact object to Dictionary*/

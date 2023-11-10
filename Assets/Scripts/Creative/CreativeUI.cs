@@ -56,7 +56,7 @@ public class CreativeUI : MonoBehaviour
         myBtn.interactable = true;
         foreach (var x in mapItemList)
         {
-            if (x.Key.AccountID != auth.currentAccountID)
+            if (x.Key.AccountID != auth.currentAccount.AccountID)
             {
                 x.Value.SetActive(true);
             }
@@ -69,7 +69,7 @@ public class CreativeUI : MonoBehaviour
         myBtn.interactable = false;
         foreach (var x in mapItemList)
         {
-            if (x.Key.AccountID != auth.currentAccountID)
+            if (x.Key.AccountID != auth.currentAccount.AccountID)
             {
                 x.Value.SetActive(false);
             }

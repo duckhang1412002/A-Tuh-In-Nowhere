@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class SoundtrackManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class SoundtrackManager : MonoBehaviour
     [SerializeField]
     private Slider volumeSlider;
 
-    public Text volumeText;
+    public TextMeshProUGUI volumeText;
 
     private const string VolumeKey = "Volume"; // Key để lưu giá trị âm lượng
 
