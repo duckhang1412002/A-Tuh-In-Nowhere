@@ -20,8 +20,15 @@ public class PlayerMapController : MonoBehaviour
     public static int RestartNumber = -1;
     public static int StepNumber = 0;
     public static string MapRole = "";
+    public static string CurrentGameMode = "";
 
     public async void Start(){
+        if(SceneManager.GetActiveScene().name == "SingleLobby"){
+            CurrentGameMode = "Single Mode";
+        } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            CurrentGameMode = "Multiplayer Mode";
+        }
+
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         if(playerMapAuthentication != null){
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();    
@@ -42,7 +49,7 @@ public class PlayerMapController : MonoBehaviour
                 }
             }
             else if(SceneManager.GetActiveScene().name == "Game" && MapID != -1){
-                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("Single Mode", MapID, ++RestartNumber, playerMapAuthentication.currentAccount.Fullname);
+                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI(CurrentGameMode, MapID, ++RestartNumber, playerMapAuthentication.currentAccount.Fullname);
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 foreach(PlayerMap m in ActiveMapList){

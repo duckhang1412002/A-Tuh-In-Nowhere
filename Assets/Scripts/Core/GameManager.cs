@@ -59,36 +59,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         versusMode = (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus");
         Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
 
-        /*        if (singleMode)
-                {
-                    Debug.Log("Single mode!");
-                    roomName.text = PhotonNetwork.CurrentRoom.Name;
-                    //view.RPC("InitializeMapRPC", RpcTarget.All);
-                }
-                else if (PhotonNetwork.IsConnectedAndReady)
-                {
-                    Debug.Log("Multiplayer mode!");
-                    roomName.text = PhotonNetwork.CurrentRoom.Name;
-                }
-                else
-                {
-                    Debug.Log("Not Connected");
-                    roomName.text = "There's nothing here";
-                }*/
-        //photonView.RPC("StartDownloadOnClients", RpcTarget.All);
         StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
 
-        if(SceneManager.GetActiveScene().name == "Game"){
-            if(PlayerM.GetComponent<MoveController>().enabled){
-                GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerF);
-            } else {
-                GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerM);
-            }
+        if(PlayerMapController.CurrentGameMode == "Single Mode" && SceneManager.GetActiveScene().name == "Game"){
+            CameraManager.IsCameraTargetPlayer = true;
+            CameraManager.IsCameraTargetOtherPlayer = false;
+            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("C");
         }
-        CameraManager.IsCameraTargetPlayer = true;
-        CameraManager.IsCameraTargetOtherPlayer = false;
-        GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("C");
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -99,6 +77,19 @@ public class GameManager : MonoBehaviourPunCallbacks
             //InitializeMap();
             //view.RPC("InitializeMapRPC", RpcTarget.All);
             view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
+
+            /*Init my camera and other camera*/
+            if(SceneManager.GetActiveScene().name == "Game"){
+                if(PlayerM.GetComponent<MoveController>().enabled){
+                    if(PlayerF != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerF);
+                } else {
+                    if(PlayerM != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerM);
+                }
+            }
+
+            CameraManager.IsCameraTargetPlayer = true;
+            CameraManager.IsCameraTargetOtherPlayer = false;
+            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("C");
         }
     }
 
@@ -693,27 +684,27 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         if (Score == SocketAmount / 2 && SocketAmount != 0)
         {
-            GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI("Single Mode", PlayerMapController.MapID, PlayerMapController.RestartNumber);
+            GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI(PlayerMapController.CurrentGameMode, PlayerMapController.MapID, PlayerMapController.RestartNumber);
 
             /*Kick out the lobby - comment*/
-            // if (singleMode)
-            // {
-            //     GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI("Single Mode", PlayerMapController.MapID, PlayerMapController.RestartNumber);
-            //     PhotonNetwork.LeaveRoom();
-            //     SceneManager.LoadScene("SingleLobby");
-            // }
-            // else
-            // {
-            //     //Debug.Log("We won the game!");
-            //     if (PhotonNetwork.IsMasterClient)
-            //         PhotonNetwork.LoadLevel("MultiplayerLobby");
-            //     /*                view.RPC("CallScene", RpcTarget.All, "Loading");
-            //                     // Clear custom properties before leaving the room
-            //                     ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
-            //                     customProps.Clear();
-            //                     PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
-            //                     PhotonNetwork.LeaveRoom();*/
-            // }
+            if (singleMode)
+            {
+                GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI("Single Mode", PlayerMapController.MapID, PlayerMapController.RestartNumber);
+                PhotonNetwork.LeaveRoom();
+                SceneManager.LoadScene("SingleLobby");
+            }
+            else
+            {
+                //Debug.Log("We won the game!");
+                if (PhotonNetwork.IsMasterClient)
+                    PhotonNetwork.LoadLevel("MultiplayerLobby");
+                /*                view.RPC("CallScene", RpcTarget.All, "Loading");
+                                // Clear custom properties before leaving the room
+                                ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
+                                customProps.Clear();
+                                PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
+                                PhotonNetwork.LeaveRoom();*/
+            }
         }
     }
 

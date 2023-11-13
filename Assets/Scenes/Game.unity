@@ -348,7 +348,7 @@ GameObject:
   - component: {fileID: 64406017}
   - component: {fileID: 64406020}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Btn_Exit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -422,10 +422,10 @@ MonoBehaviour:
       - m_Target: {fileID: 64406020}
         m_TargetAssemblyTypeName: ScenesManager, Assembly-CSharp
         m_MethodName: BackToLobbyScene
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 527021890}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1702,7 +1702,7 @@ GameObject:
   - component: {fileID: 506388117}
   - component: {fileID: 506388120}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Btn_Restart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3295,9 +3295,8 @@ GameObject:
   - component: {fileID: 890979350}
   - component: {fileID: 890979349}
   - component: {fileID: 890979348}
-  - component: {fileID: 890979351}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Btn_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3368,7 +3367,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890979351}
+      - m_Target: {fileID: 1811214676}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: ToggleUI
         m_Mode: 2
@@ -3418,29 +3417,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 890979346}
   m_CullTransparentMesh: 1
---- !u!114 &890979351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 890979346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f76f2f90f7d1a4c479413e0867ddac10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pauseUI: {fileID: 0}
-  txt_pause_mode: {fileID: 0}
-  txt_pause_level: {fileID: 0}
-  txt_pause_player: {fileID: 0}
-  txt_pause_restart: {fileID: 0}
-  confirmMapUI: {fileID: 0}
-  resultUI: {fileID: 0}
-  txt_result_mode: {fileID: 0}
-  txt_result_level: {fileID: 0}
-  txt_result_player: {fileID: 0}
-  txt_result_restart: {fileID: 0}
 --- !u!1 &933294407
 GameObject:
   m_ObjectHideFlags: 0
@@ -7744,7 +7720,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2135110262}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
