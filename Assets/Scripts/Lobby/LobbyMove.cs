@@ -51,7 +51,6 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             if(player.transform.position.x > player.TargetPosition.x){
                 player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
             }
-            PlayerMapController.MapID = -1;
         }
 
         /*Add in-game interact object to Dictionary*/
@@ -100,12 +99,16 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         /*Cutscene check part*/
         if(PlayerMapController.MapID == 1 && GameMode.ShowCutSceneMultiplayerMode && SceneManager.GetActiveScene().name == "SingleLobby"){
+            Debug.Log("----------------------CUT");
             GameMode.ShowCutSceneMultiplayerMode = false;
             StartCoroutine(LoadCutScene_1());
         } else if(PlayerMapController.MapID == 2 && GameMode.ShowCutSceneCreativeMode && SceneManager.GetActiveScene().name == "SingleLobby"){
             GameMode.ShowCutSceneCreativeMode = false;
             StartCoroutine(LoadCutScene_2());
         }
+
+        //Reset the MapID to reset all effect
+        PlayerMapController.MapID = -1;
     }
 
     private void Update()

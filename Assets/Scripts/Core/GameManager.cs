@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private PhotonView view;
     private bool singleMode, versusMode, duoMode;
+
+    private bool isWinGame;
     private int isMapLoaded;
 
     public UnityEvent downloadCompleteEvent, loadMapCompleteEvent;
@@ -48,6 +50,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log("This map from Custom Prop: " + PhotonNetwork.LocalPlayer.CustomProperties["MapID"]);
         Debug.Log("Gender for this player: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
         isMapLoaded = 0;
+        isWinGame = false;
         view = this.gameObject.GetComponent<PhotonView>();
         inputManager = this.gameObject.GetComponent<InputManager>();
         changeColor = this.gameObject.GetComponent<ChangeColor>();
@@ -682,29 +685,32 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
 
         }
-        if (Score == SocketAmount / 2 && SocketAmount != 0)
+        if (Score == SocketAmount / 2 && SocketAmount != 0 && !isWinGame)
         {
-            GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI(PlayerMapController.CurrentGameMode, PlayerMapController.MapID, PlayerMapController.RestartNumber);
+            isWinGame = true;
+            GameObject.Find("PlayerMapController").GetComponent<PlayerMapController>().UpdatePlayerMap();
+            GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI(PlayerMapController.CurrentGameMode, PlayerMapController.MapID, PlayerMapController.RestartNumber);         
+        }
+    }
 
-            /*Kick out the lobby - comment*/
-            if (singleMode)
-            {
-                GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI("Single Mode", PlayerMapController.MapID, PlayerMapController.RestartNumber);
-                PhotonNetwork.LeaveRoom();
-                SceneManager.LoadScene("SingleLobby");
-            }
-            else
-            {
-                //Debug.Log("We won the game!");
-                if (PhotonNetwork.IsMasterClient)
-                    PhotonNetwork.LoadLevel("MultiplayerLobby");
-                /*                view.RPC("CallScene", RpcTarget.All, "Loading");
-                                // Clear custom properties before leaving the room
-                                ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
-                                customProps.Clear();
-                                PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
-                                PhotonNetwork.LeaveRoom();*/
-            }
+    public void BackToLobbyScene(){
+        /*Kick out the lobby - comment*/
+        if (singleMode)
+        {
+            PhotonNetwork.LeaveRoom();
+            SceneManager.LoadScene("SingleLobby");
+        }
+        else
+        {
+            //Debug.Log("We won the game!");
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.LoadLevel("MultiplayerLobby");
+            /*                view.RPC("CallScene", RpcTarget.All, "Loading");
+                            // Clear custom properties before leaving the room
+                            ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
+                            customProps.Clear();
+                            PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
+                            PhotonNetwork.LeaveRoom();*/
         }
     }
 
