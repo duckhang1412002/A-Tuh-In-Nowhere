@@ -702,8 +702,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     // Update is called once per frame
+    bool gameEnd = false;
     void Update()
     {
+        if (gameEnd) return;
         //GameOverUI.SetActive(false);
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -756,13 +758,13 @@ public class GameManager : MonoBehaviourPunCallbacks
                 if (playerScore == SocketAmount / 2 && SocketAmount != 0)
                 {
                     Debug.Log("Player win: " + PhotonNetwork.LocalPlayer.ActorNumber + " prepare to call RPC");
-                    photonView.RPC("CallWinGameVSMode", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
-                    
+                    photonView.RPC("CallWinGameVSMode", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+                    gameEnd = true;
                 }
             }
 
         }
-        if (Score == SocketAmount / 2 && SocketAmount != 0)
+        else if (Score == SocketAmount / 2 && SocketAmount != 0)
         {
             Debug.Log("Win game " + singleMode);
             //GameOverUI.SetActive(true);
@@ -806,6 +808,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void CallWinGameVSMode(int actorNumber)
     {
         Debug.Log($"Player {actorNumber} win the game!!");
+        gameEnd = true;
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel("MultiplayerLobby");
     }
@@ -816,9 +819,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (versusMode)
         {
             Debug.Log($"{actorID} surrendered!!");
-            PhotonNetwork.LoadLevel("MultiplayerLobby");
+            if (PhotonNetwork.IsMasterClient)
+                PhotonNetwork.LoadLevel("MultiplayerLobby");
         }
-        else PhotonNetwork.LoadLevel("Game");
+        else SceneManager.LoadScene("Game");
     }
 
     public GameObject[,] GetGrid()
