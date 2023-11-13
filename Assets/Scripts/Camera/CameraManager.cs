@@ -9,8 +9,8 @@ public class CameraManager : MonoBehaviour
     private Camera myCamera;
     private Camera otherCamera;
 
-    public bool IsCameraTargetPlayer{get; set;}
-    public bool IsCameraTargetOtherPlayer{get; set;}
+    public static bool IsCameraTargetPlayer{get; set;}
+    public static bool IsCameraTargetOtherPlayer{get; set;}
 
     [Space]
     [Header("Canvas")]
@@ -22,26 +22,26 @@ public class CameraManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        IsCameraTargetPlayer = false;
-        IsCameraTargetOtherPlayer = false;
-
-        worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        currentCamera = worldCamera;
         
-        mainUI.worldCamera = currentCamera;
-        pauseUI.worldCamera = currentCamera;
-        resultUI.worldCamera = currentCamera;
     }
 
-    public void InitCamera(GameObject myObj, GameObject otherObj){
+    public void InitMyCamera(GameObject myObj){
+        worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
         if(myObj != null)
             myCamera = myObj.transform.Find("Camera").GetComponent<Camera>();
+    }
+
+    public void InitOtherCamera(GameObject otherObj){
+        worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
         if(otherObj != null)
             otherCamera = otherObj.transform.Find("Camera").GetComponent<Camera>();
     }
 
     public void SetupCamera(string mode){
+        /*Mode C: Change Camera ("Focus to player" or "The whole map")*/
+        /*Mode S: Switch Camera (Switch to other player)*/
         if(mode == "C" && myCamera != null){
             if (IsCameraTargetPlayer)
             {

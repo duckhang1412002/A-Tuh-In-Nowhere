@@ -79,7 +79,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
 
-        GameObject.Find("CameraManager").GetComponent<CameraManager>().InitCamera(PlayerM, PlayerF);
+        if(SceneManager.GetActiveScene().name == "Game"){
+            if(PlayerM.GetComponent<MoveController>().enabled){
+                GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerF);
+            } else {
+                GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerM);
+            }
+        }
+        CameraManager.IsCameraTargetPlayer = true;
+        CameraManager.IsCameraTargetOtherPlayer = false;
+        GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("C");
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -223,6 +232,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
         PlayerM = InstantiatePlayerM(playerID, x, y);
+        GameObject.Find("CameraManager").GetComponent<CameraManager>().InitMyCamera(PlayerM);
         Debug.Log("Instantiated M");
         PlayerM.GetComponent<Player>().ID = playerID;
 
@@ -242,6 +252,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
         PlayerF = InstantiatePlayerF(playerID, x, y);
+        GameObject.Find("CameraManager").GetComponent<CameraManager>().InitMyCamera(PlayerF);
         Debug.Log("Instantiated F");
         PlayerF.GetComponent<Player>().ID = playerID;
 
