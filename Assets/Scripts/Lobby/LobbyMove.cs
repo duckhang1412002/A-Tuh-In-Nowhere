@@ -99,7 +99,6 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         /*Cutscene check part*/
         if(PlayerMapController.MapID == 1 && GameMode.ShowCutSceneMultiplayerMode && SceneManager.GetActiveScene().name == "SingleLobby"){
-            Debug.Log("----------------------CUT");
             GameMode.ShowCutSceneMultiplayerMode = false;
             StartCoroutine(LoadCutScene_1());
         } else if(PlayerMapController.MapID == 2 && GameMode.ShowCutSceneCreativeMode && SceneManager.GetActiveScene().name == "SingleLobby"){

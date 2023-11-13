@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using System.Threading.Tasks;
+using TMPro;
 
 public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 {
@@ -269,7 +270,12 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
             btn_Exit.SetActive(false);
             btn_Logout.SetActive(true);
             btn_Start.SetActive(true);
-            //SceneManager.LoadScene("GameMode");
+
+            /**Setup GreetingUI*/
+            if(currentAccount != null){
+                GameObject.Find("Pnl_Greeting").transform.Find("Txt_GreetingMessage").GetComponent<TextMeshProUGUI>().text = "Welcome, " + currentAccount.Fullname +"!";
+                GameObject.Find("GreetingUI").transform.Find("Pnl_Greeting").GetComponent<Animator>().SetTrigger("Greeting-Popup");
+            }
         }
     }
 
@@ -533,13 +539,21 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 
     public void LogOut()
     {
+        string lastAccountName = currentAccount.Fullname;
         StartCoroutine(UpdateStatus(currentAccount.AccountID, false));
-        currentAccount.AccountID = -1;
+        //currentAccount.AccountID = -1;
         msgSuccessPopup.ShowSuccessPopup("Logout successfully!");
         btn_Account.SetActive(true);
         btn_Exit.SetActive(true);
         btn_Logout.SetActive(false);
         btn_Start.SetActive(false);
+
+        currentAccount = null;
+
+        if(currentAccount == null){
+            GameObject.Find("Pnl_Greeting").transform.Find("Txt_GreetingMessage").GetComponent<TextMeshProUGUI>().text = "Goodbye " + lastAccountName + "!";
+            GameObject.Find("GreetingUI").transform.Find("Pnl_Greeting").GetComponent<Animator>().SetTrigger("RGreeting-Popup");
+        }
     }
 
     public void ExitGame(){

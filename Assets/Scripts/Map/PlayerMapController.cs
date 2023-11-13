@@ -103,8 +103,6 @@ public class PlayerMapController : MonoBehaviour
             GameMode.ShowCutSceneMultiplayerMode = isActivateCut_1;
             GameMode.ShowCutSceneCreativeMode = isActivateCut_2;
 
-            Debug.Log(GameMode.ShowCutSceneMultiplayerMode + "------------CHECKCUT");
-
             playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, MapID, RestartNumber, StepNumber);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
