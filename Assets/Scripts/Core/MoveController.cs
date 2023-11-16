@@ -34,10 +34,12 @@ public class MoveController : MonoBehaviourPun
     private Vector2 touchEndPos;
     private bool isSwiping = false;
     private float minSwipeDistance = 50f; // Adjust this threshold to your preference
+    public int stepCount;
 
     // Start is called before the first frame update
     void Start()
     {
+        stepCount = 0;
         dimensionIn = null;
         dimensionOut = null;
         isPauseGame = isMoving = false;
@@ -380,21 +382,21 @@ public class MoveController : MonoBehaviourPun
                     }
                 }
 
-                if (Input.GetKey(KeyCode.UpArrow))
+                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
                 {
                     moveDirection = Vector2.up;
                 }
-                else if (Input.GetKey(KeyCode.DownArrow))
+                else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
                 {
                     moveDirection = Vector2.down;
                 }
-                else if (Input.GetKey(KeyCode.LeftArrow))
+                else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
                 {
                     moveDirection += Vector2.left;
                     this.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);                 
                     
                 }
-                else if (Input.GetKey(KeyCode.RightArrow))
+                else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
                 {
                     moveDirection += Vector2.right;
                     this.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f); 
@@ -422,6 +424,7 @@ public class MoveController : MonoBehaviourPun
                     Vector2 newPosition = player.CurrentPosition + moveDirection * moveSteps;
                     //check if the next position is valid to move in or else it will return here
                     if (!IsPositionValid(newPosition, moveDirection)) return;
+                    ++stepCount;
                     player.PreviousDirection = moveDirection;
                     player.TargetPosition = newPosition;
                     enableMove = false; // Disable movement until the target position is reached
