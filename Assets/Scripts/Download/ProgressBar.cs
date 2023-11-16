@@ -224,7 +224,7 @@ public class ProgressBar : MonoBehaviour
         }
 
         yield return new WaitUntil(() => slider.value >= 1f);
-        SceneManager.LoadScene("Login");
+        SceneManager.LoadScene("Home");
     }
 
     IEnumerator GetFileRequest(string url, string filePath, Action<UnityWebRequest> callback)

@@ -32,14 +32,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     public Dictionary<Vector2, bool> WireMap { get; set; }
     private ChangeColor changeColor;
 
-    public int Score { get; set; }
-    private int SocketAmount = 0;
+    public int Score;
+    public int SocketAmount = 0;
 
     private PhotonView view;
     private bool singleMode, versusMode, duoMode;
 
     private bool isWinGame;
     private int isMapLoaded;
+    [SerializeField]
+    private Button restartBtn;
+    private PlayerMapAuthentication playerMapAuthentication;
 
     public UnityEvent downloadCompleteEvent, loadMapCompleteEvent;
 
@@ -49,6 +52,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("This map from Custom Prop: " + PhotonNetwork.LocalPlayer.CustomProperties["MapID"]);
         Debug.Log("Gender for this player: " + PhotonNetwork.LocalPlayer.CustomProperties["Gender"]);
+        playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         isMapLoaded = 0;
         isWinGame = false;
         view = this.gameObject.GetComponent<PhotonView>();
@@ -62,6 +66,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         versusMode = (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus");
         Debug.Log("Welcome to the Game " + PhotonNetwork.LocalPlayer.ActorNumber);
 
+
+        if (!PhotonNetwork.IsMasterClient && restartBtn != null)
+        {
+            restartBtn.interactable = false;
+        } 
         StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
 
@@ -152,43 +161,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
 
-/*    [PunRPC]
-    public void SetPlayerM(int playerID, int x, int y)
-    {
-        if (singleMode || (PlayerM == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "M"))
-        {
-            PlayerM = InstantiatePlayerM(playerID, x, y);
-            Debug.Log("Instantiated M");
-            PlayerM.GetComponent<Player>().ID = playerID;
-
-            // Synchronize the player object across the network
-            PhotonView.Get(this).RPC("SetPlayerM", RpcTarget.OthersBuffered, playerID, x, y);
-        }
-        else
-        {
-            PlayerM = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault(go => go.name.Contains("PlayerM"));
-        }
-    }
-
-    [PunRPC]
-    public void SetPlayerF(int playerID, int x, int y)
-    {
-        if (PlayerF == null && PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "F")
-        {
-            PlayerF = InstantiatePlayerF(playerID, x, y);
-            Debug.Log("Instantiated F");
-            PlayerF.GetComponent<Player>().ID = playerID;
-
-            // Synchronize the player object across the network
-            PhotonView.Get(this).RPC("SetPlayerF", RpcTarget.OthersBuffered, playerID, x, y);
-        }
-        else
-        {
-            PlayerF = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault(go => go.name.Contains("PlayerF"));
-        }
-    }*/
-
-
     public GameObject InstantiatePrefab(string prefabName, int x, int y)
     {
         GameObject prefab = prefabList.FirstOrDefault(o => o.name == prefabName);
@@ -238,6 +210,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC] 
     private void SetPlayerM(int viewID, int playerID)
     {
+       Debug.Log("Need to set player M");
        this.PlayerM = PhotonView.Find(viewID).gameObject;
        PlayerM.GetComponent<Player>().ID = playerID;
     }
@@ -257,6 +230,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SetPlayerF(int viewID, int playerID)
     {
+        Debug.Log("Need to set player F");
         this.PlayerF = PhotonView.Find(viewID).gameObject;
         PlayerF.GetComponent<Player>().ID = playerID;
     }
@@ -372,17 +346,6 @@ public class GameManager : MonoBehaviourPunCallbacks
                         else if (item.Contains("PlayerM"))
                         {
                             int id = int.Parse(item.Split(':')[1]);
-                            /*if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
-                            {
-                                if (renderTime == PhotonNetwork.LocalPlayer.ActorNumber)
-                                {
-                                    view.RPC($"SetPlayer{PhotonNetwork.LocalPlayer.CustomProperties["Gender"]}", RpcTarget.All, id, x + offset, y);
-                                }
-                            }
-                            else
-                            {
-                                view.RPC("SetPlayerM", RpcTarget.AllBuffered, id, x + offset, y);
-                            }*/
                             if (versusMode)
                             {
                                 if (renderTime == PhotonNetwork.LocalPlayer.ActorNumber)
@@ -398,7 +361,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                         }
                         else if (item.Contains("PlayerF"))
                         {
-                            int id = int.Parse(item.Split(':')[1]);
+                            //int id = int.Parse(item.Split(':')[1]);
                             /*view.RPC("SetPlayerF", RpcTarget.AllBuffered, id, x + offset, y);*/
                             if (PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "F")
                             {
@@ -661,14 +624,20 @@ public class GameManager : MonoBehaviourPunCallbacks
         return null;
     }
 
+    public void ReloadScene()
+    {
+        PhotonView view = this.gameObject.GetComponent<PhotonView>();
+        view.RPC("ResetTheGame", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (isWinGame) return;
         //GameOverUI.SetActive(false);
         if (Input.GetKeyDown(KeyCode.R))
         {
-            PhotonView view = this.gameObject.GetComponent<PhotonView>();
-            view.RPC("ResetTheGame", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+            ReloadScene();
         }
 
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
@@ -679,7 +648,10 @@ public class GameManager : MonoBehaviourPunCallbacks
                 if (playerScore == SocketAmount / 2 && SocketAmount != 0)
                 {
                     Debug.Log("Player win: " + PhotonNetwork.LocalPlayer.ActorNumber + " prepare to call RPC");
-                    photonView.RPC("CallWinGameVSMode", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+                    int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+                    string winPlayerName = playerMapAuthentication.currentAccount.Fullname;
+                    int stepCount = PhotonView.Find(actorNumber).gameObject.GetComponent<MoveController>().stepCount;
+                    photonView.RPC("CallWinGameVSMode", RpcTarget.All, actorNumber, winPlayerName, stepCount);
                     
                 }
             }
@@ -731,8 +703,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void CallWinGameVSMode(int actorNumber)
+    private void CallWinGameVSMode(int actorNumber, string playerName, int stepCount)
     {
+        isWinGame = true;
+        GameObject.Find("PlayerMapController").GetComponent<PlayerMapController>().UpdatePlayerMap();
+        GameObject.Find("UIManager").GetComponent<UIManager>().SetupVSResultUI(playerName, PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString(), stepCount, PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString());
         Debug.Log($"Player {actorNumber} win the game!!");
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel("MultiplayerLobby");

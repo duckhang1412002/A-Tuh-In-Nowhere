@@ -1112,6 +1112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSteps: 1
   moveSpeed: 5
+  stepCount: 0
 --- !u!114 &8652558886508666619
 MonoBehaviour:
   m_ObjectHideFlags: 0

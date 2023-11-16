@@ -8657,7 +8657,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseUI: {fileID: 0}
+  txt_pause_mode: {fileID: 0}
+  txt_pause_level: {fileID: 0}
+  txt_pause_player: {fileID: 0}
+  txt_pause_restart: {fileID: 0}
   confirmMapUI: {fileID: 0}
+  resultUI: {fileID: 0}
+  txt_result_mode: {fileID: 0}
+  txt_result_level: {fileID: 0}
+  txt_result_player: {fileID: 0}
+  txt_result_restart: {fileID: 0}
 --- !u!1001 &596139552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9046,6 +9055,10 @@ PrefabInstance:
     - target: {fileID: 5974335839656987337, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
       propertyPath: sceneViewId
       value: 136
+      objectReference: {fileID: 0}
+    - target: {fileID: 6753231435642102548, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
+      propertyPath: sceneViewId
+      value: 274
       objectReference: {fileID: 0}
     - target: {fileID: 8180728363008695862, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
       propertyPath: m_Name
@@ -18322,7 +18335,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseUI: {fileID: 0}
+  txt_pause_mode: {fileID: 0}
+  txt_pause_level: {fileID: 0}
+  txt_pause_player: {fileID: 0}
+  txt_pause_restart: {fileID: 0}
   confirmMapUI: {fileID: 496759945}
+  resultUI: {fileID: 0}
+  txt_result_mode: {fileID: 0}
+  txt_result_level: {fileID: 0}
+  txt_result_player: {fileID: 0}
+  txt_result_restart: {fileID: 0}
 --- !u!4 &1171185798 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2775976767752157289, guid: 217e25996adb2e34da6af88f78fc18d4, type: 3}
@@ -18459,8 +18481,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Txt_Level: {fileID: 0}
-  Txt_RestartNum: {fileID: 0}
 --- !u!4 &1186094895
 Transform:
   m_ObjectHideFlags: 0
@@ -19960,8 +19980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Txt_Level: {fileID: 0}
-  Txt_RestartNum: {fileID: 0}
 --- !u!4 &1291971058 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8192917546893835004, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}

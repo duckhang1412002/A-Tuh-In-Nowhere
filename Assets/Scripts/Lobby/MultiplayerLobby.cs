@@ -11,7 +11,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     [SerializeField] GameObject playerPrefabM;
     [SerializeField] GameObject playerPrefabF;
-    [SerializeField] Transform parentTransform;
+    [SerializeField] GameObject mapParent;
     [SerializeField] Text roomName;
     GameObject myPlayer, otherPlayer;
 
@@ -27,12 +27,12 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         roomName.text = PhotonNetwork.CurrentRoom.Name;
         if (PhotonNetwork.IsMasterClient)
         {
-            myPlayer = PhotonInstantiate(playerPrefabM, 0, -4);
+            myPlayer = PhotonInstantiate(playerPrefabM, 0, 0);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
         } else
         {
-            myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
+            myPlayer = PhotonInstantiate(playerPrefabF, 4, 0);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
             Debug.Log("I'm not master client!");
@@ -82,11 +82,14 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         Quaternion rotation = prefab.transform.rotation;
 
         // Calculate the child's local position relative to the parent's position
-        Vector3 localPosition = new Vector3(x, y, 0);
+        Vector3 localPosition = new Vector3(x, y, 6);
 
         // Set the child's position relative to the parent
-        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(prefab.name, Vector3.zero, rotation) as GameObject;
-        instantiatedPrefab.transform.localPosition = localPosition;
+        GameObject instantiatedPrefab = PhotonNetwork.Instantiate(prefab.name, localPosition, rotation) as GameObject;
+
+        //instantiatedPrefab.transform.SetParent(mapParent.transform);
+        //instantiatedPrefab.GetComponent<Player>().CurrentPosition = new Vector2(x, y);
+        //instantiatedPrefab.transform.localPosition = localPosition;
 
         return instantiatedPrefab;
     }

@@ -28,7 +28,20 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_result_player;
     [SerializeField] private TextMeshProUGUI txt_result_restart;
 
+    [Space]
+    [Header("Versus Result UI")]
+    [SerializeField] private GameObject VSresultUI;
+    [SerializeField] private GameObject vsPlayerM, vsPlayerF;
+    [SerializeField] private TextMeshProUGUI txt_vsresult_playerName;
+    [SerializeField] private TextMeshProUGUI txt_vsresult_levelName;
+    [SerializeField] private TextMeshProUGUI txt_vsresult_stepCount;
+    private PlayerMapAuthentication playerMapAuthentication;
 
+
+    public void Awake()
+    {
+        playerMapAuthentication = PlayerMapAuthentication.GetInstance();
+    }
     public void ToggleUI(GameObject UI){
         if(UI.activeSelf == true){
             UI.SetActive(false);
@@ -50,6 +63,23 @@ public class UIManager : MonoBehaviour
         txt_result_mode.text = txt_mode;
         txt_result_level.text = "Level " + txt_level;
         txt_result_restart.text = "Restart Number: " + txt_restart;
+        resultUI.SetActive(true);
+    }
+
+    public void SetupVSResultUI(string playerName, string levelName, int stepCnt, string gender)
+    {
+        txt_vsresult_playerName.text = playerName;
+        txt_vsresult_levelName.text = "Level " + levelName;
+        txt_vsresult_stepCount.text = "Number of steps: " + stepCnt;
+        if (gender == "M")
+        {
+            vsPlayerF.SetActive(true);
+            vsPlayerM.SetActive(false);
+        } else
+        {
+            vsPlayerM.SetActive(true);
+            vsPlayerF.SetActive(false);
+        }
         resultUI.SetActive(true);
     }
 
