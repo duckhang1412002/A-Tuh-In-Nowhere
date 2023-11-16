@@ -88,7 +88,7 @@ public class UIManager : MonoBehaviour
             txt_pause_level.text = "Level " + txt_level;
             txt_pause_restart.text = "Restart Number: " + txt_restart;
             txt_pause_player.text = txt_player;
-        } else {
+        } else if(SceneManager.GetActiveScene().name == "GameMode") {
             txt_pause_mode.text = "";
             txt_pause_level.text = "";
             txt_pause_restart.text = "";
