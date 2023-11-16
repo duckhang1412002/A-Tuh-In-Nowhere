@@ -105,6 +105,9 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             GameMode.ShowCutSceneCreativeMode = false;
             StartCoroutine(LoadCutScene_2());
         }
+
+        //Reset the MapID to reset all effect
+        PlayerMapController.MapID = -1;
     }
 
     private void Update()

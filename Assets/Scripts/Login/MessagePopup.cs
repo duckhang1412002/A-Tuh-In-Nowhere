@@ -2,18 +2,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ErrorPopup : MonoBehaviour
+public class MessagePopup : MonoBehaviour
 {
     public TMP_Text errorText;
+    public TMP_Text successText;
 
     private void Start()
     {
         HidePopup();
     }
 
-    public void ShowPopup(string message)
+    public void ShowErrorPopup(string message)
     {
         errorText.text = message;
+        gameObject.SetActive(true);
+        StartCoroutine(HidePopupAfterDelay(1.5f)); // 1.5 seconds delay
+    }
+
+    public void ShowSuccessPopup(string message){
+        successText.text = message;
         gameObject.SetActive(true);
         StartCoroutine(HidePopupAfterDelay(1.5f)); // 1.5 seconds delay
     }

@@ -19,13 +19,13 @@ public class ScenesManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void BackToLobbyScene(GameObject mode){
+    public void BackToLobbyScene(){
         if (PhotonNetwork.InRoom) PhotonNetwork.LeaveRoom();
-        if(mode.GetComponent<TextMeshProUGUI>().text == "Single Mode"){
+        if(PlayerMapController.CurrentGameMode == "Single Mode"){
             SceneManager.LoadScene("SingleLobby");
-        } else if(mode.GetComponent<TextMeshProUGUI>().text == "Multiplayer Mode"){
+        } else if(PlayerMapController.CurrentGameMode == "Multiplayer Mode"){
             SceneManager.LoadScene("MultiplayerLobby"); 
-        } else if(mode.GetComponent<TextMeshProUGUI>().text == "Creative Mode"){
+        } else if(PlayerMapController.CurrentGameMode == "Creative Mode"){
             SceneManager.LoadScene("CreativeLobby");
         }
     }

@@ -20,25 +20,24 @@ public class PlayerMapController : MonoBehaviour
     public static int RestartNumber = -1;
     public static int StepNumber = 0;
     public static string MapRole = "";
-
-    /*TextMeshPro fields*/
-    [SerializeField]
-    private TextMeshProUGUI Txt_Level;
-
-    [SerializeField]
-    private TextMeshProUGUI Txt_RestartNum;
+    public static string CurrentGameMode = "";
 
     public async void Start(){
+        if(SceneManager.GetActiveScene().name == "SingleLobby"){
+            CurrentGameMode = "Single Mode";
+        } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            CurrentGameMode = "Multiplayer Mode";
+        }
+
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         if(playerMapAuthentication != null){
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();    
-            UpdatePlayerMap();
         }
 
         if(ActiveMapList != null){
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 foreach(PlayerMap m in ActiveMapList){
-                    if(m.MapID == 10){
+                    if(m.MapID == 1){
                         GameMode.IsUnlockMultiplayerMode = true;
                         GameMode.UpdateMultiplayerMode();
                     }
@@ -48,9 +47,8 @@ public class PlayerMapController : MonoBehaviour
                     }
                 }
             }
-            else if(SceneManager.GetActiveScene().name == "Game" && MapID > 0){
-                Txt_Level.text = "Level " + MapID;
-                Txt_RestartNum.text = "Restart Number: " + ++RestartNumber;
+            else if(SceneManager.GetActiveScene().name == "Game" && MapID != -1){
+                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI(CurrentGameMode, MapID, ++RestartNumber, playerMapAuthentication.currentAccount.Fullname);
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 foreach(PlayerMap m in ActiveMapList){

@@ -3,11 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
+    [Space]
+    [Header("Pause Game UI")]
     [SerializeField] private GameObject pauseUI;
+    [SerializeField] private TextMeshProUGUI txt_pause_mode;
+    [SerializeField] private TextMeshProUGUI txt_pause_level;
+    [SerializeField] private TextMeshProUGUI txt_pause_player;
+    [SerializeField] private TextMeshProUGUI txt_pause_restart;
+
+
+    [Space]
+    [Header("Confirm Map UI")]
     [SerializeField] private GameObject confirmMapUI;
+
+    [Space]
+    [Header("Result UI")]
+    [SerializeField] private GameObject resultUI;
+    [SerializeField] private TextMeshProUGUI txt_result_mode;
+    [SerializeField] private TextMeshProUGUI txt_result_level;
+    [SerializeField] private TextMeshProUGUI txt_result_player;
+    [SerializeField] private TextMeshProUGUI txt_result_restart;
 
 
     public void ToggleUI(GameObject UI){
@@ -25,5 +44,19 @@ public class UIManager : MonoBehaviour
 
     public void HideConfirmMapUI(){
         confirmMapUI.SetActive(false);
+    }
+
+    public void SetupResultUI(string txt_mode, int txt_level, int txt_restart){
+        txt_result_mode.text = txt_mode;
+        txt_result_level.text = "Level " + txt_level;
+        txt_result_restart.text = "Restart Number: " + txt_restart;
+        resultUI.SetActive(true);
+    }
+
+    public void SetupPauseUI(string txt_mode, int txt_level, int txt_restart, string txt_player){
+        txt_pause_mode.text = txt_mode;
+        txt_pause_level.text = "Level " + txt_level;
+        txt_pause_restart.text = "Restart Number: " + txt_restart;
+        txt_pause_player.text = txt_player;
     }
 }

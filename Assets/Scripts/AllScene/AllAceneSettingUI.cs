@@ -19,7 +19,7 @@ public class AllAceneSettingUI : MonoBehaviourPunCallbacks
     private FirebaseUser user;
     [SerializeField]
     FirebaseAuthentication firebaseAuth;
-    private int? currentAccountID;
+    private Account currentAccount = null;
 
     [Header("Panel")]
     [SerializeField]
@@ -37,14 +37,14 @@ public class AllAceneSettingUI : MonoBehaviourPunCallbacks
             firebaseAuth.InitializeFirebase();
             auth = firebaseAuth.auth;
             user = firebaseAuth.user;
-            currentAccountID = firebaseAuth.currentAccountID;
+            currentAccount = firebaseAuth.currentAccount;
             nickname.text = PhotonNetwork.NickName;
         } else
         {
             nickname.text = "Anomyous";
             PhotonNetwork.NickName = "Anomyous";
         }
-        Debug.Log("I'm in here "+ currentAccountID);
+        Debug.Log("I'm in here "+ currentAccount.AccountID);
     }
 
     public void OnClickOpen()
@@ -91,11 +91,11 @@ public class AllAceneSettingUI : MonoBehaviourPunCallbacks
     //Logout Method
     public void LogOut()
     {
-        if (currentAccountID != null && firebaseAuth != null)
+        if (currentAccount != null && firebaseAuth != null)
         {
             auth.SignOut();
-            StartCoroutine(firebaseAuth.UpdateStatus(currentAccountID, false));
-            Debug.Log("Signed out " + currentAccountID);
+            StartCoroutine(firebaseAuth.UpdateStatus(currentAccount.AccountID, false));
+            Debug.Log("Signed out " + currentAccount.AccountID);
         }
         PhotonNetwork.Disconnect();
         SceneManager.LoadScene("Login");
@@ -103,11 +103,11 @@ public class AllAceneSettingUI : MonoBehaviourPunCallbacks
 
     public void OnApplicationQuit()
     {
-        if (currentAccountID != null && firebaseAuth != null)
+        if (currentAccount != null && firebaseAuth != null)
         {
             auth.SignOut();
-            StartCoroutine(firebaseAuth.UpdateStatus(currentAccountID, false));
-            Debug.Log("Signed out " + currentAccountID);
+            StartCoroutine(firebaseAuth.UpdateStatus(currentAccount.AccountID, false));
+            Debug.Log("Signed out " + currentAccount.AccountID);
         } else
         {
             Debug.Log("No one log in");
