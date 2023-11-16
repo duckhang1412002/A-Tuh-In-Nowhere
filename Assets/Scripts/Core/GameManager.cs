@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using SpriteGlow;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -365,7 +366,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                             GameObject instantiatedPrefab = InstantiatePrefab(item, x + offset, y);
                             instantiatedPrefab.GetComponent<Socket>().Color = hexCode;
 
-                            changeColor.ChangeSpriteColor(instantiatedPrefab, hexCode);
+                            changeColor.ChangeSpriteColor(instantiatedPrefab.transform.Find("Inner").gameObject, hexCode);
+                            instantiatedPrefab.transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = instantiatedPrefab.transform.Find("Inner").gameObject.GetComponent<ChangeColor>().GetColor(hexCode);
+
                             grid[x, y] = instantiatedPrefab;
                             SocketAmount++;
                         }

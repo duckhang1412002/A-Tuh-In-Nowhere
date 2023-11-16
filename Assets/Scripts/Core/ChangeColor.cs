@@ -73,6 +73,10 @@ public class ChangeColor : MonoBehaviour
         return "Not found";
     }
 
+    public Color GetColor(string code){
+        return colorConvertMap[code];
+    }
+
     public void ChangeSpriteColor(GameObject gameObject, string changedColor){
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.color = colorConvertMap[changedColor];

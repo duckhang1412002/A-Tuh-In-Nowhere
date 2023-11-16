@@ -513,6 +513,7 @@ public class MoveController : MonoBehaviourPun
             if (IsPositionValid(telePos, moveDirection))
             {
                 dimensionIn = dIn;
+                this.gameObject.transform.Find("PlayerInner").transform.Find("WholePlayerObject").gameObject.GetComponent<Animator>().SetTrigger("Smaller");
                 return true;
             }
             return false;

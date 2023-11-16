@@ -27,6 +27,8 @@ public class PlayerMapController : MonoBehaviour
             CurrentGameMode = "Single Mode";
         } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
             CurrentGameMode = "Multiplayer Mode";
+        } else if(SceneManager.GetActiveScene().name == "CreativeLobby"){
+            CurrentGameMode = "Creative Mode";
         }
 
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
@@ -36,6 +38,7 @@ public class PlayerMapController : MonoBehaviour
 
         if(ActiveMapList != null){
             if(SceneManager.GetActiveScene().name == "GameMode"){
+                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
                 foreach(PlayerMap m in ActiveMapList){
                     if(m.MapID == 1){
                         GameMode.IsUnlockMultiplayerMode = true;
@@ -51,6 +54,7 @@ public class PlayerMapController : MonoBehaviour
                 GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI(CurrentGameMode, MapID, ++RestartNumber, playerMapAuthentication.currentAccount.Fullname);
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
                 foreach(PlayerMap m in ActiveMapList){
                     GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + m.MapID);
                     if(singleMap != null){

@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SpriteGlow;
 
 public class MapBlock : MonoBehaviour {
     [SerializeField]
@@ -65,8 +66,10 @@ public class MapBlock : MonoBehaviour {
 
         if(status){
             animator.SetTrigger("MCC-Blue");
+            obj.transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = obj.GetComponent<ChangeColor>().GetColor("Blue");
         } else {
             animator.SetTrigger("MCC-Red");
+            obj.transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = obj.GetComponent<ChangeColor>().GetColor("Red");
         }
     }
 }

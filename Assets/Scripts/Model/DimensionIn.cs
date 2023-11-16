@@ -5,23 +5,20 @@ using UnityEngine;
 
 public class DimensionIn : MonoBehaviour
 {
+    [SerializeField] private GameObject outerBlock;
+
     public int ID { get; set; }
     public GameObject exitTop { get; set; }
     public GameObject exitRight { get; set; }
     public GameObject exitBottom { get; set; }
     public GameObject exitLeft { get; set; }
 
-    private Sprite[] dimensionInSprites;
+    [SerializeField] private Sprite[] dimensionInSprites;
     private static float[] dimensionInRotation = { 0f, 90.0f, 180.0f, 270.0f };
 
     public void Start()
     {
-        dimensionInSprites = new Sprite[5];
-        dimensionInSprites[0] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-1");
-        dimensionInSprites[1] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-2");
-        dimensionInSprites[2] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-3");
-        dimensionInSprites[3] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-4");
-        dimensionInSprites[4] = Resources.Load<Sprite>("Sprites/DimensionIn/dimension-in-5");
+
     }
 
     public Vector2 GetEntrancePosition(Vector2 moveDirection)
@@ -95,8 +92,8 @@ public class DimensionIn : MonoBehaviour
 
     public void RenderSprite(){
         //Debug.Log(HasTop() + " " + HasRight() + " " + HasBottom() + " " + HasLeft());
-        SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
-        Transform transform = this.gameObject.GetComponent<Transform>();    
+        SpriteRenderer spriteRenderer = this.gameObject.transform.Find("Outer").gameObject.GetComponent<SpriteRenderer>();
+        Transform transform = this.gameObject.GetComponent<Transform>();
 
         if(HasTop() && !HasRight() && !HasBottom() && !HasLeft()){
             spriteRenderer.sprite = dimensionInSprites[0];

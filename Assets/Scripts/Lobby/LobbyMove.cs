@@ -52,6 +52,13 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                 player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
             }
         }
+        if(SceneManager.GetActiveScene().name == "GameMode" && PlayerMapController.CurrentGameMode == "Single Mode"){
+            player.DefaultZAxis = 6f;
+            player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
+            player.CurrentPosition = PositionBeforePlay;
+            player.TargetPosition = PositionBeforePlay;
+            player.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f);
+        }
 
         /*Add in-game interact object to Dictionary*/
         GameObject[] foundObjects = FindObjectsWithNameContaining("GameObj_Ground");
@@ -234,6 +241,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                 }     
             } else if(item.name.Contains("Outrance")){
                 if(item.name.Contains("Sing")){
+                    PositionBeforePlay = new Vector2(-3f,-1f);
+                    PositionPlayMap = new Vector2(-4f,-1f);
                     SceneManager.LoadScene("GameMode");
                 }  
             } else if(item.name.Contains("Info")){

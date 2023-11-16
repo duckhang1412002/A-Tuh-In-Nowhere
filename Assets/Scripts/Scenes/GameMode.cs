@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SpriteGlow;
 
 public class GameMode : MonoBehaviour
 {
@@ -45,9 +46,13 @@ public class GameMode : MonoBehaviour
 
             projectors[0].gameObject.GetComponent<Animator>().SetTrigger("MCC-Blue");
             projectors[1].gameObject.GetComponent<Animator>().SetTrigger("MCC-Blue");
+            projectors[0].transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = projectors[0].GetComponent<ChangeColor>().GetColor("Blue");
+            projectors[1].transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = projectors[1].GetComponent<ChangeColor>().GetColor("Blue");
         } else {
             projectors[0].gameObject.GetComponent<Animator>().SetTrigger("MCC-Red");
             projectors[1].gameObject.GetComponent<Animator>().SetTrigger("MCC-Red");
+            projectors[0].transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = projectors[0].GetComponent<ChangeColor>().GetColor("Red");
+            projectors[1].transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = projectors[1].GetComponent<ChangeColor>().GetColor("Red");
         }
     }
 

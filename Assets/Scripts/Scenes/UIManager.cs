@@ -28,7 +28,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_result_player;
     [SerializeField] private TextMeshProUGUI txt_result_restart;
 
-
     public void ToggleUI(GameObject UI){
         if(UI.activeSelf == true){
             UI.SetActive(false);
@@ -54,9 +53,16 @@ public class UIManager : MonoBehaviour
     }
 
     public void SetupPauseUI(string txt_mode, int txt_level, int txt_restart, string txt_player){
-        txt_pause_mode.text = txt_mode;
-        txt_pause_level.text = "Level " + txt_level;
-        txt_pause_restart.text = "Restart Number: " + txt_restart;
-        txt_pause_player.text = txt_player;
+        if(SceneManager.GetActiveScene().name == "Game"){
+            txt_pause_mode.text = txt_mode;
+            txt_pause_level.text = "Level " + txt_level;
+            txt_pause_restart.text = "Restart Number: " + txt_restart;
+            txt_pause_player.text = txt_player;
+        } else {
+            txt_pause_mode.text = "";
+            txt_pause_level.text = "";
+            txt_pause_restart.text = "";
+            txt_pause_player.text = txt_player;
+        }
     }
 }
