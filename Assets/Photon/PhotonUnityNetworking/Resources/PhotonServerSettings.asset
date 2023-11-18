@@ -93,6 +93,7 @@ MonoBehaviour:
   - Pun_LoadGame
   - CallWinGameVSMode
   - SendMessage
+  - Surrender
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_pause_level;
     [SerializeField] private TextMeshProUGUI txt_pause_player;
     [SerializeField] private TextMeshProUGUI txt_pause_restart;
+    [SerializeField] private Button restartBtn;
 
 
     [Space]
@@ -37,10 +39,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_vsresult_stepCount;
     private PlayerMapAuthentication playerMapAuthentication;
 
-    public void Awake()
-    {
-        playerMapAuthentication = PlayerMapAuthentication.GetInstance();
-    }
     public void ToggleUI(GameObject UI){
         if(UI.activeSelf == true){
             UI.SetActive(false);
@@ -70,7 +68,9 @@ public class UIManager : MonoBehaviour
         txt_vsresult_playerName.text = playerName;
         txt_vsresult_levelName.text = "Level " + levelName;
         txt_vsresult_stepCount.text = "Number of steps: " + stepCnt;
-        if (gender == "M")
+        if (stepCnt == -1) //other surrenderd
+            txt_vsresult_stepCount.text = "Other player surrendered!";
+        if (gender == "F")
         {
             vsPlayerF.SetActive(true);
             vsPlayerM.SetActive(false);
@@ -79,7 +79,7 @@ public class UIManager : MonoBehaviour
             vsPlayerM.SetActive(true);
             vsPlayerF.SetActive(false);
         }
-        resultUI.SetActive(true);
+        VSresultUI.SetActive(true);
     }
 
     public void SetupPauseUI(string txt_mode, int txt_level, int txt_restart, string txt_player){
@@ -88,6 +88,17 @@ public class UIManager : MonoBehaviour
             txt_pause_level.text = "Level " + txt_level;
             txt_pause_restart.text = "Restart Number: " + txt_restart;
             txt_pause_player.text = txt_player;
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Co-op" && !PhotonNetwork.IsMasterClient)
+            {
+                restartBtn.interactable = false;
+            }
+            if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+            {
+                TextMeshProUGUI btnText = restartBtn.GetComponentInChildren<TextMeshProUGUI>();
+                btnText.text = "Surrender";
+                restartBtn.interactable = true;
+            }
+
         } else if(SceneManager.GetActiveScene().name == "GameMode") {
             txt_pause_mode.text = "";
             txt_pause_level.text = "";

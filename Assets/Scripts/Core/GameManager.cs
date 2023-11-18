@@ -630,7 +630,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ReloadScene()
     {
         PhotonView view = this.gameObject.GetComponent<PhotonView>();
-        view.RPC("ResetTheGame", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+        if (versusMode)
+        {
+            int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+            photonView.RPC("Surrender", RpcTarget.Others);
+        }
+        else 
+            view.RPC("ResetTheGame", RpcTarget.MasterClient);
     }
 
     // Update is called once per frame
@@ -653,8 +659,10 @@ public class GameManager : MonoBehaviourPunCallbacks
                     Debug.Log("Player win: " + PhotonNetwork.LocalPlayer.ActorNumber + " prepare to call RPC");
                     int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
                     string winPlayerName = playerMapAuthentication.currentAccount.Fullname;
-                    int stepCount = PhotonView.Find(actorNumber).gameObject.GetComponent<MoveController>().stepCount;
-                    photonView.RPC("CallWinGameVSMode", RpcTarget.All, actorNumber, winPlayerName, stepCount);
+                    string gender = PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString();
+                    int viewID = (gender == "M") ? PlayerM.GetComponent<PhotonView>().ViewID : PlayerF.GetComponent<PhotonView>().ViewID;
+                    int stepCount = PhotonView.Find(viewID).gameObject.GetComponent<MoveController>().stepCount;
+                    photonView.RPC("CallWinGameVSMode", RpcTarget.All, actorNumber, gender, winPlayerName, stepCount);
                     
                 }
             }
@@ -706,25 +714,32 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void CallWinGameVSMode(int actorNumber, string playerName, int stepCount)
+    private void Surrender()
     {
-        isWinGame = true;
-        GameObject.Find("PlayerMapController").GetComponent<PlayerMapController>().UpdatePlayerMap();
-        GameObject.Find("UIManager").GetComponent<UIManager>().SetupVSResultUI(playerName, PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString(), stepCount, PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString());
-        Debug.Log($"Player {actorNumber} win the game!!");
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.LoadLevel("MultiplayerLobby");
+        Debug.Log("The opponent surrenderd! - prepare to call RPC");
+        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+        string winPlayerName = playerMapAuthentication.currentAccount.Fullname;
+        string gender = PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString();
+        int viewID = (gender == "M") ? PlayerM.GetComponent<PhotonView>().ViewID : PlayerF.GetComponent<PhotonView>().ViewID;
+        photonView.RPC("CallWinGameVSMode", RpcTarget.All, actorNumber, gender, winPlayerName, -1);
     }
 
     [PunRPC]
-    private void ResetTheGame(int actorID)
+    private void CallWinGameVSMode(int actorNumber, string gender, string playerName, int stepCount)
     {
-        if (versusMode)
-        {
-            Debug.Log($"{actorID} surrendered!!");
-            PhotonNetwork.LoadLevel("MultiplayerLobby");
-        }
-        else PhotonNetwork.LoadLevel("Game");
+        isWinGame = true;
+        GameObject.Find("PlayerMapController").GetComponent<PlayerMapController>().UpdatePlayerMap();
+        GameObject.Find("UIManager").GetComponent<UIManager>().SetupVSResultUI(playerName, PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString(), stepCount, gender);
+        Debug.Log($"Player {actorNumber} win the game!!");
+/*        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LoadLevel("MultiplayerLobby");*/
+    }
+
+    //only master client
+    [PunRPC]
+    private void ResetTheGame()
+    {
+        PhotonNetwork.LoadLevel("Game");
     }
 
     public GameObject[,] GetGrid()

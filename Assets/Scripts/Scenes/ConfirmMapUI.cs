@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
+using Photon.Pun;
 using TMPro;
 
 
@@ -38,6 +39,7 @@ public class ConfirmMapUI : MonoBehaviour {
         if(!map.IsUnlocked){
             btn_Play.GetComponent<Button>().interactable = false;
         } else {
+            if (PhotonNetwork.IsMasterClient)
             btn_Play.GetComponent<Button>().interactable = true;
         }
 
