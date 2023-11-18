@@ -18,7 +18,7 @@ public class ConfirmMapUI : MonoBehaviour {
         btn_Prev.GetComponent<Button>().interactable = true;
 
         try{
-            if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].MapInfo.MapID){
+            if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].ProjectorID){
                 btn_Next.GetComponent<Button>().interactable = false;
             }
             if (PlayerMapController.MapID <= 1){
@@ -41,7 +41,7 @@ public class ConfirmMapUI : MonoBehaviour {
     }
 
     public async void ClickNextButton(){
-        if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].MapInfo.MapID){
+        if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].ProjectorID){
             SetupNavigateButton();
             return;
         }

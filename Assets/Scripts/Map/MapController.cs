@@ -19,10 +19,10 @@ public class MapController : MonoBehaviour
         mapAuthentication = MapAuthentication.GetInstance();
         if(mapAuthentication != null){
             SingleMapList = await mapAuthentication.GetSingleMapList();
-            SingleMapList.OrderBy(obj => obj.MapID).ToList();
+            SingleMapList = SingleMapList.OrderBy(obj => obj.MapID).ToList();
 
             MultiplayerMapList = await mapAuthentication.GetMultiplayerMapList();
-            MultiplayerMapList.OrderBy(obj => obj.MapID).ToList();
+            MultiplayerMapList = MultiplayerMapList.OrderBy(obj => obj.MapID).ToList();
         }
     }
 

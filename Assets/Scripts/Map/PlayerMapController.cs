@@ -26,7 +26,7 @@ public class PlayerMapController : MonoBehaviour
     public async void Start(){
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         if(playerMapAuthentication != null){
-            ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();    
+            ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
 
         if(ActiveMapList != null){
@@ -83,32 +83,32 @@ public class PlayerMapController : MonoBehaviour
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
-                foreach(PlayerMap m in ActiveMapList){
-                    GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + m.MapID);
-                    if(singleMap != null){
-                        singleMap.GetComponent<MapProjector>().IsSolved = true;
-                        singleMap.GetComponent<MapProjector>().ChangeColor();
+                foreach(MapProjector m in ProjectorList){
+                    PlayerMap foundMap = ActiveMapList.FirstOrDefault(playerMap => playerMap.MapID == m.MapInfo.MapID);
+
+                    if(foundMap != null){
+                        m.IsSolved = true;
+                        m.ChangeColor();
                     }
                 }
 
-                GameObject[] singleMaps = FindObjectsWithNameContaining("GameObj_MapBlock_Map_");
-                foreach(GameObject m in singleMaps){
-                    int[] previousMapID = m.GetComponent<MapProjector>().GetPreviousMapProjectorID();
+                foreach(MapProjector m in ProjectorList){
+                    int[] previousMapID = m.GetPreviousMapProjectorID();
                     bool checkVar = true;
 
-                    m.GetComponent<MapProjector>().ChangeMapMachineStatus(m.GetComponent<MapProjector>().IsSolved, m);
+                    m.ChangeMapMachineStatus(m.IsSolved, m.gameObject);
 
                     foreach(int n in previousMapID){
-                        GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + n);
-                        if(singleMap != null){
-                            if(!singleMap.GetComponent<MapProjector>().IsSolved){                            
+                        GameObject foundProjector = GameObject.Find("GameObj_MapBlock_Map_" + n);
+                        if(foundProjector != null){
+                            if(!foundProjector.GetComponent<MapProjector>().IsSolved){                            
                                 checkVar = false;
                                 break;
                             }
                         }
                     }
                     if(checkVar){
-                        m.GetComponent<MapProjector>().IsUnlocked = true;
+                        m.IsUnlocked = true;
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class PlayerMapController : MonoBehaviour
             GameMode.ShowCutSceneMultiplayerMode = isActivateCut_1;
             GameMode.ShowCutSceneCreativeMode = isActivateCut_2;
 
-            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, GetProjectorByID(MapID).ProjectorID, RestartNumber, StepNumber);
+            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, GetProjectorByID(MapID).MapInfo.MapID, RestartNumber, StepNumber);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
     }
