@@ -13,12 +13,12 @@ public class GameMode : MonoBehaviour
     private static GameObject hiddenBlock_Crea;
     private static GameObject board;
 
-    private static MapBlock[] projectors;
+    private static MapProjector[] projectors;
 
     // Start is called before the first frame update
     void Start()
     {
-        projectors = FindObjectsOfType<MapBlock>();
+        projectors = FindObjectsOfType<MapProjector>();
         UpdateMultiplayerMode();
         UpdateCreativeMode();
     }

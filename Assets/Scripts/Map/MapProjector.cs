@@ -8,31 +8,32 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SpriteGlow;
 
-public class MapBlock : MonoBehaviour {
+public class MapProjector : MonoBehaviour {
     [SerializeField]
-    private GameObject infoBlock_1;
+    private GameObject infoBlock_1, infoBlock_2;
 
     [SerializeField]
-    private GameObject infoBlock_2;
-
-    [SerializeField]
-    private int[] previousMapID;
+    private int[] previousMapProjectorID;
 
     private List<GameObject[]> wireList;
 
-    public int MapID{get; set;}
-    public bool IsUnlocked{get; set;}
-    public bool IsSolved{get; set;}
+    [HideInInspector]
+    public int ProjectorID;
 
+    [HideInInspector]
+    public bool IsSolved, IsUnlocked;
+
+    [HideInInspector]
+    public Map MapInfo;
 
     void Start(){
         if(this.gameObject.name != "Projector"){
             IsUnlocked = false;
             IsSolved = false;
-            MapID = int.Parse(this.gameObject.name.Split('_')[3].Trim());
+            ProjectorID = int.Parse(this.gameObject.name.Split('_')[3].Trim());
             wireList = new List<GameObject[]>();
 
-            GameObject[] foundWire = FindObjectsWithNameContaining("Wire_Map_" + MapID);    
+            GameObject[] foundWire = FindObjectsWithNameContaining("Wire_Map_" + ProjectorID);    
             wireList.Add(foundWire);
         }
     }
@@ -56,8 +57,8 @@ public class MapBlock : MonoBehaviour {
         }
     }
 
-    public int[] GetPreviousMapID(){
-        return previousMapID;
+    public int[] GetPreviousMapProjectorID(){
+        return previousMapProjectorID;
     }
 
     public void ChangeMapMachineStatus(bool status, GameObject obj){

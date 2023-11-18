@@ -43,13 +43,15 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         player = this.gameObject.GetComponent<Player>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         playerMapController = GameObject.Find("PlayerMapController");
-        if(PlayerMapController.MapID != -1 && SceneManager.GetActiveScene().name == "SingleLobby"){
-            player.DefaultZAxis = 6f;
-            player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
-            player.CurrentPosition = PositionBeforePlay;
-            player.TargetPosition = PositionBeforePlay;
-            if(player.transform.position.x > player.TargetPosition.x){
-                player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
+        if(SceneManager.GetActiveScene().name == "SingleLobby"){
+            if(PlayerMapController.MapID != -1){
+                player.DefaultZAxis = 6f;
+                player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
+                player.CurrentPosition = PositionBeforePlay;
+                player.TargetPosition = PositionBeforePlay;
+                if(player.transform.position.x > player.TargetPosition.x){
+                    player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
+                }
             }
         }
         if(SceneManager.GetActiveScene().name == "GameMode" && PlayerMapController.CurrentGameMode == "Single Mode"){
@@ -251,8 +253,10 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
+      
+                        MapProjector currentProjector = GameObject.Find("GameObj_MapBlock_Map_" + PlayerMapController.MapID).GetComponent<MapProjector>();
+                        GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
 
-                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();
                         PositionBeforePlay = player.PreviousPosition;    
                         PositionPlayMap = player.CurrentPosition;                
                     }  
@@ -262,8 +266,10 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
                         PlayerMapController.MapRole = SplitText(item.name, 4);
+ 
+                        MapProjector currentProjector = GameObject.Find("GameObj_MapBlock_Map_" + PlayerMapController.MapID).GetComponent<MapProjector>();
+                        GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
 
-                        playerMapController.GetComponent<PlayerMapController>().ShowConfirmMapUI();    
                         PositionBeforePlay = player.PreviousPosition;
                         PositionPlayMap = player.CurrentPosition;   
                     } 
@@ -298,8 +304,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         cutScene_1.enabled = false;
         isPauseGame = false;
 
-        TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
-        txt_charMessage.text = "Multiplayer Mode is unlocked!";
+        //TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
+        //txt_charMessage.text = "Multiplayer Mode is unlocked!";
     }
 
     private IEnumerator LoadCutScene_2(){
@@ -322,8 +328,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         cutScene_2.enabled = false;
         isPauseGame = false;
 
-        TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
-        txt_charMessage.text = "Creative Mode is unlocked!";
+       // TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
+        //txt_charMessage.text = "Creative Mode is unlocked!";
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)

@@ -136,20 +136,20 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
             DataSnapshot snapshot = task.Result;
 
             // Loop through the children of the "accounts" node
-            foreach (DataSnapshot accountSnapshot in snapshot.Children)
+            foreach (DataSnapshot s in snapshot.Children)
             {
                 // Parse and use the account data
-                string _AccountID = accountSnapshot.Child("AccountID").Value.ToString();
-                string _Email = accountSnapshot.Child("Email").Value.ToString();
-                string _Pwd = accountSnapshot.Child("Pwd").Value.ToString();
-                string _Fullname = accountSnapshot.Child("Fullname").Value.ToString();
-                bool _IsOnlined = Convert.ToBoolean(accountSnapshot.Child("IsOnlined").GetValue(false));
-                string _RoleID = accountSnapshot.Child("RoleID").Value.ToString();
-                string _Nickname = accountSnapshot.Child("Nickname").Value.ToString();
-                string _AvtLink = accountSnapshot.Child("Avatarlink").Value.ToString();
-                string _Key = accountSnapshot.Child("Key").Value.ToString();
-                string _Ribbon = accountSnapshot.Child("Ribbon").Value.ToString();
-                string _LastActive = accountSnapshot.Child("Lastactive").Value.ToString();
+                string _AccountID = s.Child("AccountID").Value.ToString();
+                string _Email = s.Child("Email").Value.ToString();
+                string _Pwd = s.Child("Pwd").Value.ToString();
+                string _Fullname = s.Child("Fullname").Value.ToString();
+                bool _IsOnlined = Convert.ToBoolean(s.Child("IsOnlined").GetValue(false));
+                string _RoleID = s.Child("RoleID").Value.ToString();
+                string _Nickname = s.Child("Nickname").Value.ToString();
+                string _AvtLink = s.Child("Avatarlink").Value.ToString();
+                string _Key = s.Child("Key").Value.ToString();
+                string _Ribbon = s.Child("Ribbon").Value.ToString();
+                string _LastActive = s.Child("Lastactive").Value.ToString();
 
                 accounts.Add(new Account(int.Parse(_AccountID), _Email, _Pwd, _Fullname, _IsOnlined, int.Parse(_RoleID), _Nickname, _AvtLink, int.Parse(_Ribbon), int.Parse(_Key), DateTime.Parse(_LastActive)));
             }

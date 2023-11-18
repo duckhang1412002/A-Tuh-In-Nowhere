@@ -43,10 +43,6 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
             accountsRef = firebaseAuth.accountsRef;
             currentAccount = firebaseAuth.currentAccount;
         }
-
-        //FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(true);
-
-        InitializeFirebase();
     }
 
     private void Awake()
@@ -59,12 +55,6 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-    }
-
-    public async void InitializeFirebase()
-    {
-        Task fetchTask = GetListPlayerMap(accountsRef);  
-        await fetchTask;
     }
 
     private async Task<List<PlayerMap>> GetListPlayerMap(DatabaseReference db)
@@ -83,15 +73,15 @@ public class PlayerMapAuthentication : MonoBehaviourPunCallbacks
             DataSnapshot snapshot = task.Result;
 
             // Loop through the children of the "accounts" node
-            foreach (DataSnapshot accountSnapshot in snapshot.Children)
+            foreach (DataSnapshot s in snapshot.Children)
             {
                 // Parse and use the account data
-                string _AccountID = accountSnapshot.Child("AccountID").Value.ToString();
-                string _MapID = accountSnapshot.Child("MapID").Value.ToString();
-                string _StepNumber = accountSnapshot.Child("Stepnum").Value.ToString();
-                string _RestartNumber = accountSnapshot.Child("Restartnum").Value.ToString();
-                bool _IsVoted = Convert.ToBoolean(accountSnapshot.Child("IsVoted").GetValue(false));
-                bool _IsDeleted = Convert.ToBoolean(accountSnapshot.Child("IsDeleted").GetValue(false));
+                string _AccountID = s.Child("AccountID").Value.ToString();
+                string _MapID = s.Child("MapID").Value.ToString();
+                string _StepNumber = s.Child("Stepnum").Value.ToString();
+                string _RestartNumber = s.Child("Restartnum").Value.ToString();
+                bool _IsVoted = Convert.ToBoolean(s.Child("IsVoted").GetValue(false));
+                bool _IsDeleted = Convert.ToBoolean(s.Child("IsDeleted").GetValue(false));
                 //string _DeletedDate = accountSnapshot.Child("DeletedDate").Value.ToString();
 
                 playerMaps.Add(new PlayerMap(int.Parse(_AccountID), int.Parse(_MapID), int.Parse(_StepNumber), int.Parse(_RestartNumber), _IsVoted, _IsDeleted));

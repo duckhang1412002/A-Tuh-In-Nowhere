@@ -7,11 +7,30 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
 
+
 public class ConfirmMapUI : MonoBehaviour {
     [SerializeField] private GameObject btn_Play;
+    [SerializeField] private GameObject btn_Next;
+    [SerializeField] private GameObject btn_Prev;
 
-    public async Task ConfirmMapUISetup(bool isActive, MapBlock map){
-        if(!isActive){
+    public void SetupNavigateButton(){
+        btn_Next.GetComponent<Button>().interactable = true;
+        btn_Prev.GetComponent<Button>().interactable = true;
+
+        try{
+            if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].MapInfo.MapID){
+                btn_Next.GetComponent<Button>().interactable = false;
+            }
+            if (PlayerMapController.MapID <= 1){
+                btn_Prev.GetComponent<Button>().interactable = false;
+            }
+        } catch(Exception e){
+            Debug.Log("The map block with ID " + PlayerMapController.MapID + " not found in DB!");
+        }
+    }
+
+    public async Task ConfirmMapUISetup(MapProjector map){
+        if(!map.IsUnlocked){
             btn_Play.GetComponent<Button>().interactable = false;
         } else {
             btn_Play.GetComponent<Button>().interactable = true;
@@ -21,12 +40,45 @@ public class ConfirmMapUI : MonoBehaviour {
         await ShowMapInfo(map);
     }
 
-    private async Task ShowMapInfo(MapBlock map)
+    public async void ClickNextButton(){
+        if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].MapInfo.MapID){
+            SetupNavigateButton();
+            return;
+        }
+        ++PlayerMapController.MapID;
+        SetupNavigateButton();
+
+        foreach(MapProjector m in PlayerMapController.ProjectorList){
+            if(m.ProjectorID == PlayerMapController.MapID){
+                await ConfirmMapUISetup(m);
+                return;
+            }
+        }
+    }
+
+    public async void ClickPrevButton(){
+        if(PlayerMapController.MapID <= 1){
+            Debug.Log("---------------DISABLE SWIPE LEFT BUTTON----------------");
+            SetupNavigateButton();
+            return;
+        }
+        --PlayerMapController.MapID;
+        SetupNavigateButton();
+
+        foreach(MapProjector m in PlayerMapController.ProjectorList){
+            if(m.ProjectorID == PlayerMapController.MapID){
+                await ConfirmMapUISetup(m);
+                return;
+            }
+        }
+    }
+
+    private async Task ShowMapInfo(MapProjector map)
     {
         RawImage imageComponent = this.gameObject.transform.Find("Board/Mask/Map Image").GetComponent<RawImage>();
         if (imageComponent != null)
         {
-            string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapID}.png";
+            string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapInfo.MapID}.png";
 
             if (File.Exists(imagePath))
             {

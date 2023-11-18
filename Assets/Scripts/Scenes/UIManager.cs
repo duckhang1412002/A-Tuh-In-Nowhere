@@ -48,10 +48,10 @@ public class UIManager : MonoBehaviour
             UI.SetActive(true);
         }
     }
-
-    public async void ShowConfirmMapUI(bool isActive, MapBlock map){
+    public async void ShowConfirmMapUI(MapProjector map){
+        confirmMapUI.GetComponent<ConfirmMapUI>().SetupNavigateButton();
         confirmMapUI.SetActive(true);
-        await confirmMapUI.GetComponent<ConfirmMapUI>().ConfirmMapUISetup(isActive, map);
+        await confirmMapUI.GetComponent<ConfirmMapUI>().ConfirmMapUISetup(map);
     }
 
     public void HideConfirmMapUI(){

@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 533290313306199946}
-  - component: {fileID: 6358502588727977089}
   - component: {fileID: 4277239059459460090}
   - component: {fileID: 4822507923271265639}
   - component: {fileID: 4104084634738709693}
+  - component: {fileID: 6030839931121086579}
   m_Layer: 0
   m_Name: GameObj_MapBlock_Map_
   m_TagString: Untagged
@@ -36,21 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6358502588727977089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533290313306199947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f4c25c85941a9a44bd572d145565f46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  infoBlock_1: {fileID: 0}
-  infoBlock_2: {fileID: 0}
-  previousMapID: 
 --- !u!114 &4277239059459460090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +120,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6030839931121086579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533290313306199947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f3e55d9e7d886d4eb5d594f7f596c4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoBlock_1: {fileID: 0}
+  infoBlock_2: {fileID: 0}
+  previousMapProjectorID: 
+  ProjectorID: 0
+  IsSolved: 0
+  IsUnlocked: 0
 --- !u!1 &8273014563861076931
 GameObject:
   m_ObjectHideFlags: 0

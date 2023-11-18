@@ -177,16 +177,16 @@ public class CreativeUI : MonoBehaviour
 
                 if (snapshot != null && snapshot.HasChildren)
                 {
-                    foreach (var mapSnapShot in snapshot.Children)
+                    foreach (var s in snapshot.Children)
                     {
-                        int _AccountID = int.Parse(mapSnapShot.Child("AccountID").Value.ToString());
-                        string _MapID = mapSnapShot.Child("MapID").Value.ToString();
-                        string _MapName = mapSnapShot.Child("Mapname").Value.ToString();
-                        string _MapType = mapSnapShot.Child("Maptype").Value.ToString();
-                        string _Description = mapSnapShot.Child("Description").Value.ToString();
-                        bool _IsDeleted = Convert.ToBoolean(mapSnapShot.Child("IsDeleted").GetValue(false));
-                        string _StatusID = mapSnapShot.Child("StatusID").Value.ToString();
-                        string _CreatedDate = mapSnapShot.Child("Createddate").Value.ToString();
+                        int _AccountID = int.Parse(s.Child("AccountID").Value.ToString());
+                        string _MapID = s.Child("MapID").Value.ToString();
+                        string _MapName = s.Child("Mapname").Value.ToString();
+                        string _MapType = s.Child("Maptype").Value.ToString();
+                        string _Description = s.Child("Description").Value.ToString();
+                        bool _IsDeleted = Convert.ToBoolean(s.Child("IsDeleted").GetValue(false));
+                        string _StatusID = s.Child("StatusID").Value.ToString();
+                        string _CreatedDate = s.Child("Createddate").Value.ToString();
 
                         if (_MapType == "creative" && _StatusID == "map_approved")
                         {

@@ -21,22 +21,50 @@ public class PlayerMapController : MonoBehaviour
     public static int StepNumber = 0;
     public static string MapRole = "";
     public static string CurrentGameMode = "";
+    public static List<MapProjector> ProjectorList = null;
 
     public async void Start(){
-        if(SceneManager.GetActiveScene().name == "SingleLobby"){
-            CurrentGameMode = "Single Mode";
-        } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-            CurrentGameMode = "Multiplayer Mode";
-        } else if(SceneManager.GetActiveScene().name == "CreativeLobby"){
-            CurrentGameMode = "Creative Mode";
-        }
-
         playerMapAuthentication = PlayerMapAuthentication.GetInstance();
         if(playerMapAuthentication != null){
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();    
         }
 
         if(ActiveMapList != null){
+            if(SceneManager.GetActiveScene().name == "SingleLobby"){
+                GameObject[] projectors = FindObjectsWithNameContaining("GameObj_MapBlock_Map_");
+
+                ProjectorList = new List<MapProjector>();
+                foreach(GameObject m in projectors){
+                    ProjectorList.Add(m.GetComponent<MapProjector>());
+                }
+
+                ProjectorList = ProjectorList.OrderBy(obj => obj.ProjectorID).ToList();
+
+                for(int i=0; i<ProjectorList.Count; i++){
+                    ProjectorList[i].MapInfo = GameObject.Find("MapController").GetComponent<MapController>().SingleMapList[i];
+                }
+
+                CurrentGameMode = "Single Mode";
+            } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+                GameObject[] projectors = FindObjectsWithNameContaining("GameObj_MapBlock_Map_");
+
+                ProjectorList = new List<MapProjector>();
+                foreach(GameObject m in projectors){
+                    ProjectorList.Add(m.GetComponent<MapProjector>());
+                }
+
+                ProjectorList = ProjectorList.OrderBy(obj => obj.ProjectorID).ToList();
+
+                for(int i=0; i<ProjectorList.Count; i++){
+                    ProjectorList[i].MapInfo = GameObject.Find("MapController").GetComponent<MapController>().MultiplayerMapList[i];
+                }
+                
+                CurrentGameMode = "Multiplayer Mode";
+            } else if(SceneManager.GetActiveScene().name == "CreativeLobby"){
+                CurrentGameMode = "Creative Mode";
+            }
+
+
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
                 foreach(PlayerMap m in ActiveMapList){
@@ -58,29 +86,29 @@ public class PlayerMapController : MonoBehaviour
                 foreach(PlayerMap m in ActiveMapList){
                     GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + m.MapID);
                     if(singleMap != null){
-                        singleMap.GetComponent<MapBlock>().IsSolved = true;
-                        singleMap.GetComponent<MapBlock>().ChangeColor();
+                        singleMap.GetComponent<MapProjector>().IsSolved = true;
+                        singleMap.GetComponent<MapProjector>().ChangeColor();
                     }
                 }
 
                 GameObject[] singleMaps = FindObjectsWithNameContaining("GameObj_MapBlock_Map_");
                 foreach(GameObject m in singleMaps){
-                    int[] previousMapID = m.GetComponent<MapBlock>().GetPreviousMapID();
+                    int[] previousMapID = m.GetComponent<MapProjector>().GetPreviousMapProjectorID();
                     bool checkVar = true;
 
-                    m.GetComponent<MapBlock>().ChangeMapMachineStatus(m.GetComponent<MapBlock>().IsSolved, m);
+                    m.GetComponent<MapProjector>().ChangeMapMachineStatus(m.GetComponent<MapProjector>().IsSolved, m);
 
                     foreach(int n in previousMapID){
                         GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + n);
                         if(singleMap != null){
-                            if(!singleMap.GetComponent<MapBlock>().IsSolved){                            
+                            if(!singleMap.GetComponent<MapProjector>().IsSolved){                            
                                 checkVar = false;
                                 break;
                             }
                         }
                     }
                     if(checkVar){
-                        m.GetComponent<MapBlock>().IsUnlocked = true;
+                        m.GetComponent<MapProjector>().IsUnlocked = true;
                     }
                 }
             }
@@ -107,7 +135,7 @@ public class PlayerMapController : MonoBehaviour
             GameMode.ShowCutSceneMultiplayerMode = isActivateCut_1;
             GameMode.ShowCutSceneCreativeMode = isActivateCut_2;
 
-            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, MapID, RestartNumber, StepNumber);
+            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, GetProjectorByID(MapID).ProjectorID, RestartNumber, StepNumber);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
     }
@@ -122,19 +150,7 @@ public class PlayerMapController : MonoBehaviour
         return matchingObjects;
     }
 
-    public void ShowConfirmMapUI(){
-        GameObject singleMap = GameObject.Find("GameObj_MapBlock_Map_" + MapID);
-        if(singleMap != null){
-            GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(
-                singleMap.GetComponent<MapBlock>().IsUnlocked,
-                singleMap.GetComponent<MapBlock>()
-            );
-        }
-    }
-
     public void StartTheMap(){
-        //InputManager.fileName = MapID + ".txt";
-
         if(SceneManager.GetActiveScene().name == "SingleLobby"){
             PhotonNetwork.OfflineMode = true;
             PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
@@ -148,7 +164,7 @@ public class PlayerMapController : MonoBehaviour
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
             MultiplayerConfirmMap();
 
-            // InputManager.fileName = "mul-" + MapID + ".txt";
+
             // PhotonNetwork.OfflineMode = false;
             // PhotonNetwork.CreateRoom("multi", new RoomOptions(), TypedLobby.Default);
         }
@@ -157,5 +173,12 @@ public class PlayerMapController : MonoBehaviour
     public void MultiplayerConfirmMap(){
         GameObject lobbyManager = GameObject.Find("LobbyManager");
         lobbyManager.GetComponent<MultiplayerLobby>().CheckBeforeStartTheMap(true, MapRole, MapID);
+    }
+
+    public MapProjector GetProjectorByID(int id){
+        foreach(MapProjector m in ProjectorList){
+            if(id == m.ProjectorID) return m;
+        }
+        return null;
     }
 }

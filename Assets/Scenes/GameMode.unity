@@ -5708,6 +5708,10 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 87
       objectReference: {fileID: 0}
+    - target: {fileID: 6753231435642102548, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
+      propertyPath: sceneViewId
+      value: 88
+      objectReference: {fileID: 0}
     - target: {fileID: 8180728363008695862, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
       propertyPath: m_Name
       value: PlayerM
@@ -6097,9 +6101,12 @@ MonoBehaviour:
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
-  settingsUI: {fileID: 614264276}
-  audioSlider: {fileID: 1698137455}
-  txt_audio_volumn: {fileID: 465289635}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!4 &759965496
 Transform:
   m_ObjectHideFlags: 0
@@ -6574,6 +6581,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 816492091}
   m_CullTransparentMesh: 1
+--- !u!1 &828129997
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 828129999}
+  - component: {fileID: 828129998}
+  m_Layer: 0
+  m_Name: MapController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &828129998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828129997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5bac8b351d30c9449a8dd638da12be8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dependencyStatus: 1
+  firebaseAuth: {fileID: 0}
+--- !u!4 &828129999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828129997}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.5307666, y: -1.7256297, z: 0.11453005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &847626058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12811,9 +12864,12 @@ MonoBehaviour:
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
-  settingsUI: {fileID: 0}
-  audioSlider: {fileID: 0}
-  txt_audio_volumn: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!114 &1759767868
 MonoBehaviour:
   m_ObjectHideFlags: 0
