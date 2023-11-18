@@ -1611,6 +1611,12 @@ MonoBehaviour:
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!114 &361929613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2850,7 +2856,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 533290313306199947, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_Name
-      value: GameObj_MapBlock_Map_100
+      value: GameObj_MapBlock_Map_1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
@@ -4045,7 +4051,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_100_F
+      value: GameObj_Info_Map_1_F
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
@@ -4319,6 +4325,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798441935}
   m_CullTransparentMesh: 1
+--- !u!1 &804061017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 804061019}
+  - component: {fileID: 804061018}
+  m_Layer: 0
+  m_Name: MapController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &804061018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804061017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47925bd9440dbf94c999d4b99b1a0c40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &804061019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804061017}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.5307666, y: -1.7256297, z: 0.11453005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 122
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &825399131
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4372,7 +4422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_101_M
+      value: GameObj_Info_Map_2_M
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
@@ -6571,7 +6621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 533290313306199947, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_Name
-      value: GameObj_MapBlock_Map_101
+      value: GameObj_MapBlock_Map_2
       objectReference: {fileID: 0}
     - target: {fileID: 6358502588727977089, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: previousMapID.Array.size
@@ -7316,7 +7366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_100_M
+      value: GameObj_Info_Map_1_M
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
@@ -7373,7 +7423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_101_F
+      value: GameObj_Info_Map_2_F
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
@@ -7410,6 +7460,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   btn_Play: {fileID: 138837459}
+  btn_Next: {fileID: 0}
+  btn_Prev: {fileID: 0}
 --- !u!114 &1434260099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10539,6 +10591,12 @@ MonoBehaviour:
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!4 &2112596325
 Transform:
   m_ObjectHideFlags: 0
