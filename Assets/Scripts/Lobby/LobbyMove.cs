@@ -148,20 +148,20 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
             GameObject item = GetItemAtPosition(player.CurrentPosition);
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             {
                 moveDirection = Vector2.up;
             }
-            else if (Input.GetKey(KeyCode.DownArrow))
+            else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
             {
                 moveDirection = Vector2.down;
             }
-            else if (Input.GetKey(KeyCode.LeftArrow))
+            else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
                 moveDirection += Vector2.left;
                 player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
             }
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             {
                 moveDirection += Vector2.right;
                 player.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f);
@@ -298,7 +298,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         cutScene_1.enabled = false;
         isPauseGame = false;
 
-        TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>(); //error here
         txt_charMessage.text = "Multiplayer Mode is unlocked!";
     }
 

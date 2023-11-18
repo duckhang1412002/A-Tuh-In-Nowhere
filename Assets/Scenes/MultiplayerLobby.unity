@@ -540,6 +540,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backBtn: {fileID: 361929613}
+  playBtn: {fileID: 138837462}
 --- !u!114 &138837462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,6 +589,18 @@ MonoBehaviour:
       - m_Target: {fileID: 138837461}
         m_TargetAssemblyTypeName: PlayerMapController, Assembly-CSharp
         m_MethodName: StartTheMap
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 138837461}
+        m_TargetAssemblyTypeName: PlayerMapController, Assembly-CSharp
+        m_MethodName: Ready
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -858,6 +872,10 @@ PrefabInstance:
     - target: {fileID: 6358502588727977089, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: previousMapID.Array.data[1]
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6867808612369307855, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
@@ -1605,12 +1623,19 @@ MonoBehaviour:
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
+  restartBtn: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!114 &361929613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2394,8 +2419,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefabM: {fileID: 8180728363008695862, guid: 6e5f0ef3bc9f5c64b9918b755dd150e8, type: 3}
   playerPrefabF: {fileID: 8749076344735605972, guid: 15b842ec11594bb4b9542fd0858db93d, type: 3}
-  mapParent: {fileID: 1634083582}
+  playBtn: {fileID: 138837462}
   roomName: {fileID: 2039730842}
+  IsReadyToStartTheMap: 0
+  MapRole: 
+  CurrentChosingMap: 0
 --- !u!1001 &458006601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2851,6 +2879,10 @@ PrefabInstance:
     - target: {fileID: 533290313306199947, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_Name
       value: GameObj_MapBlock_Map_100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6867808612369307855, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
@@ -3888,6 +3920,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backBtn: {fileID: 0}
+  playBtn: {fileID: 0}
 --- !u!4 &758652004
 Transform:
   m_ObjectHideFlags: 0
@@ -6580,6 +6614,10 @@ PrefabInstance:
     - target: {fileID: 6358502588727977089, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: previousMapID.Array.data[0]
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6867808612369307855, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
@@ -10533,12 +10571,19 @@ MonoBehaviour:
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
+  restartBtn: {fileID: 0}
   confirmMapUI: {fileID: 1434260097}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!4 &2112596325
 Transform:
   m_ObjectHideFlags: 0

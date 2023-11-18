@@ -16,6 +16,7 @@ public class CameraManager : MonoBehaviour
     [Header("Canvas")]
     [SerializeField] private Canvas pauseUI;
     [SerializeField] private Canvas resultUI;
+    [SerializeField] private Canvas vsResultUI;
     [SerializeField] private Canvas mainUI;
 
 
@@ -80,6 +81,7 @@ public class CameraManager : MonoBehaviour
         mainUI.worldCamera = currentCamera;
         pauseUI.worldCamera = currentCamera;
         resultUI.worldCamera = currentCamera;
+        vsResultUI.worldCamera = currentCamera;
     }
 
     // Update is called once per frame

@@ -8,11 +8,14 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
+using UnityEngine.UI;
 
 public class PlayerMapController : MonoBehaviour
 {
     private List<PlayerMap> ActiveMapList{get; set;}
     private PlayerMapAuthentication playerMapAuthentication;
+
+    public Button backBtn, playBtn;
 
 
     /*Player Map variables*/
@@ -146,12 +149,32 @@ public class PlayerMapController : MonoBehaviour
             Hashtable myProperties = new Hashtable();
             myProperties["MapID"] = MapID;
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
+            //Debug.Log("2 btn: " + PlayBtn + " " + BackBtn);
+            //PlayBtn.GetComponent<Button>().interactable = false; //error here !!!
+            //BackBtn.interactable = false;
+/*            if (PhotonNetwork.IsMasterClient)
+            {
+                PlayBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Waiting for others";
+            }*/
             MultiplayerConfirmMap();
 
             // InputManager.fileName = "mul-" + MapID + ".txt";
             // PhotonNetwork.OfflineMode = false;
             // PhotonNetwork.CreateRoom("multi", new RoomOptions(), TypedLobby.Default);
         }
+    }
+
+    public void Ready()
+    {
+        //Debug.Log("Did i found?" + playBtn + " " + backBtn);
+        playBtn.interactable = false;
+        playBtn.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Wating for others";
+        backBtn.interactable = false;
+    }
+
+    public void Cancel()
+    {
+
     }
 
     public void MultiplayerConfirmMap(){

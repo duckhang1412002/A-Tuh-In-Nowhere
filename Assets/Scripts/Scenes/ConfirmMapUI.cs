@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
+using Photon.Pun;
 
 public class ConfirmMapUI : MonoBehaviour {
     [SerializeField] private GameObject btn_Play;
@@ -14,6 +15,7 @@ public class ConfirmMapUI : MonoBehaviour {
         if(!isActive){
             btn_Play.GetComponent<Button>().interactable = false;
         } else {
+            if (PhotonNetwork.IsMasterClient)
             btn_Play.GetComponent<Button>().interactable = true;
         }
 
