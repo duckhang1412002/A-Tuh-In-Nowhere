@@ -6,12 +6,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
+using TMPro;
 
 
 public class ConfirmMapUI : MonoBehaviour {
     [SerializeField] private GameObject btn_Play;
     [SerializeField] private GameObject btn_Next;
     [SerializeField] private GameObject btn_Prev;
+
+    [SerializeField] private TextMeshProUGUI txt_MapName;
+    [SerializeField] private TextMeshProUGUI txt_RestartNumber;
+    [SerializeField] private TextMeshProUGUI txt_MapStatus;
 
     public void SetupNavigateButton(){
         btn_Next.GetComponent<Button>().interactable = true;
@@ -25,7 +30,7 @@ public class ConfirmMapUI : MonoBehaviour {
                 btn_Prev.GetComponent<Button>().interactable = false;
             }
         } catch(Exception e){
-            Debug.Log("The map block with ID " + PlayerMapController.MapID + " not found in DB!");
+            Debug.Log("The projector with ID " + PlayerMapController.MapID + " not found in DB!");
         }
     }
 
@@ -75,6 +80,25 @@ public class ConfirmMapUI : MonoBehaviour {
 
     private async Task ShowMapInfo(MapProjector map)
     {
+        txt_MapName.text = map.MapInfo.MapName;
+        txt_MapStatus.text = "CONNECTED!";
+        txt_MapStatus.color = Color.green;
+
+        if(!map.IsSolved){
+            txt_MapStatus.text = "DISCONNECTED!";
+            txt_MapStatus.color = Color.red;
+        }
+        if(!map.IsUnlocked){
+            string prevMapID = map.GetPreviousMapProjectorID()[0].ToString();
+            for(int i=1; i<map.GetPreviousMapProjectorID().Length; i++){
+                prevMapID += ", " + map.GetPreviousMapProjectorID()[i];
+            }
+            txt_RestartNumber.text = "You need to complete level " + prevMapID + " before challenge the map!";
+        }
+        else{
+            txt_RestartNumber.text = "Restart Number: ";
+        }
+
         RawImage imageComponent = this.gameObject.transform.Find("Board/Mask/Map Image").GetComponent<RawImage>();
         if (imageComponent != null)
         {

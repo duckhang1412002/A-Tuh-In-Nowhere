@@ -135,7 +135,7 @@ public class PlayerMapController : MonoBehaviour
             GameMode.ShowCutSceneMultiplayerMode = isActivateCut_1;
             GameMode.ShowCutSceneCreativeMode = isActivateCut_2;
 
-            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, GetProjectorByID(MapID).MapInfo.MapID, RestartNumber, StepNumber);
+            playerMapAuthentication.UpdatePlayerMap(this.ActiveMapList, GetProjectorByID(PlayerMapController.MapID).MapInfo.MapID, RestartNumber, StepNumber);
             ActiveMapList = await playerMapAuthentication.GetCurrentPlayerMaps();
         }
     }
@@ -155,12 +155,12 @@ public class PlayerMapController : MonoBehaviour
             PhotonNetwork.OfflineMode = true;
             PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
             Hashtable myProperties = new Hashtable();
-            myProperties["MapID"] = MapID;
+            myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
             SceneManager.LoadScene("Game");
         } else {
             Hashtable myProperties = new Hashtable();
-            myProperties["MapID"] = MapID;
+            myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
             MultiplayerConfirmMap();
 
