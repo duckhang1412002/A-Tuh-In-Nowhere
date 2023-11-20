@@ -44,16 +44,28 @@ public class ProgressBar : MonoBehaviour
     }
     private void Start()
     {
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            Debug.Log("Error. Check internet connection!");
+            InternetError();
+            return;
+        }
         FileName = "1.txt";
         //filePath = $"{Application.persistentDataPath}/Maps/{FileName}";
         folderPath = $"{Application.persistentDataPath}/Maps/";
         dataRef = FirebaseDatabase.DefaultInstance.RootReference;
         targetProgress = 0;
         repairBtn.onClick.AddListener(Repair);
-        yesBtn.onClick.AddListener(AcceptDownload);
-        noBtn.onClick.AddListener(DenyDownload);
-        //StartCoroutine(VerifyData());
+        //yesBtn.onClick.AddListener(AcceptDownload);
+        // noBtn.onClick.AddListener(DenyDownload);
+        StartCoroutine(VerifyData());
+    }
 
+    private void InternetError()
+    {
+        askText.text = "No Internet, please check your network and try again!";
+        yesBtn.gameObject.SetActive(false);
+        noBtn.gameObject.SetActive(false);
     }
 
     private void AcceptDownload()
@@ -126,6 +138,7 @@ public class ProgressBar : MonoBehaviour
     private bool isDataLoaded;
     private IEnumerator VerifyData()
     {
+        askText.text = "Checking resource!";
         // Load data
         dataRef.Child("Map").GetValueAsync().ContinueWith(readTask =>
         {
@@ -141,7 +154,6 @@ public class ProgressBar : MonoBehaviour
                 {
                     Debug.Log("Map count: " + snapshot.ChildrenCount);
                     totalFile = snapshot.ChildrenCount;
-
                     foreach (var mapSnapShot in snapshot.Children)
                     {
                         string mapID = mapSnapShot.Child("MapID").Value.ToString();
@@ -175,6 +187,7 @@ public class ProgressBar : MonoBehaviour
         // Now, you can proceed with the download
         if (filesToDownload.Count > 0)
         {
+            askText.text = "Downloading...";
             foreach(var mapName in filesToDownload)
             {
                 string urlMap = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{mapName}.txt?alt=media";
