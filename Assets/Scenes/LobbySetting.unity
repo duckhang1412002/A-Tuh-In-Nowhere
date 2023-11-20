@@ -4245,6 +4245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backBtn: {fileID: 0}
+  playBtn: {fileID: 0}
 --- !u!114 &707538565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6249,12 +6251,19 @@ MonoBehaviour:
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
+  restartBtn: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!114 &1123064060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7719,6 +7728,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   btn_Play: {fileID: 0}
+  btn_Next: {fileID: 0}
+  btn_Prev: {fileID: 0}
+  txt_MapName: {fileID: 0}
+  txt_RestartNumber: {fileID: 0}
+  txt_MapStatus: {fileID: 0}
 --- !u!114 &1513208409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10330,12 +10344,19 @@ MonoBehaviour:
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
+  restartBtn: {fileID: 0}
   confirmMapUI: {fileID: 1513208407}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!4 &1986602950
 Transform:
   m_ObjectHideFlags: 0
