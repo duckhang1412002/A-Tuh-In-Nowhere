@@ -12,8 +12,8 @@ public class ChangeColor : MonoBehaviour
     private Color COLOR_RED = new Color(Divider(255f), Divider(0f), Divider(0), 1);
     private Color COLOR_GREEN = new Color(Divider(0), Divider(255f), Divider(0), 1);
     private Color COLOR_BLUE = new Color(Divider(0f), Divider(0f), Divider(255f), 1);
-    private Color COLOR_PINK = new Color(Divider(255f), Divider(102f), Divider(178f), 1);
-    private Color COLOR_PURPLE = new Color(Divider(255f), Divider(102f), Divider(255f), 1);
+    private Color COLOR_PINK = new Color(Divider(255f), Divider(0f), Divider(175f), 1);
+    private Color COLOR_PURPLE = new Color(Divider(180f), Divider(0f), Divider(255f), 1);
     private Color COLOR_YELLOW = new Color(Divider(255f), Divider(255f), Divider(0), 1);
     private Color COLOR_ORANGE = new Color(Divider(255f), Divider(128f), Divider(0), 1);
     private Color COLOR_AQUA = new Color(Divider(0f), Divider(255f), Divider(255f), 1);

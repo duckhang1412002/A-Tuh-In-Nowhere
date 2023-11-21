@@ -2,16 +2,11 @@ using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SpriteGlow;
 
 public class DoorButton : MonoBehaviour
 {
     public int ID { get; set; }
-
-    [SerializeField]
-    private Sprite unableButton;
-
-    [SerializeField]
-    private Sprite enableButton;
     public bool IsActive{get; set;}
     public bool HasPipeOn{get; set;}
     private GameManager gameManager;
@@ -20,7 +15,7 @@ public class DoorButton : MonoBehaviour
     {
         IsActive = false;
         HasPipeOn = false;
-        this.GetComponent<SpriteRenderer>().sprite = unableButton;
+        this.gameObject.transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = this.gameObject.GetComponent<ChangeColor>().GetColor("Red");
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
@@ -46,11 +41,11 @@ public class DoorButton : MonoBehaviour
 
         if (IsActive)
         {
-            this.GetComponent<SpriteRenderer>().sprite = enableButton;
+            this.gameObject.transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = this.gameObject.GetComponent<ChangeColor>().GetColor("Green");
         }
         else
         {
-            this.GetComponent<SpriteRenderer>().sprite = unableButton;
+            this.gameObject.transform.Find("Inner").gameObject.GetComponent<SpriteGlowEffect>().GlowColor = this.gameObject.GetComponent<ChangeColor>().GetColor("Red");
         }
     }
 

@@ -39,7 +39,7 @@ public class ConfirmMapUI : MonoBehaviour {
         if(!map.IsUnlocked){
             btn_Play.GetComponent<Button>().interactable = false;
         } else {
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient || SceneManager.GetActiveScene().name == "SingleLobby")
             btn_Play.GetComponent<Button>().interactable = true;
         }
 
@@ -48,6 +48,7 @@ public class ConfirmMapUI : MonoBehaviour {
     }
 
     public async void ClickNextButton(){
+        //---------------DISABLE SWIPE RIGHT BUTTON----------------
         if(PlayerMapController.MapID >= PlayerMapController.ProjectorList[PlayerMapController.ProjectorList.Count-1].ProjectorID){
             SetupNavigateButton();
             return;
@@ -64,8 +65,9 @@ public class ConfirmMapUI : MonoBehaviour {
     }
 
     public async void ClickPrevButton(){
+        //---------------DISABLE SWIPE LEFT BUTTON----------------
         if(PlayerMapController.MapID <= 1){
-            Debug.Log("---------------DISABLE SWIPE LEFT BUTTON----------------");
+
             SetupNavigateButton();
             return;
         }
@@ -98,10 +100,10 @@ public class ConfirmMapUI : MonoBehaviour {
             txt_RestartNumber.text = "You need to complete level " + prevMapID + " before challenge the map!";
         }
         else{
-            txt_RestartNumber.text = "Restart Number: ";
+            txt_RestartNumber.text = "";
         }
 
-        RawImage imageComponent = this.gameObject.transform.Find("Board/Mask/Map Image").GetComponent<RawImage>();
+        RawImage imageComponent = this.gameObject.transform.Find("Board/Frame/Mask/Map Image").GetComponent<RawImage>();
         if (imageComponent != null)
         {
             string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapInfo.MapID}.png";
