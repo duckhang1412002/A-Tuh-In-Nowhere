@@ -26,7 +26,9 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         IsReadyToStartTheMap = false;
         MapRole = "";
         CurrentChosingMap = -1;
-        roomName.text = PhotonNetwork.CurrentRoom.Name;
+        string gameMode = PhotonNetwork.CurrentRoom.CustomProperties["GM"].ToString();
+        roomName.text = PhotonNetwork.CurrentRoom.Name + " - GM : " + gameMode;
+        Debug.Log($"Public room ?: {PhotonNetwork.CurrentRoom.IsVisible}");
         if (PhotonNetwork.IsMasterClient)
         {
             myPlayer = PhotonInstantiate(playerPrefabM, 0, 0);
