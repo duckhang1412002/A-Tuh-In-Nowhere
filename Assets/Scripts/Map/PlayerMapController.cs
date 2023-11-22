@@ -174,7 +174,6 @@ public class PlayerMapController : MonoBehaviour
             if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op")
             {
                 myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
-                PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Co-op";
             }
             else if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "VS"){
                 if(PhotonNetwork.IsMasterClient){
@@ -189,7 +188,6 @@ public class PlayerMapController : MonoBehaviour
 
                 Debug.Log("IDDDDDDDDDDDDDDDDDDDD:" + MapID);
                 myProperties["MapID"] = MapID;
-                PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
             }
 
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;

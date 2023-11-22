@@ -81,10 +81,10 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
         photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
         PhotonNetwork.LocalPlayer.CustomProperties[$"Gender"] = MapRole;
-        // if (mineCurrentChosingMap == 0)
-        //     PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
-        // else
-        //     PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Co-op";
+        if (PlayGameMode == "VS")
+            PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
+        else
+            PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Co-op";
     }
 
     [PunRPC]
