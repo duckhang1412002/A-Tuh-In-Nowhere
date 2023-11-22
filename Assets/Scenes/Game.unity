@@ -2334,6 +2334,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  backBtn: {fileID: 0}
+  playBtn: {fileID: 0}
 --- !u!4 &416754696
 Transform:
   m_ObjectHideFlags: 0
