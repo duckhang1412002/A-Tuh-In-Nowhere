@@ -728,7 +728,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void CallWinGameVSMode(int actorNumber, string gender, string playerName, int stepCount)
     {
         isWinGame = true;
-        GameObject.Find("PlayerMapController").GetComponent<PlayerMapController>().UpdatePlayerMap();
+        //GameObject.Find("PlayerMapController").GetComponent<PlayerMapController>().UpdatePlayerMap();
         GameObject.Find("UIManager").GetComponent<UIManager>().SetupVSResultUI(playerName, PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString(), stepCount, gender);
         Debug.Log($"Player {actorNumber} win the game!!");
 /*        if (PhotonNetwork.IsMasterClient)

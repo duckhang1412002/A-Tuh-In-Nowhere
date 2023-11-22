@@ -185,8 +185,7 @@ public class PlayerMapController : MonoBehaviour
                     MapID = randomCreativeMaps[randomCreativeMapIndex].MapID;
                     GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().SetMapIDVersusMode(MapID);
                 }
-
-                Debug.Log("IDDDDDDDDDDDDDDDDDDDD:" + MapID);
+                
                 myProperties["MapID"] = MapID;
             }
 
