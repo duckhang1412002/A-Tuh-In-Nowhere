@@ -96,4 +96,31 @@ public class CameraManager : MonoBehaviour
             SetupCamera("S");
         }
     }
+
+    public void SetupSingleplayerCamera(int oldPartionIndex ,int newPartionIndex){
+        Camera activeCam = null;
+        Camera deActiveCam = null;
+        
+        activeCam = GameObject.Find("Camera_Single_" + newPartionIndex).GetComponent<Camera>();
+        deActiveCam = GameObject.Find("Camera_Single_" + oldPartionIndex).GetComponent<Camera>();
+
+        activeCam.enabled = true;
+        deActiveCam.enabled = false;
+    }
+
+    public void SetupMultiplayerCamera(int oldPartionIndex ,int newPartionIndex, string mode){
+        Camera activeCam = null;
+        Camera deActiveCam = null;
+        
+        if(mode == "Co-op"){
+            activeCam = GameObject.Find("Camera_Coop_" + newPartionIndex).GetComponent<Camera>();
+            deActiveCam = GameObject.Find("Camera_Coop_" + oldPartionIndex).GetComponent<Camera>();
+        } else {
+            activeCam = GameObject.Find("Camera_Versus").GetComponent<Camera>();
+            deActiveCam = GameObject.Find("Camera_Coop_1").GetComponent<Camera>();
+        }
+
+        activeCam.enabled = true;
+        deActiveCam.enabled = false;
+    }
 }

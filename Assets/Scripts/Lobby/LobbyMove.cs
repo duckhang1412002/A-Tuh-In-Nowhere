@@ -97,11 +97,13 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         }
 
         /*Init 2 type cameras*/
-        worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        playerCamera = this.gameObject.transform.Find("Camera").gameObject.GetComponent<Camera>();
+        if(SceneManager.GetActiveScene().name == "Game"){
+            worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            playerCamera = this.gameObject.transform.Find("Camera").gameObject.GetComponent<Camera>();
 
-        worldCamera.enabled = true;
-        playerCamera.enabled = false;
+            worldCamera.enabled = true;
+            playerCamera.enabled = false;
+        }
 
         isPauseGame = isMoving = false;
         enableMove = true;

@@ -29,15 +29,33 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         string gameMode = PhotonNetwork.CurrentRoom.CustomProperties["GM"].ToString();
         roomName.text = PhotonNetwork.CurrentRoom.Name + " - GM : " + gameMode;
         Debug.Log($"Public room ?: {PhotonNetwork.CurrentRoom.IsVisible}");
+
+        int playerM_Init_XPos = 0;
+        int playerM_Init_YPos = 0;
+        int playerF_Init_XPos = 0;
+        int playerF_Init_YPos = 0;
+
+        if(gameMode == "Co-op"){
+            playerM_Init_XPos = -3;
+            playerM_Init_YPos = -4;
+            playerF_Init_XPos = -1;
+            playerF_Init_YPos = -4;
+        } else{
+            playerM_Init_XPos = -32;
+            playerM_Init_YPos = 1;
+            playerF_Init_XPos = -28;
+            playerF_Init_YPos = 1;
+             GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupMultiplayerCamera(0, 0, "Versus");
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
-            myPlayer = PhotonInstantiate(playerPrefabM, 0, 0);
+            myPlayer = PhotonInstantiate(playerPrefabM, playerM_Init_XPos, playerM_Init_YPos);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
         } else
         {
-            myPlayer = PhotonInstantiate(playerPrefabF, 4, 0);
-            myPlayer.GetComponent<LobbyMove>().enabled = true;
+            myPlayer = PhotonInstantiate(playerPrefabF, playerF_Init_XPos, playerF_Init_YPos);
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
             playBtn.interactable = false;
             TextMeshProUGUI btnText = playBtn.GetComponentInChildren<TextMeshProUGUI>();
