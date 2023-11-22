@@ -88,8 +88,8 @@ public class PlayerMapController : MonoBehaviour
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
-
-                if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op"){
+                
+                if(SceneManager.GetActiveScene().name == "SingleLobby" || GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op"){
                     foreach(MapProjector m in ProjectorList){
                         PlayerMap foundMap = ActiveMapList.FirstOrDefault(playerMap => playerMap.MapID == m.MapInfo.MapID);
 
@@ -118,6 +118,8 @@ public class PlayerMapController : MonoBehaviour
                             m.IsUnlocked = true;
                         }
                     }
+                } else {
+                    GameObject.Find("GameObj_MapBlock_VSMap_0").GetComponent<MapProjector>().IsUnlocked = true;
                 }
             }
         }
@@ -177,11 +179,10 @@ public class PlayerMapController : MonoBehaviour
                 List<Map> randomCreativeMaps = new List<Map>();
                 randomCreativeMaps = GameObject.Find("MapController").GetComponent<MapController>().CreativeMapList;
 
-                Debug.Log(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode + "===========" + randomCreativeMaps.Count);
-
                 System.Random random = new System.Random();
                 int randomCreativeMapIndex = random.Next(0, randomCreativeMaps.Count-1);            
 
+                Debug.Log("IDDDDDDDDDDDDDDDDDDDD:" + randomCreativeMapIndex);
                 myProperties["MapID"] = randomCreativeMaps[randomCreativeMapIndex].MapID;
             }
 

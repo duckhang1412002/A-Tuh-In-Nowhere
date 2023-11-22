@@ -97,7 +97,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         }
 
         /*Init 2 type cameras*/
-        if(SceneManager.GetActiveScene().name == "Game"){
+        if(SceneManager.GetActiveScene().name == "GameMode"){
             worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
             playerCamera = this.gameObject.transform.Find("Camera").gameObject.GetComponent<Camera>();
 

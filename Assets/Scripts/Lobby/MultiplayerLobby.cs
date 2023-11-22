@@ -57,6 +57,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         } else
         {
             myPlayer = PhotonInstantiate(playerPrefabF, playerF_Init_XPos, playerF_Init_YPos);
+            myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
             playBtn.interactable = false;
             TextMeshProUGUI btnText = playBtn.GetComponentInChildren<TextMeshProUGUI>();
