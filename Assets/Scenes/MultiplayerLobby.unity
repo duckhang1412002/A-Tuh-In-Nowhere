@@ -16126,7 +16126,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
   restartBtn: {fileID: 0}
-  confirmMapUI: {fileID: 0}
+  confirmMapUI: {fileID: 1654156967}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
   txt_result_level: {fileID: 0}
