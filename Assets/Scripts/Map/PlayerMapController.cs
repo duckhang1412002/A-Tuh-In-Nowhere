@@ -49,19 +49,21 @@ public class PlayerMapController : MonoBehaviour
 
                 CurrentGameMode = "Single Mode";
             } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-                GameObject[] projectors = FindObjectsWithNameContaining("GameObj_MapBlock_Map_");
+                if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op"){
+                    GameObject[] projectors = FindObjectsWithNameContaining("GameObj_MapBlock_Map_");
 
-                ProjectorList = new List<MapProjector>();
-                foreach(GameObject m in projectors){
-                    ProjectorList.Add(m.GetComponent<MapProjector>());
+                    ProjectorList = new List<MapProjector>();
+                    foreach(GameObject m in projectors){
+                        ProjectorList.Add(m.GetComponent<MapProjector>());
+                    }
+
+                    ProjectorList = ProjectorList.OrderBy(obj => obj.ProjectorID).ToList();
+
+                    for(int i=0; i<ProjectorList.Count; i++){
+                        ProjectorList[i].MapInfo = GameObject.Find("MapController").GetComponent<MapController>().MultiplayerMapList[i];
+                    }
                 }
 
-                ProjectorList = ProjectorList.OrderBy(obj => obj.ProjectorID).ToList();
-
-                for(int i=0; i<ProjectorList.Count; i++){
-                    ProjectorList[i].MapInfo = GameObject.Find("MapController").GetComponent<MapController>().MultiplayerMapList[i];
-                }
-                
                 CurrentGameMode = "Multiplayer Mode";
             } else if(SceneManager.GetActiveScene().name == "CreativeLobby"){
                 CurrentGameMode = "Creative Mode";
@@ -86,32 +88,35 @@ public class PlayerMapController : MonoBehaviour
             } 
             else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
-                foreach(MapProjector m in ProjectorList){
-                    PlayerMap foundMap = ActiveMapList.FirstOrDefault(playerMap => playerMap.MapID == m.MapInfo.MapID);
 
-                    if(foundMap != null){
-                        m.IsSolved = true;
-                        m.ChangeColor();
-                    }
-                }
+                if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op"){
+                    foreach(MapProjector m in ProjectorList){
+                        PlayerMap foundMap = ActiveMapList.FirstOrDefault(playerMap => playerMap.MapID == m.MapInfo.MapID);
 
-                foreach(MapProjector m in ProjectorList){
-                    int[] previousMapID = m.GetPreviousMapProjectorID();
-                    bool checkVar = true;
-
-                    m.ChangeMapMachineStatus(m.IsSolved, m.gameObject);
-
-                    foreach(int n in previousMapID){
-                        GameObject foundProjector = GameObject.Find("GameObj_MapBlock_Map_" + n);
-                        if(foundProjector != null){
-                            if(!foundProjector.GetComponent<MapProjector>().IsSolved){                            
-                                checkVar = false;
-                                break;
-                            }
+                        if(foundMap != null){
+                            m.IsSolved = true;
+                            m.ChangeColor();
                         }
                     }
-                    if(checkVar){
-                        m.IsUnlocked = true;
+
+                    foreach(MapProjector m in ProjectorList){
+                        int[] previousMapID = m.GetPreviousMapProjectorID();
+                        bool checkVar = true;
+
+                        m.ChangeMapMachineStatus(m.IsSolved, m.gameObject);
+
+                        foreach(int n in previousMapID){
+                            GameObject foundProjector = GameObject.Find("GameObj_MapBlock_Map_" + n);
+                            if(foundProjector != null){
+                                if(!foundProjector.GetComponent<MapProjector>().IsSolved){                            
+                                    checkVar = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(checkVar){
+                            m.IsUnlocked = true;
+                        }
                     }
                 }
             }
@@ -163,7 +168,23 @@ public class PlayerMapController : MonoBehaviour
             SceneManager.LoadScene("Game");
         } else {
             Hashtable myProperties = new Hashtable();
-            myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
+
+            if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op")
+            {
+                myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
+            }
+            else if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "VS"){
+                List<Map> randomCreativeMaps = new List<Map>();
+                randomCreativeMaps = GameObject.Find("MapController").GetComponent<MapController>().CreativeMapList;
+
+                Debug.Log(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode + "===========" + randomCreativeMaps.Count);
+
+                System.Random random = new System.Random();
+                int randomCreativeMapIndex = random.Next(0, randomCreativeMaps.Count-1);            
+
+                myProperties["MapID"] = randomCreativeMaps[randomCreativeMapIndex].MapID;
+            }
+
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
             //Debug.Log("2 btn: " + PlayBtn + " " + BackBtn);
             //PlayBtn.GetComponent<Button>().interactable = false; //error here !!!

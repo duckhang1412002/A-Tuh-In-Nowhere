@@ -84,43 +84,53 @@ public class ConfirmMapUI : MonoBehaviour {
 
     private async Task ShowMapInfo(MapProjector map)
     {
-        txt_MapName.text = map.MapInfo.MapName;
-        txt_MapStatus.text = "CONNECTED!";
-        txt_MapStatus.color = Color.green;
+        if(!map.gameObject.name.Contains("GameObj_MapBlock_VSMap")){
+            txt_MapName.text = map.MapInfo.MapName;
+            txt_MapStatus.text = "CONNECTED!";
+            txt_MapStatus.color = Color.green;
 
-        if(!map.IsSolved){
-            txt_MapStatus.text = "DISCONNECTED!";
-            txt_MapStatus.color = Color.red;
-        }
-        if(!map.IsUnlocked){
-            string prevMapID = map.GetPreviousMapProjectorID()[0].ToString();
-            for(int i=1; i<map.GetPreviousMapProjectorID().Length; i++){
-                prevMapID += ", " + map.GetPreviousMapProjectorID()[i];
+            if(!map.IsSolved){
+                txt_MapStatus.text = "DISCONNECTED!";
+                txt_MapStatus.color = Color.red;
             }
-            txt_RestartNumber.text = "You need to complete level " + prevMapID + " before challenge the map!";
-        }
-        else{
-            txt_RestartNumber.text = "";
-        }
+            if(!map.IsUnlocked){
+                string prevMapID = map.GetPreviousMapProjectorID()[0].ToString();
+                for(int i=1; i<map.GetPreviousMapProjectorID().Length; i++){
+                    prevMapID += ", " + map.GetPreviousMapProjectorID()[i];
+                }
+                txt_RestartNumber.text = "You need to complete level " + prevMapID + " before challenge the map!";
+            }
+            else{
+                txt_RestartNumber.text = "";
+            }
 
-        RawImage imageComponent = this.gameObject.transform.Find("Board/Frame/Mask/Map Image").GetComponent<RawImage>();
-        if (imageComponent != null)
-        {
-            string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapInfo.MapID}.png";
-
-            if (File.Exists(imagePath))
+            //Setup map screenshot
+            RawImage imageComponent = this.gameObject.transform.Find("Board/Frame/Mask/Map Image").GetComponent<RawImage>();
+            if (imageComponent != null)
             {
-                byte[] imageBytes = File.ReadAllBytes(imagePath);
-                Texture2D texture = new Texture2D(1, 1);
-                if (texture.LoadImage(imageBytes))
+                string imagePath = $"{Application.persistentDataPath}/Thumbs/{map.MapInfo.MapID}.png";
+
+                if (File.Exists(imagePath))
                 {
-                    imageComponent.texture = texture;
+                    byte[] imageBytes = File.ReadAllBytes(imagePath);
+                    Texture2D texture = new Texture2D(1, 1);
+                    if (texture.LoadImage(imageBytes))
+                    {
+                        imageComponent.texture = texture;
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Image file not found: " + imagePath);
                 }
             }
-            else
-            {
-                Debug.LogError("Image file not found: " + imagePath);
-            }
+        } else {
+            btn_Next.GetComponent<Button>().interactable = false;
+            btn_Prev.GetComponent<Button>().interactable = false;  
+
+            txt_MapName.text = "Verus Mode Custom Map";
+            txt_MapStatus.text = "";
+            txt_RestartNumber.text = "";
         }
     }
 }

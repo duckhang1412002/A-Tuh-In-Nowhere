@@ -13,6 +13,7 @@ public class MapController : MonoBehaviour
 {
     public List<Map> SingleMapList {get; set;}
     public List<Map> MultiplayerMapList {get; set;}
+    public List<Map> CreativeMapList {get; set;}
     private MapAuthentication mapAuthentication;
 
     public async void Start(){
@@ -23,6 +24,9 @@ public class MapController : MonoBehaviour
 
             MultiplayerMapList = await mapAuthentication.GetMultiplayerMapList();
             MultiplayerMapList = MultiplayerMapList.OrderBy(obj => obj.MapID).ToList();
+
+            CreativeMapList = await mapAuthentication.GetCreativeMapList();
+            CreativeMapList = CreativeMapList.OrderBy(obj => obj.MapID).ToList();
         }
     }
 

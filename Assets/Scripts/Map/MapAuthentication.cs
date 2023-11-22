@@ -106,4 +106,10 @@ public class MapAuthentication : MonoBehaviourPunCallbacks
         List<Map> multiplayerMapList = mapList.Where(m => m.MapType == "multiple").ToList();
         return multiplayerMapList;
     }
+
+    public async Task<List<Map>> GetCreativeMapList(){
+        List<Map> mapList = await GetMapList(accountsRef);
+        List<Map> multiplayerMapList = mapList.Where(m => m.MapType == "creative").ToList();
+        return multiplayerMapList;
+    }
 }

@@ -12228,7 +12228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_0_M
+      value: GameObj_Info_VSMap_0_M
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
@@ -14508,7 +14508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8296909391002234195, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}
       propertyPath: m_Name
-      value: GameObj_Info_Map_0_F
+      value: GameObj_Info_VSMap_0_F
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c8f3fda44fa3304eaf67471cf8a46f9, type: 3}

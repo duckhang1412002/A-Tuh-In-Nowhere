@@ -21,13 +21,14 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public string MapRole;
     [HideInInspector]
     public int CurrentChosingMap;
+    public string PlayGameMode{get; set;}
     void Start()
     {
         IsReadyToStartTheMap = false;
         MapRole = "";
         CurrentChosingMap = -1;
-        string gameMode = PhotonNetwork.CurrentRoom.CustomProperties["GM"].ToString();
-        roomName.text = PhotonNetwork.CurrentRoom.Name + " - GM : " + gameMode;
+        PlayGameMode = PhotonNetwork.CurrentRoom.CustomProperties["GM"].ToString();
+        roomName.text = PhotonNetwork.CurrentRoom.Name + " - GM : " + PlayGameMode;
         Debug.Log($"Public room ?: {PhotonNetwork.CurrentRoom.IsVisible}");
 
         int playerM_Init_XPos = 0;
@@ -35,7 +36,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         int playerF_Init_XPos = 0;
         int playerF_Init_YPos = 0;
 
-        if(gameMode == "Co-op"){
+        if(PlayGameMode == "Co-op"){
             playerM_Init_XPos = -3;
             playerM_Init_YPos = -4;
             playerF_Init_XPos = -1;

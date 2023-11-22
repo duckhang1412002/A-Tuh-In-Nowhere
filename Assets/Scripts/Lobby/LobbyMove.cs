@@ -263,7 +263,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PositionPlayMap = player.CurrentPosition;                
                     }  
                 } else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-                    if(item.name.Contains("Map")){
+                    if(item.name.Contains("GameObj_Info_Map")){
                         PlayerMapController.MapID = int.Parse(SplitText(item.name, 3));
                         PlayerMapController.RestartNumber = -1;
                         PlayerMapController.StepNumber = 0;
@@ -274,7 +274,18 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
                         PositionBeforePlay = player.PreviousPosition;
                         PositionPlayMap = player.CurrentPosition;   
-                    } 
+                    }  else if(item.name.Contains("GameObj_Info_VSMap")) {
+                        PlayerMapController.MapID = 0;
+                        PlayerMapController.RestartNumber = -1;
+                        PlayerMapController.StepNumber = 0;
+                        PlayerMapController.MapRole = SplitText(item.name, 4);
+ 
+                        MapProjector currentProjector = GameObject.Find("GameObj_MapBlock_VSMap_0").GetComponent<MapProjector>();
+                        GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
+
+                        PositionBeforePlay = player.PreviousPosition;
+                        PositionPlayMap = player.CurrentPosition;   
+                    }
                 }
             }
         }
