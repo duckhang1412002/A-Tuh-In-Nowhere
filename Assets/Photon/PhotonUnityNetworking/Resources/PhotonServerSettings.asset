@@ -94,6 +94,8 @@ MonoBehaviour:
   - CallWinGameVSMode
   - SendMessage
   - Surrender
+  - SetMapID
+  - Pun_SetMapIDVersusMode
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

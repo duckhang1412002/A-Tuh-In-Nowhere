@@ -176,14 +176,15 @@ public class PlayerMapController : MonoBehaviour
                 myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
             }
             else if(GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "VS"){
-                List<Map> randomCreativeMaps = new List<Map>();
-                randomCreativeMaps = GameObject.Find("MapController").GetComponent<MapController>().CreativeMapList;
+                // List<Map> randomCreativeMaps = new List<Map>();
+                // randomCreativeMaps = GameObject.Find("MapController").GetComponent<MapController>().CreativeMapList;
 
-                System.Random random = new System.Random();
-                int randomCreativeMapIndex = random.Next(0, randomCreativeMaps.Count-1);            
+                // System.Random random = new System.Random();
+                // int randomCreativeMapIndex = random.Next(0, randomCreativeMaps.Count-1);            
 
-                Debug.Log("IDDDDDDDDDDDDDDDDDDDD:" + randomCreativeMapIndex);
-                myProperties["MapID"] = randomCreativeMaps[randomCreativeMapIndex].MapID;
+                Debug.Log("IDDDDDDDDDDDDDDDDDDDD:" + MapID);
+
+                myProperties["MapID"] = MapID;
             }
 
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
