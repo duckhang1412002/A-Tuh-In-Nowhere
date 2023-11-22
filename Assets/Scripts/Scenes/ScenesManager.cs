@@ -22,11 +22,14 @@ public class ScenesManager : MonoBehaviour
     public void BackToLobbyScene(){
         if (PhotonNetwork.InRoom) PhotonNetwork.LeaveRoom();
         if(PlayerMapController.CurrentGameMode == "Single Mode"){
-            SceneManager.LoadScene("SingleLobby");
+            PhotonNetwork.LoadLevel("SingleLobby");
+            //SceneManager.LoadScene("SingleLobby");
         } else if(PlayerMapController.CurrentGameMode == "Multiplayer Mode"){
-            SceneManager.LoadScene("MultiplayerLobby"); 
+            //SceneManager.LoadScene("MultiplayerLobby");
+            PhotonNetwork.LoadLevel("MultiplayerLobby");
         } else if(PlayerMapController.CurrentGameMode == "Creative Mode"){
-            SceneManager.LoadScene("CreativeLobby");
+            //SceneManager.LoadScene("CreativeLobby");
+            PhotonNetwork.LoadLevel("CreativeLobby");
         }
     }
 
