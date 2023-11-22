@@ -62,6 +62,10 @@ public class LobbySettingUI : MonoBehaviourPunCallbacks
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        if (!lobbyListUIObj.activeSelf)
+        {
+            return;
+        }
         Debug.Log("OnRoomListChecking...");
         // Find the RoomsContainer and clear its children
         Transform roomsContainer = GameObject.Find("RoomsContainer").transform;
