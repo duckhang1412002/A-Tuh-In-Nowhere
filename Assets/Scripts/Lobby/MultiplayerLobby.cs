@@ -102,9 +102,9 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SetMapIDVersusMode(){
-        if(PlayGameMode == "VS" && PhotonNetwork.IsMasterClient){
-            photonView.RPC("Pun_SetMapIDVersusMode", RpcTarget.OthersBuffered, PlayerMapController.MapID);
+    public void SetMapIDVersusMode(int id){
+        if(PlayGameMode == "VS"){
+            photonView.RPC("Pun_SetMapIDVersusMode", RpcTarget.OthersBuffered, id);
         }
     }
 
