@@ -60,7 +60,7 @@ public class CameraManager : MonoBehaviour
                 myCamera.enabled = false;
                 if(otherCamera != null) otherCamera.enabled = false;
             }
-        } else if (mode == "S" && myCamera != null && otherCamera != null) {
+        } else if (mode == "X" && myCamera != null && otherCamera != null) {
             if (IsCameraTargetOtherPlayer)
             {
                 currentCamera = otherCamera;
@@ -91,9 +91,9 @@ public class CameraManager : MonoBehaviour
             IsCameraTargetPlayer = !IsCameraTargetPlayer;
             SetupCamera("C");
         }
-        if(Input.GetKeyDown(KeyCode.S)){
+        if(Input.GetKeyDown(KeyCode.X)){
             IsCameraTargetOtherPlayer = !IsCameraTargetOtherPlayer;
-            SetupCamera("S");
+            SetupCamera("X");
         }
     }
 }
