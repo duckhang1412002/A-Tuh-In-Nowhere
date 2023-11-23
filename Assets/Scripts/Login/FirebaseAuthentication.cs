@@ -25,7 +25,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
     public FirebaseAuth auth;
     public FirebaseUser user;
     public DatabaseReference accountsRef;
-    public Account currentAccount = null;
+    public static Account currentAccount = null;
 
     // Login Variables
     [Space]
@@ -64,6 +64,15 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(false);
         ClearFields();
         InitializeFirebase();
+        if(currentAccount != null){
+            btn_Account.SetActive(false);
+            btn_Exit.SetActive(false);
+            btn_Logout.SetActive(true);
+            btn_Start.SetActive(true);
+
+            GameObject.Find("Pnl_Greeting").transform.Find("Txt_GreetingMessage").GetComponent<TextMeshProUGUI>().text = "Welcome, " + currentAccount.Fullname +"!";
+            GameObject.Find("GreetingUI").transform.Find("Pnl_Greeting").GetComponent<Animator>().SetTrigger("Greeting-Popup");
+        }
     }
 
     private void Awake()
@@ -174,29 +183,6 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         passwordLoginField.text = "";
     }
 
-    // Track state changes of the auth object.
-    /*void AuthStateChanged(object sender, System.EventArgs eventArgs)
-    {
-        if (auth.CurrentUser != user)
-        {
-            bool signedIn = user != auth.CurrentUser && auth.CurrentUser != null;
-
-            if (!signedIn && user != null)
-            {
-                StartCoroutine(UpdateStatus(user.UserId, false));
-                auth.SignOut();
-                Debug.Log("Signed out " + user.UserId);
-            }
-
-            user = auth.CurrentUser;
-
-            if (signedIn)
-            {
-                Debug.Log("Signed in " + user.UserId);
-            }
-        }
-    }*/
-
     public async void Login()
     {
         List<Account> accounts = await GetListAccount(accountsRef);
@@ -207,19 +193,29 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 
     private IEnumerator LoginAsync(string email, string password, List<Account> accounts)
     {
-        if (CheckLogIn(email, accounts))
-        {
-            msgErrorPopup.ShowErrorPopup("This account is already logged in!");
+        if(email == ""){
+            msgErrorPopup.ShowErrorPopup("Email field is empty! ");
             yield break; // Exit the coroutine
         }
+        else if (password == ""){
+            msgErrorPopup.ShowErrorPopup("Password field is empty! ");
+            yield break; // Exit the coroutine
+        }
+        else if (password.Length < 6){
+            msgErrorPopup.ShowErrorPopup("Password must have more than 6 character! ");
+            yield break; // Exit the coroutine
+        }
+         else if (CheckLogIn(email, accounts)) {
+            msgErrorPopup.ShowErrorPopup("This account is already logged in! ");
+            yield break; // Exit the coroutine
+        } 
+
         var loginTask = auth.SignInWithEmailAndPasswordAsync(email, password);
 
         yield return new WaitUntil(() => loginTask.IsCompleted);
 
         if (loginTask.Exception != null)
         {
-            Debug.LogError(loginTask.Exception);
-
             FirebaseException firebaseException = loginTask.Exception.GetBaseException() as FirebaseException;
             AuthError authError = (AuthError)firebaseException.ErrorCode;
 
@@ -245,20 +241,19 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                     break;
                 case AuthError.UserNotFound:
                     failedMessage = "Account does not exist";
-                    msgErrorPopup.ShowErrorPopup("User not found ");
+                    msgErrorPopup.ShowErrorPopup("Account does not exist! ");
                     break;
                 default:
                     msgErrorPopup.ShowErrorPopup("Something was wrong... ");
                     break;
             }
-            //Debug.Log(failedMessage);
         }
         else
         {
             // User is logged in now
             user = loginTask.Result.User;
             UpdateCurrentAccount(FindAccount(email, accounts));
-            StartCoroutine(UpdateStatus(currentAccount.AccountID, true));
+            //StartCoroutine(UpdateStatus(currentAccount.AccountID, true));
             PhotonNetwork.NickName = user.DisplayName;
 
             Debug.LogFormat("{0} with {1} You Are Successfully Logged In", user.DisplayName, currentAccount.AccountID);
@@ -289,53 +284,99 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 
     private IEnumerator RegisterAsync(string name, string email, string password, string confirmPassword, List<Account> accounts)
     {
-
         if (email == "")
         {
-            //Debug.LogError("Email field is empty");
             msgErrorPopup.ShowErrorPopup("Email field is empty! ");
-
-            yield break;
+            yield break; // Exit the registration coroutine
         }
         else if (name == "")
         {
-            //Debug.LogError("User Name is empty");
             msgErrorPopup.ShowErrorPopup("The nickname is empty! ");
             yield break;
         }
         else if (!CheckNicknameAvailability(name, accounts))
         {
-            //Debug.LogError("Nickname is already taken");
             msgErrorPopup.ShowErrorPopup("Nickname is already taken! ");
-            yield break; // Exit the registration coroutine
+            yield break;
+        }
+        else if (passwordRegisterField.text.Length < 6)
+        {
+            msgErrorPopup.ShowErrorPopup("Password must have more than 6 character! ");
+            yield break;
         }
         else if (passwordRegisterField.text != confirmPasswordRegisterField.text)
         {
-            //Debug.LogError("Password does not match");
+            msgErrorPopup.ShowErrorPopup("Password does not match! ");
+            yield break;
+        }
+        else if (confirmPasswordRegisterField.text != confirmPasswordRegisterField.text)
+        {
             msgErrorPopup.ShowErrorPopup("Password does not match! ");
             yield break;
         }
 
-        else if (confirmPasswordRegisterField.text != confirmPasswordRegisterField.text)
+        var registerTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+
+        yield return new WaitUntil(() => registerTask.IsCompleted);
+
+        if (registerTask.Exception != null)
         {
-            //Debug.LogError("Password does not match");
-            msgErrorPopup.ShowErrorPopup("Password does not match! ");
-            yield break;
+            Debug.LogError(registerTask.Exception);
+
+            FirebaseException firebaseException = registerTask.Exception.GetBaseException() as FirebaseException;
+            AuthError authError = (AuthError)firebaseException.ErrorCode;
+
+            string failedMessage = "Registration Failed! Because ";
+            switch (authError)
+            {
+                case AuthError.InvalidEmail:
+                    failedMessage += "Email is invalid";
+                    msgErrorPopup.ShowErrorPopup("Email is invalid! ");
+                    break;
+                case AuthError.WrongPassword:
+                    failedMessage += "Wrong Password";
+                    msgErrorPopup.ShowErrorPopup("Password must be longer than 6 characters! ");
+                    break;
+                case AuthError.MissingEmail:
+                    failedMessage += "Email is missing";
+                    msgErrorPopup.ShowErrorPopup("Email is missing! ");
+                    break;
+                case AuthError.MissingPassword:
+                    failedMessage += "Password is missing";
+                    msgErrorPopup.ShowErrorPopup("Password is missing! ");
+                    break;
+                case AuthError.EmailAlreadyInUse:
+                    failedMessage = "Email Already In Use";
+                    msgErrorPopup.ShowErrorPopup("Email already in used! ");
+                    break;
+                default:
+                    msgErrorPopup.ShowErrorPopup("Password must be more than 6 characters! ");
+                    break;
+            }
         }
         else
         {
-            var registerTask = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            // Get The User After Registration Success
+            user = registerTask.Result.User;
 
-            yield return new WaitUntil(() => registerTask.IsCompleted);
+            UserProfile userProfile = new UserProfile { DisplayName = name };
 
-            if (registerTask.Exception != null)
+            var updateProfileTask = user.UpdateUserProfileAsync(userProfile);
+
+            yield return new WaitUntil(() => updateProfileTask.IsCompleted);
+
+            if (updateProfileTask.Exception != null)
             {
-                Debug.LogError(registerTask.Exception);
+                // Delete the user if user update failed
+                user.DeleteAsync();
 
-                FirebaseException firebaseException = registerTask.Exception.GetBaseException() as FirebaseException;
+                Debug.LogError(updateProfileTask.Exception);
+
+                FirebaseException firebaseException = updateProfileTask.Exception.GetBaseException() as FirebaseException;
                 AuthError authError = (AuthError)firebaseException.ErrorCode;
 
-                string failedMessage = "Registration Failed! Because ";
+
+                string failedMessage = "Profile update Failed! Because ";
                 switch (authError)
                 {
                     case AuthError.InvalidEmail:
@@ -362,72 +403,17 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                         msgErrorPopup.ShowErrorPopup("Password must be more than 6 characters! ");
                         break;
                 }
-
-                //Debug.Log(failedMessage);
             }
             else
             {
-                // Get The User After Registration Success
-                user = registerTask.Result.User;
+                Account newAccount = new Account(0, email, password, name, false, 2, name, "", 0, 0, DateTime.Parse("1/1/1999")){};
 
-                UserProfile userProfile = new UserProfile { DisplayName = name };
+                UpdateInfoAccount(newAccount);         
+                ClearFields();              
+                RegisterPanel.SetActive(false);
+                loginPanel.SetActive(true);
 
-                var updateProfileTask = user.UpdateUserProfileAsync(userProfile);
-
-                yield return new WaitUntil(() => updateProfileTask.IsCompleted);
-
-                if (updateProfileTask.Exception != null)
-                {
-                    // Delete the user if user update failed
-                    user.DeleteAsync();
-
-                    Debug.LogError(updateProfileTask.Exception);
-
-                    FirebaseException firebaseException = updateProfileTask.Exception.GetBaseException() as FirebaseException;
-                    AuthError authError = (AuthError)firebaseException.ErrorCode;
-
-
-                    string failedMessage = "Profile update Failed! Because ";
-                    switch (authError)
-                    {
-                        case AuthError.InvalidEmail:
-                            failedMessage += "Email is invalid";
-                            msgErrorPopup.ShowErrorPopup("Email is invalid! ");
-                            break;
-                        case AuthError.WrongPassword:
-                            failedMessage += "Wrong Password";
-                            msgErrorPopup.ShowErrorPopup("Password must be longer than 6 characters! ");
-                            break;
-                        case AuthError.MissingEmail:
-                            failedMessage += "Email is missing";
-                            msgErrorPopup.ShowErrorPopup("Email is missing! ");
-                            break;
-                        case AuthError.MissingPassword:
-                            failedMessage += "Password is missing";
-                            msgErrorPopup.ShowErrorPopup("Password is missing! ");
-                            break;
-                        case AuthError.EmailAlreadyInUse:
-                            failedMessage = "Email Already In Use";
-                            msgErrorPopup.ShowErrorPopup("Email Already In Use! ");
-                            break;
-                        default:
-                            msgErrorPopup.ShowErrorPopup("Password must be more than 6 characters! ");
-                            break;
-                    }
-
-                    //Debug.Log(failedMessage);
-                }
-                else
-                {
-                    Account newAccount = new Account(0, email, password, name, false, 2, name, "", 0, 0, DateTime.Parse("1/1/1999")){};
-
-                    UpdateInfoAccount(newAccount);         
-                    ClearFields();              
-                    RegisterPanel.SetActive(false);
-                    loginPanel.SetActive(true);
-
-                    msgSuccessPopup.ShowSuccessPopup("Account has been created successfully!");
-                }
+                msgSuccessPopup.ShowSuccessPopup("Account has been created successfully!");
             }
         }
     }
@@ -436,7 +422,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
     {
         foreach (var account in accounts)
         {
-            if (account.Fullname == nickname)
+            if (account.Nickname == nickname)
             {
                 // Nickname is already taken
                 return false;
@@ -455,11 +441,6 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
             TimeSpan timeDifference = DateTime.Now - account.Lastactive;
             return timeDifference.TotalSeconds < 10;
         }
-        /*        if (account != null && account.IsOnlined)
-                {
-                    return true;
-                }*/
-        // Account is not logged in
         return false;
     }
 
@@ -495,7 +476,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         StartCoroutine(UpdateData(Node, "Deleteddate", newAccountID, acc.Deleteddate.ToString()));
         StartCoroutine(UpdateData(Node, "IsDeleted", newAccountID, acc.IsDeleted.ToString()));
         StartCoroutine(UpdateData(Node, "RoleID", newAccountID, acc.RoleID.ToString()));
-        StartCoroutine(UpdateStatus(newAccountID, acc.IsOnlined));
+        //StartCoroutine(UpdateStatus(newAccountID, acc.IsOnlined));
     }
 
     private void UpdateCurrentAccount(Account newCurrentAccount)
@@ -520,27 +501,27 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         }
     }
 
-    public IEnumerator UpdateStatus(int? userId, bool data)
-    {
-        //Set the currently logged in user deaths
-        var DBTask = accountsRef.Child("Account").Child(userId.ToString()).Child("IsOnlined").SetValueAsync(data);
+    // public IEnumerator UpdateStatus(int? userId, bool data)
+    // {
+    //     //Set the currently logged in user deaths
+    //     var DBTask = accountsRef.Child("Account").Child(userId.ToString()).Child("IsOnlined").SetValueAsync(data);
 
-        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+    //     yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
 
-        if (DBTask.Exception != null)
-        {
-            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
-        }
-        else
-        {
-            Debug.Log("User status updated successfully.");
-        }
-    }
+    //     if (DBTask.Exception != null)
+    //     {
+    //         Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+    //     }
+    //     else
+    //     {
+    //         Debug.Log("User status updated successfully.");
+    //     }
+    // }
 
     public void LogOut()
     {
         string lastAccountName = currentAccount.Fullname;
-        StartCoroutine(UpdateStatus(currentAccount.AccountID, false));
+        //StartCoroutine(UpdateStatus(currentAccount.AccountID, false));
         //currentAccount.AccountID = -1;
         msgSuccessPopup.ShowSuccessPopup("Logout successfully!");
         btn_Account.SetActive(true);
@@ -562,10 +543,6 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
 
     public void StartGame(){
         SceneManager.LoadScene("GameMode");
-    }
-
-    public int? GetPlayerID(){
-        return currentAccount.AccountID;
     }
 
     public async Task<int> GetLastAccountIDAsync()
@@ -590,7 +567,6 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         catch (Exception ex)
         {
             Debug.LogError($"Error getting last account ID: {ex.Message}");
-            Debug.Log("");
         }
 
         // Return a default value (e.g., -1) if there was an error or no data found.

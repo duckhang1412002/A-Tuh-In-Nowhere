@@ -9127,8 +9127,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 7
-  m_InputType: 2
+  m_ContentType: 0
+  m_InputType: 0
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -11141,15 +11141,19 @@ MonoBehaviour:
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
+  restartBtn: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
   txt_result_level: {fileID: 0}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 0}
-  settingsUI: {fileID: 1476111370}
-  audioSlider: {fileID: 352168153}
-  txt_audio_volumn: {fileID: 1647758319}
+  VSresultUI: {fileID: 0}
+  vsPlayerM: {fileID: 0}
+  vsPlayerF: {fileID: 0}
+  txt_vsresult_playerName: {fileID: 0}
+  txt_vsresult_levelName: {fileID: 0}
+  txt_vsresult_stepCount: {fileID: 0}
 --- !u!4 &2076661503
 Transform:
   m_ObjectHideFlags: 0

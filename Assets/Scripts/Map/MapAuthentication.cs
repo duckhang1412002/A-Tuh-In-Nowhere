@@ -41,7 +41,7 @@ public class MapAuthentication : MonoBehaviourPunCallbacks
             auth = firebaseAuth.auth;
             user = firebaseAuth.user;
             accountsRef = firebaseAuth.accountsRef;
-            currentAccount = firebaseAuth.currentAccount;
+            currentAccount = FirebaseAuthentication.currentAccount;
         }
     }
 

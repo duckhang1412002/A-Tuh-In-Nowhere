@@ -30,6 +30,27 @@ public class ScenesManager : MonoBehaviour
         }
     }
 
+    public void BackToGameModeScene(){
+        if(PlayerMapController.CurrentGameMode == "Single Mode"){
+            SceneManager.LoadScene("GameMode");
+        }
+        else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("Loading"); 
+        }
+        else if (SceneManager.GetActiveScene().name == "LobbySetting"){
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("GameMode");
+        }
+        else if(PlayerMapController.CurrentGameMode == "Multiplayer Mode"){
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("GameMode");
+        }
+        else {
+            SceneManager.LoadScene("GameMode"); 
+        }
+    }
+
     public void ReloadThisScene(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
