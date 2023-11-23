@@ -25,7 +25,10 @@ public class ChatMenu : MonoBehaviourPun
         for (int i = 0; i < itemCnt; i++) {
             chatMessages[i] = transform.GetChild(i + 1).GetComponent<ChatMessage>();
         }
-
+        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM"))
+        {
+            mainBtn.gameObject.SetActive(false);
+        }
         mainBtn = transform.GetChild(0).GetComponent<Button>();
         mainBtn.onClick.AddListener(ToggleMenu);
         mainBtn.transform.SetAsLastSibling();

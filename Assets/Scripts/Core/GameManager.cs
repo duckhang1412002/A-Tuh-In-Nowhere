@@ -636,7 +636,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             photonView.RPC("Surrender", RpcTarget.Others);
         }
         else 
-            view.RPC("ResetTheGame", RpcTarget.MasterClient);
+            view.RPC("ResetTheGame", RpcTarget.All);
     }
 
     // Update is called once per frame
@@ -700,7 +700,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void CallScene(string sceneName)
     {
-        SceneManager.LoadScene(sceneName);
+        PhotonNetwork.LoadLevel(sceneName);
     }
 
     [PunRPC]
@@ -710,7 +710,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable();
         customProps.Clear();
         PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
-        PhotonNetwork.LeaveRoom();
+
+        //PhotonNetwork.LeaveRoom();
     }
 
     [PunRPC]
@@ -739,7 +740,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void ResetTheGame()
     {
-        PhotonNetwork.LoadLevel("Game");
+        //SceneManager.LoadSceneAsync("Game");
+       PhotonNetwork.LoadLevel("Game");
     }
 
     public GameObject[,] GetGrid()

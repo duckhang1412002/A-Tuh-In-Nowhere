@@ -438,10 +438,13 @@ public class MoveController : MonoBehaviourPun
     private bool HaveOtherPlayer(Vector2 targetPos)
     {
         //get other player
+        Debug.Log($"PlayerM: {gameManager.PlayerM} + PlayerF: {gameManager.PlayerF}");
         if (gameManager.PlayerF == null || gameManager.PlayerM == null) return false;
         GameObject playerGO;
-        if (PhotonNetwork.OfflineMode == true || gameManager.PlayerM.GetComponent<Player>().ID == photonViewID) playerGO = gameManager.PlayerM;
+        //if gender F then other player GO is Male
+        if (PhotonNetwork.OfflineMode == true || PhotonNetwork.LocalPlayer.CustomProperties["Gender"].ToString() == "F") playerGO = gameManager.PlayerM;
         else playerGO = gameManager.PlayerF;
+        Debug.Log($"PlayerGO: {playerGO}");
         Player targetPlayer = playerGO.GetComponent<Player>();
         return ((Vector2)targetPlayer.transform.position == targetPos || targetPlayer.TargetPosition == targetPos);
     }
