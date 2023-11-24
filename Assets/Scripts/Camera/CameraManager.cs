@@ -42,9 +42,9 @@ public class CameraManager : MonoBehaviour
     }
 
     public void SetupCamera(string mode){
-        /*Mode C: Change Camera ("Focus to player" or "The whole map")*/
-        /*Mode S: Switch Camera (Switch to other player)*/
-        if(mode == "C" && myCamera != null){
+        /*Mode Space: Change Camera ("Focus to player" or "The whole map")*/
+        /*Mode Follow: Hold Camera (focus to other player)*/
+        if(mode == "Space" && myCamera != null){
             if (IsCameraTargetPlayer)
             {
                 currentCamera = myCamera;
@@ -61,7 +61,7 @@ public class CameraManager : MonoBehaviour
                 myCamera.enabled = false;
                 if(otherCamera != null) otherCamera.enabled = false;
             }
-        } else if (mode == "X" && myCamera != null && otherCamera != null) {
+        } else if (mode == "Follow" && myCamera != null && otherCamera != null) {
             if (IsCameraTargetOtherPlayer)
             {
                 currentCamera = otherCamera;
@@ -89,13 +89,13 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.C)){
+        if(Input.GetKeyDown(KeyCode.Space)){
             IsCameraTargetPlayer = !IsCameraTargetPlayer;
-            SetupCamera("C");
+            SetupCamera("Space");
         }
-        if(Input.GetKeyDown(KeyCode.X)){
+        if(Input.GetKeyDown(KeyCode.F)){
             IsCameraTargetOtherPlayer = !IsCameraTargetOtherPlayer;
-            SetupCamera("X");
+            SetupCamera("Follow");
         }
     }
 

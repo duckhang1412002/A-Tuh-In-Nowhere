@@ -75,10 +75,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
 
-        if(PlayerMapController.CurrentGameMode == "Single Mode" && SceneManager.GetActiveScene().name == "Game"){
+        if(SceneManager.GetActiveScene().name == "Game"){
             CameraManager.IsCameraTargetPlayer = true;
             CameraManager.IsCameraTargetOtherPlayer = false;
-            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("C");
+            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
         }
     }
 
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
             CameraManager.IsCameraTargetPlayer = true;
             CameraManager.IsCameraTargetOtherPlayer = false;
-            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("C");
+            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
         }
     }
 
