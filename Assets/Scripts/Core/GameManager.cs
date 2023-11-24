@@ -74,12 +74,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         } 
         StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
-
-        // if(SceneManager.GetActiveScene().name == "Game"){
-        //     CameraManager.IsCameraTargetPlayer = true;
-        //     CameraManager.IsCameraTargetOtherPlayer = false;
-        //     GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
-        // }
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -684,7 +678,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameObject.Find("UIManager").GetComponent<UIManager>().SetupResultUI(PlayerMapController.CurrentGameMode, PlayerMapController.MapID, PlayerMapController.RestartNumber);         
         }
 
-        if(PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Co-op" && PlayerM != null && PlayerF != null && !isUpdatedOtherCamera){
+        if(PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Co-op" && PlayerM != null && PlayerF != null && !isUpdatedOtherCamera){
             isUpdatedOtherCamera = true;
 
             if(PlayerM.GetComponent<MoveController>().enabled && PlayerF.GetComponent<MoveController>().enabled){

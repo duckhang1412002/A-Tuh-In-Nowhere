@@ -93,6 +93,7 @@ public class CameraManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space)){
             IsCameraTargetPlayer = !IsCameraTargetPlayer;
+            SetupCamera("Space");
         }
         if(Input.GetKey(KeyCode.F)){
             IsCameraTargetOtherPlayer = true;
