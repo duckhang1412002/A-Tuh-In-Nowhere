@@ -18,6 +18,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Canvas resultUI;
     [SerializeField] private Canvas vsResultUI;
     [SerializeField] private Canvas mainUI;
+    [SerializeField] private Canvas chatUI;
 
 
     // Start is called before the first frame update
@@ -82,6 +83,7 @@ public class CameraManager : MonoBehaviour
         pauseUI.worldCamera = currentCamera;
         resultUI.worldCamera = currentCamera;
         vsResultUI.worldCamera = currentCamera;
+        chatUI.worldCamera = currentCamera;
     }
 
     // Update is called once per frame
