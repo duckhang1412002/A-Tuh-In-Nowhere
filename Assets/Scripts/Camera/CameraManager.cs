@@ -32,6 +32,8 @@ public class CameraManager : MonoBehaviour
 
         if(myObj != null)
             myCamera = myObj.transform.Find("Camera").GetComponent<Camera>();
+
+        if(myObj != null) Debug.Log("CAMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-----" + myObj.name);
     }
 
     public void InitOtherCamera(GameObject otherObj){

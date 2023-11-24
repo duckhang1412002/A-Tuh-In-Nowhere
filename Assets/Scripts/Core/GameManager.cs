@@ -75,11 +75,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartDownloadOnClients();
         Debug.Log("Ping: " + PhotonNetwork.GetPing() + "ms");
 
-        if(SceneManager.GetActiveScene().name == "Game"){
-            CameraManager.IsCameraTargetPlayer = true;
-            CameraManager.IsCameraTargetOtherPlayer = false;
-            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
-        }
+        // if(SceneManager.GetActiveScene().name == "Game"){
+        //     CameraManager.IsCameraTargetPlayer = true;
+        //     CameraManager.IsCameraTargetOtherPlayer = false;
+        //     GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
+        // }
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
@@ -92,17 +92,17 @@ public class GameManager : MonoBehaviourPunCallbacks
             view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
 
             /*Init my camera and other camera*/
-            if(SceneManager.GetActiveScene().name == "Game"){
-                if(PlayerM.GetComponent<MoveController>().enabled){
-                    if(PlayerF != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerF);
-                } else {
-                    if(PlayerM != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerM);
-                }
-            }
+            // if(SceneManager.GetActiveScene().name == "Game"){
+            //     if(PlayerM.GetComponent<MoveController>().enabled){
+            //         if(PlayerF != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerF);
+            //     } else {
+            //         if(PlayerM != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerM);
+            //     }
+            // }
 
-            CameraManager.IsCameraTargetPlayer = true;
-            CameraManager.IsCameraTargetOtherPlayer = false;
-            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
+            // CameraManager.IsCameraTargetPlayer = true;
+            // CameraManager.IsCameraTargetOtherPlayer = false;
+            // GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
         }
     }
 
@@ -200,6 +200,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
         PlayerM = InstantiatePlayerM(playerID, x, y);
         GameObject.Find("CameraManager").GetComponent<CameraManager>().InitMyCamera(PlayerM);
+        CameraManager.IsCameraTargetPlayer = true;
+        CameraManager.IsCameraTargetOtherPlayer = false;
+        GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
         Debug.Log("Instantiated M");
         PlayerM.GetComponent<Player>().ID = playerID;
 
@@ -221,6 +224,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
         PlayerF = InstantiatePlayerF(playerID, x, y);
         GameObject.Find("CameraManager").GetComponent<CameraManager>().InitMyCamera(PlayerF);
+        CameraManager.IsCameraTargetPlayer = true;
+        CameraManager.IsCameraTargetOtherPlayer = false;
+        GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
         Debug.Log("Instantiated F");
         PlayerF.GetComponent<Player>().ID = playerID;
 
