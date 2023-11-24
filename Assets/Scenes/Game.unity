@@ -9336,8 +9336,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spacing: {x: 0, y: -75}
+  btn_ChatMenu: {fileID: 1981262518}
   chatMessages: []
-  mainBtnPos: {x: 0, y: 0}
+  btn_ChatMenuPos: {x: 0, y: 0}
   otherChatMessage: {fileID: 777649294}
   messagePU: {fileID: 1272090917}
   otherAvatar: {fileID: 450873347}

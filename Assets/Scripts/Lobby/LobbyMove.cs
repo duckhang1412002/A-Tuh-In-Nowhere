@@ -317,6 +317,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         cutScene_1.enabled = false;
         isPauseGame = false;
 
+        StartCoroutine(ShowNotification("Multiplayer Mode is unlocked!"));
+
         //TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
         //txt_charMessage.text = "Multiplayer Mode is unlocked!";
     }
@@ -341,8 +343,19 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         cutScene_2.enabled = false;
         isPauseGame = false;
 
+        StartCoroutine(ShowNotification("Creative Mode is unlocked!"));
+
        // TextMeshProUGUI txt_charMessage = GameObject.Find("Txt_CharMessage").GetComponent<TextMeshProUGUI>();
         //txt_charMessage.text = "Creative Mode is unlocked!";
+    }
+
+    private IEnumerator ShowNotification(string content){
+        GameObject notificationBoard = GameObject.Find("PlayerM").transform.Find("CharCanvas").gameObject;
+        notificationBoard.SetActive(true);
+        notificationBoard.transform.Find("CharBoard/Txt_CharMessage").GetComponent<TextMeshProUGUI>().text = content;
+
+        yield return new WaitForSeconds(3f);
+        notificationBoard.SetActive(false);
     }
 
     private GameObject GetItemAtPosition(Vector2 pos)

@@ -46,7 +46,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
             playerM_Init_YPos = 1;
             playerF_Init_XPos = -28;
             playerF_Init_YPos = 1;
-             GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupMultiplayerCamera(0, 0, "Versus");
+            GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupMultiplayerCamera(0, 0, "Versus");
         }
 
         if (PhotonNetwork.IsMasterClient)

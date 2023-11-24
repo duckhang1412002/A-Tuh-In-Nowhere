@@ -118,6 +118,7 @@ public class CameraManager : MonoBehaviour
         } else {
             activeCam = GameObject.Find("Camera_Versus").GetComponent<Camera>();
             deActiveCam = GameObject.Find("Camera_Coop_1").GetComponent<Camera>();
+            GameObject.Find("Canvas_Screen").GetComponent<Canvas>().worldCamera = activeCam;
         }
 
         activeCam.enabled = true;
