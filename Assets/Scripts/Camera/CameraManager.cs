@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraManager : MonoBehaviour
 {
@@ -32,8 +33,6 @@ public class CameraManager : MonoBehaviour
 
         if(myObj != null)
             myCamera = myObj.transform.Find("Camera").GetComponent<Camera>();
-
-        if(myObj != null) Debug.Log("CAMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-----" + myObj.name);
     }
 
     public void InitOtherCamera(GameObject otherObj){
@@ -44,6 +43,7 @@ public class CameraManager : MonoBehaviour
     }
 
     public void SetupCamera(string mode){
+        if(SceneManager.GetActiveScene().name != "Game") return;
         /*Mode Space: Change Camera ("Focus to player" or "The whole map")*/
         /*Mode Follow: Hold Camera (focus to other player)*/
         if(mode == "Space" && myCamera != null){
@@ -93,11 +93,17 @@ public class CameraManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space)){
             IsCameraTargetPlayer = !IsCameraTargetPlayer;
-            SetupCamera("Space");
         }
-        if(Input.GetKeyDown(KeyCode.F)){
-            IsCameraTargetOtherPlayer = !IsCameraTargetOtherPlayer;
+        if(Input.GetKey(KeyCode.F)){
+            IsCameraTargetOtherPlayer = true;
             SetupCamera("Follow");
+        } else {
+            if(!IsCameraTargetPlayer){
+                SetupCamera("Space");
+            } else {
+                IsCameraTargetOtherPlayer = false;
+                SetupCamera("Follow");
+            }
         }
     }
 
