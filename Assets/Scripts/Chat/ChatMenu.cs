@@ -26,7 +26,7 @@ public class ChatMenu : MonoBehaviourPun
         for (int i = 0; i < itemCnt; i++) {
             chatMessages[i] = transform.GetChild(i + 1).GetComponent<ChatMessage>();
         }
-        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM"))
+        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") || PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
         {
             btn_ChatMenu.gameObject.SetActive(false);
         }

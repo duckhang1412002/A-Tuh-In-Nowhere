@@ -181,8 +181,9 @@ public class PlayerMapController : MonoBehaviour
                     randomCreativeMaps = GameObject.Find("MapController").GetComponent<MapController>().CreativeMapList;
 
                     System.Random random = new System.Random();
-                    int randomCreativeMapIndex = random.Next(0, randomCreativeMaps.Count-1);
+                    int randomCreativeMapIndex = random.Next(0, randomCreativeMaps.Count);
                     MapID = randomCreativeMaps[randomCreativeMapIndex].MapID;
+
                     GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().SetMapIDVersusMode(MapID);
                 }
                 
