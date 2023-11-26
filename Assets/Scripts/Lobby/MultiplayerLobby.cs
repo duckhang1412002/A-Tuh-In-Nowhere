@@ -121,16 +121,21 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     }
 
     
+    /*check if someone out the room, all player will be disconnected*/
     public override void OnPlayerLeftRoom(Photon.Realtime.Player p)
     {
-         if (p.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.Disconnect();
-            }
+            PhotonNetwork.Disconnect();
         }
     }
+
+
+    /*check if the host out the room, all player will be disconnected*/
+    // public override void OnMasterClientSwitched(Photon.Realtime.Player p)
+    // {
+    //     PhotonNetwork.Disconnect();
+    // }
 
 
     private GameObject PhotonInstantiate(GameObject prefab, int x, int y)
