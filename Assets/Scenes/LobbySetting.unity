@@ -2059,7 +2059,6 @@ GameObject:
   m_Component:
   - component: {fileID: 277933723}
   - component: {fileID: 277933722}
-  - component: {fileID: 277933721}
   - component: {fileID: 277933720}
   - component: {fileID: 277933719}
   - component: {fileID: 277933718}
@@ -2114,14 +2113,6 @@ Skybox:
   m_GameObject: {fileID: 277933717}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 0}
---- !u!81 &277933721
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277933717}
-  m_Enabled: 0
 --- !u!20 &277933722
 Camera:
   m_ObjectHideFlags: 0

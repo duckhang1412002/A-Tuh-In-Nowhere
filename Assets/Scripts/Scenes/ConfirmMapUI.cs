@@ -20,6 +20,10 @@ public class ConfirmMapUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI txt_MapStatus;
 
     public void SetupNavigateButton(){
+        btn_Next.gameObject.SetActive(false);
+        btn_Prev.gameObject.SetActive(false);
+        return;
+
         btn_Next.GetComponent<Button>().interactable = true;
         btn_Prev.GetComponent<Button>().interactable = true;
 
