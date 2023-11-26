@@ -291,25 +291,20 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         }
         else if (name == "")
         {
-            msgErrorPopup.ShowErrorPopup("The nickname is empty! ");
+            msgErrorPopup.ShowErrorPopup("Nickname field is empty! ");
             yield break;
         }
         else if (!CheckNicknameAvailability(name, accounts))
         {
-            msgErrorPopup.ShowErrorPopup("Nickname is already taken! ");
+            msgErrorPopup.ShowErrorPopup("Nickname is already in use! ");
             yield break;
         }
         else if (passwordRegisterField.text.Length < 6)
         {
-            msgErrorPopup.ShowErrorPopup("Password must have more than 6 character! ");
+            msgErrorPopup.ShowErrorPopup("Password must have more than 5 character! ");
             yield break;
         }
         else if (passwordRegisterField.text != confirmPasswordRegisterField.text)
-        {
-            msgErrorPopup.ShowErrorPopup("Password does not match! ");
-            yield break;
-        }
-        else if (confirmPasswordRegisterField.text != confirmPasswordRegisterField.text)
         {
             msgErrorPopup.ShowErrorPopup("Password does not match! ");
             yield break;
@@ -335,7 +330,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                     break;
                 case AuthError.WrongPassword:
                     failedMessage += "Wrong Password";
-                    msgErrorPopup.ShowErrorPopup("Password must be longer than 6 characters! ");
+                    msgErrorPopup.ShowErrorPopup("Password is wrong! ");
                     break;
                 case AuthError.MissingEmail:
                     failedMessage += "Email is missing";
@@ -350,7 +345,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                     msgErrorPopup.ShowErrorPopup("Email already in used! ");
                     break;
                 default:
-                    msgErrorPopup.ShowErrorPopup("Password must be more than 6 characters! ");
+                    msgErrorPopup.ShowErrorPopup("Password must be more than 5 characters! ");
                     break;
             }
         }
@@ -385,7 +380,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                         break;
                     case AuthError.WrongPassword:
                         failedMessage += "Wrong Password";
-                        msgErrorPopup.ShowErrorPopup("Password must be longer than 6 characters! ");
+                        msgErrorPopup.ShowErrorPopup("Password must be more than 5 characters! ");
                         break;
                     case AuthError.MissingEmail:
                         failedMessage += "Email is missing";
@@ -400,7 +395,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                         msgErrorPopup.ShowErrorPopup("Email Already In Use! ");
                         break;
                     default:
-                        msgErrorPopup.ShowErrorPopup("Password must be more than 6 characters! ");
+                        msgErrorPopup.ShowErrorPopup("Password must be more than 5 characters! ");
                         break;
                 }
             }
