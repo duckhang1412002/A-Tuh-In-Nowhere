@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_vsresult_playerName;
     [SerializeField] private TextMeshProUGUI txt_vsresult_levelName;
     [SerializeField] private TextMeshProUGUI txt_vsresult_stepCount;
+    [SerializeField] private Button btn_vsresult_back;
     private PlayerMapAuthentication playerMapAuthentication;
 
     public void ToggleUI(GameObject UI){
@@ -78,6 +79,7 @@ public class UIManager : MonoBehaviour
         {
             vsPlayerF.SetActive(true);
             vsPlayerM.SetActive(false);
+            btn_vsresult_back.GetComponent<Button>().interactable = false;
         } else
         {
             vsPlayerM.SetActive(true);

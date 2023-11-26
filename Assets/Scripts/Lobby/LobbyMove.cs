@@ -43,7 +43,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         player = this.gameObject.GetComponent<Player>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         playerMapController = GameObject.Find("PlayerMapController");
-        if(SceneManager.GetActiveScene().name == "SingleLobby"){
+        if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby" ){
             if(PlayerMapController.MapID != -1){
                 player.DefaultZAxis = 6f;
                 player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
@@ -272,6 +272,16 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
                         PositionBeforePlay = player.PreviousPosition;
                         PositionPlayMap = player.CurrentPosition;   
+
+                        /*Setup position for multiplayer mode when chosing previous play map >:*/
+                        if(this.gameObject.name == "PlayerM(Clone)"){
+                            MultiplayerLobby.playerM_Init_XPos = (int)PositionBeforePlay.x;
+                            MultiplayerLobby.playerM_Init_YPos = (int)PositionBeforePlay.y;
+                        } else {
+                            MultiplayerLobby.playerF_Init_XPos = (int)PositionBeforePlay.x;
+                            MultiplayerLobby.playerF_Init_YPos = (int)PositionBeforePlay.y;
+                        }
+
                     }  else if(item.name.Contains("GameObj_Info_VSMap")) {
                         PlayerMapController.MapID = 0;
                         PlayerMapController.RestartNumber = -1;
@@ -282,7 +292,16 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
 
                         PositionBeforePlay = player.PreviousPosition;
-                        PositionPlayMap = player.CurrentPosition;   
+                        PositionPlayMap = player.CurrentPosition;
+
+                        /*Setup position for multiplayer mode when chosing previous play map >:*/
+                        if(this.gameObject.name == "PlayerM(Clone)"){
+                            MultiplayerLobby.playerM_Init_XPos = (int)PositionBeforePlay.x;
+                            MultiplayerLobby.playerM_Init_YPos = (int)PositionBeforePlay.y;
+                        } else {
+                            MultiplayerLobby.playerF_Init_XPos = (int)PositionBeforePlay.x;
+                            MultiplayerLobby.playerF_Init_YPos = (int)PositionBeforePlay.y;
+                        }
                     }
                 }
             }

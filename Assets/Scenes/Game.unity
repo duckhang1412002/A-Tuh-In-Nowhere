@@ -1694,6 +1694,7 @@ MonoBehaviour:
   txt_vsresult_playerName: {fileID: 0}
   txt_vsresult_levelName: {fileID: 0}
   txt_vsresult_stepCount: {fileID: 0}
+  btn_vsresult_back: {fileID: 0}
 --- !u!114 &290581679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8718,6 +8719,7 @@ MonoBehaviour:
   txt_vsresult_playerName: {fileID: 583590965}
   txt_vsresult_levelName: {fileID: 1358127893}
   txt_vsresult_stepCount: {fileID: 1211007279}
+  btn_vsresult_back: {fileID: 881161539}
 --- !u!4 &1811214677
 Transform:
   m_ObjectHideFlags: 0

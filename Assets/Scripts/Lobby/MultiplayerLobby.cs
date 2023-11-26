@@ -23,6 +23,11 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     [HideInInspector]
     public int CurrentChosingMap;
     public string PlayGameMode{get; set;}
+    public static int playerM_Init_XPos = 0;
+    public static int playerM_Init_YPos = 0;
+    public static int playerF_Init_XPos = 0;
+    public static int playerF_Init_YPos = 0;
+    public static bool isFirstTimeJoinRoom = true;
     void Start()
     {
         IsReadyToStartTheMap = false;
@@ -32,22 +37,21 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         roomName.text = PhotonNetwork.CurrentRoom.Name + " - GM : " + PlayGameMode;
         Debug.Log($"Public room ?: {PhotonNetwork.CurrentRoom.IsVisible}");
 
-        int playerM_Init_XPos = 0;
-        int playerM_Init_YPos = 0;
-        int playerF_Init_XPos = 0;
-        int playerF_Init_YPos = 0;
-
-        if(PlayGameMode == "Co-op"){
+        if(PlayGameMode == "Co-op" && isFirstTimeJoinRoom){
             playerM_Init_XPos = -3;
             playerM_Init_YPos = -4;
             playerF_Init_XPos = -1;
             playerF_Init_YPos = -4;
-        } else{
-            playerM_Init_XPos = -32;
-            playerM_Init_YPos = 1;
-            playerF_Init_XPos = -28;
-            playerF_Init_YPos = 1;
+            isFirstTimeJoinRoom = false;
+        } else if (PlayGameMode == "VS"){
             GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupMultiplayerCamera(0, 0, "Versus");
+            if(isFirstTimeJoinRoom){
+                playerM_Init_XPos = -32;
+                playerM_Init_YPos = 1;
+                playerF_Init_XPos = -28;
+                playerF_Init_YPos = 1;
+                isFirstTimeJoinRoom = false;
+            }
         }
 
         if (PhotonNetwork.IsMasterClient)
@@ -122,6 +126,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         // Handle leaving the room, e.g., load lobby scene
+        isFirstTimeJoinRoom = true;
         PhotonNetwork.LoadLevel("Loading");
     }
 
