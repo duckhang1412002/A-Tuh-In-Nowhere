@@ -191,18 +191,8 @@ public class PlayerMapController : MonoBehaviour
             }
 
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;
-            //Debug.Log("2 btn: " + PlayBtn + " " + BackBtn);
-            //PlayBtn.GetComponent<Button>().interactable = false; //error here !!!
-            //BackBtn.interactable = false;
-/*            if (PhotonNetwork.IsMasterClient)
-            {
-                PlayBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Waiting for others";
-            }*/
+
             MultiplayerConfirmMap();
-
-
-            // PhotonNetwork.OfflineMode = false;
-            // PhotonNetwork.CreateRoom("multi", new RoomOptions(), TypedLobby.Default);
         }
     }
 

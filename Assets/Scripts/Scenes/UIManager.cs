@@ -56,6 +56,10 @@ public class UIManager : MonoBehaviour
         confirmMapUI.SetActive(false);
     }
 
+    public bool CheckActiveConfirmMapUI(){
+        return confirmMapUI.activeSelf;
+    }
+
     public void SetupResultUI(string txt_mode, int txt_level, int txt_restart){
         txt_result_mode.text = txt_mode;
         txt_result_level.text = "Level " + txt_level;

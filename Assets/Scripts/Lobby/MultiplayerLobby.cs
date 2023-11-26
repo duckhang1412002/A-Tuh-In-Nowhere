@@ -80,7 +80,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         //InputManager.fileName = 101 + ".txt"; //map 100 for multiple 1 instead for choosingMap;
         Debug.Log(mineIsReady + " " + mineMapRole + " " + mineCurrentChosingMap + " viewID: " + photonView.ViewID);
 
-        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.OthersBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
+        photonView.RPC("Pun_CheckBeforeStartTheMap", RpcTarget.AllBuffered, IsReadyToStartTheMap, MapRole, CurrentChosingMap);
         PhotonNetwork.LocalPlayer.CustomProperties[$"Gender"] = MapRole;
         if (PlayGameMode == "VS")
             PhotonNetwork.LocalPlayer.CustomProperties["GM"] = "Versus";
@@ -90,10 +90,15 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     [PunRPC]
     void Pun_CheckBeforeStartTheMap(bool otherIsReady, string otherMapRole, int otherCurrentChosingMap){
-        if (!PhotonNetwork.IsMasterClient)
-        {
+        if(!GameObject.Find("UIManager").GetComponent<UIManager>().CheckActiveConfirmMapUI()) return;
+
+        if(PhotonNetwork.IsMasterClient){
+            playBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Waiting for others";
+            playBtn.interactable = false;
+        } else {
             playBtn.interactable = true;
         }
+
         if (otherIsReady && IsReadyToStartTheMap){
             if(otherMapRole != MapRole && otherCurrentChosingMap == CurrentChosingMap){
                 Debug.Log("Validate BEFORE JOIN MAP SUCCESSFULLY");

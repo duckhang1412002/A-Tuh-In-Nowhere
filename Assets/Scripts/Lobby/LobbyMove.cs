@@ -209,30 +209,28 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             // }
             GameObject item = GetItemAtPosition((Vector2)player.transform.position);
 
-            if(item.name.Contains("Info")){
-                if(SceneManager.GetActiveScene().name == "GameMode"){
-                    if(item.name.Contains("Sing")){
-                        canvas_board_idle.enabled = false;
-                        canvas_board_sing.enabled = true;
-                        canvas_board_mult.enabled = false;
-                        canvas_board_prof.enabled = false;
-                    } else if(item.name.Contains("Mult")){
-                        canvas_board_idle.enabled = false;
-                        canvas_board_sing.enabled = false;
-                        canvas_board_mult.enabled = true;
-                        canvas_board_prof.enabled = false;
-                    } else if(item.name.Contains("Crea")){
-                        canvas_board_idle.enabled = false;
-                        canvas_board_sing.enabled = false;
-                        canvas_board_mult.enabled = false;
-                        canvas_board_prof.enabled = true;
-                    } else if(item.name.Contains("Prof")){
-                        canvas_board_idle.enabled = false;
-                        canvas_board_sing.enabled = false;
-                        canvas_board_mult.enabled = false;
-                        canvas_board_prof.enabled = true;
-                    }
-                }     
+            if(SceneManager.GetActiveScene().name == "GameMode" && item.name.Contains("Info")){
+                if(item.name.Contains("Sing")){
+                    canvas_board_idle.enabled = false;
+                    canvas_board_sing.enabled = true;
+                    canvas_board_mult.enabled = false;
+                    canvas_board_prof.enabled = false;
+                } else if(item.name.Contains("Mult")){
+                    canvas_board_idle.enabled = false;
+                    canvas_board_sing.enabled = false;
+                    canvas_board_mult.enabled = true;
+                    canvas_board_prof.enabled = false;
+                } else if(item.name.Contains("Crea")){
+                    canvas_board_idle.enabled = false;
+                    canvas_board_sing.enabled = false;
+                    canvas_board_mult.enabled = false;
+                    canvas_board_prof.enabled = true;
+                } else if(item.name.Contains("Prof")){
+                    canvas_board_idle.enabled = false;
+                    canvas_board_sing.enabled = false;
+                    canvas_board_mult.enabled = false;
+                    canvas_board_prof.enabled = true;
+                } 
             }
 
             if(item.name.Contains("Entrance")){
@@ -369,6 +367,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     private bool IsPositionValid(Vector2 targetPos, Vector2 moveDirection)
     {
         GameObject item = GetItemAtPosition(targetPos);
+        if(item == null) return false;
         string itemTag = item.name;
         //Debug.Log(targetPos + " is a " + itemTag);
         //if found wire return false

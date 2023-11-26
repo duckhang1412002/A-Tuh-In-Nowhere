@@ -43,8 +43,10 @@ public class ConfirmMapUI : MonoBehaviour {
         if(!map.IsUnlocked){
             btn_Play.GetComponent<Button>().interactable = false;
         } else {
-            if (PhotonNetwork.IsMasterClient || SceneManager.GetActiveScene().name == "SingleLobby")
-            btn_Play.GetComponent<Button>().interactable = true;
+            if (PhotonNetwork.IsMasterClient || SceneManager.GetActiveScene().name == "SingleLobby"){
+                btn_Play.GetComponent<Button>().interactable = true;          
+                btn_Play.GetComponentInChildren<TextMeshProUGUI>().text = "Play";
+            }     
         }
 
         this.gameObject.SetActive(true);

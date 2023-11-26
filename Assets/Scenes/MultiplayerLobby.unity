@@ -6984,8 +6984,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a89affbecbc94299fcf25739d4073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backBtn: {fileID: 0}
-  playBtn: {fileID: 0}
+  backBtn: {fileID: 1219318022}
+  playBtn: {fileID: 786760647}
 --- !u!4 &758652004
 Transform:
   m_ObjectHideFlags: 0
@@ -17495,6 +17495,7 @@ MonoBehaviour:
   resultUI: {fileID: 0}
   vsResultUI: {fileID: 0}
   mainUI: {fileID: 0}
+  chatUI: {fileID: 0}
 --- !u!1001 &1862358392
 PrefabInstance:
   m_ObjectHideFlags: 0
