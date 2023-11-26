@@ -79,28 +79,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         //LoadMapInput();
-        if (PhotonNetwork.CurrentRoom.PlayerCount == 2) //set = 1 to debug one player
-        {
-            // //Debug.Log("ACESSSSSSSSSSSSSSSSSSSSSSSSS------ENTER" + PlayerM.GetComponent<MoveController>().enabled + "===" + PlayerF.GetComponent<MoveController>().enabled);
-            // //InitializeMap();
-            // //view.RPC("InitializeMapRPC", RpcTarget.All);
-            // view.RPC("ActiveStartBtn", RpcTarget.MasterClient, true);
-
-            // /*Init my camera and other camera*/
-            // if(SceneManager.GetActiveScene().name == "Game"){
-            //     if(PlayerM.GetComponent<MoveController>().enabled){
-            //         if(PlayerF != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerF);
-            //         if(PlayerF == null) Debug.Log("FFFFFFFFFFFFF------NULLLLLLLLLLLLLLL");
-            //     } else {
-            //         if(PlayerM != null) GameObject.Find("CameraManager").GetComponent<CameraManager>().InitOtherCamera(PlayerM);
-            //         if(PlayerM == null) Debug.Log("MMMMMMMMMMMMM------NULLLLLLLLLLLLLLL");
-            //     }
-            // }
-
-            // CameraManager.IsCameraTargetPlayer = true;
-            // CameraManager.IsCameraTargetOtherPlayer = false;
-            // GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupCamera("Space");
-        }
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player leftPlayer)
