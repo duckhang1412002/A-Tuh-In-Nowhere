@@ -38,14 +38,9 @@ public class ScenesManager : MonoBehaviour
             SceneManager.LoadScene("GameMode");
         }
         else if(SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-            PhotonNetwork.Disconnect();
-            SceneManager.LoadScene("Loading"); 
+            PhotonNetwork.LeaveRoom();
         }
         else if (SceneManager.GetActiveScene().name == "LobbySetting"){
-            PhotonNetwork.Disconnect();
-            SceneManager.LoadScene("GameMode");
-        }
-        else if(PlayerMapController.CurrentGameMode == "Multiplayer Mode"){
             PhotonNetwork.Disconnect();
             SceneManager.LoadScene("GameMode");
         }

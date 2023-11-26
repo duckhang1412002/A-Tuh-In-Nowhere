@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -113,13 +114,24 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         PlayerMapController.MapID = id;
     }
 
-    //other player join
-    public override void OnJoinedRoom()
+    public override void OnLeftRoom()
     {
-/*        myPlayer = PhotonInstantiate(playerPrefabF, 5, -4);
-        myPlayer.GetComponent<LobbyMove>().enabled = true;
-        photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);*/
+        // Handle leaving the room, e.g., load lobby scene
+        PhotonNetwork.LoadLevel("Loading");
     }
+
+    
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player p)
+    {
+         if (p.IsMasterClient)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Disconnect();
+            }
+        }
+    }
+
 
     private GameObject PhotonInstantiate(GameObject prefab, int x, int y)
     {

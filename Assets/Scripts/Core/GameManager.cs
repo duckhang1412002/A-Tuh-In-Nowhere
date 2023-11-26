@@ -678,7 +678,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            //Debug.Log("We won the game!");
             if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.LoadLevel("MultiplayerLobby");
             /*                view.RPC("CallScene", RpcTarget.All, "Loading");
