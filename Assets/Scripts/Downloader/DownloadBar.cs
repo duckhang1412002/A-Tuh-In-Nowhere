@@ -15,7 +15,7 @@ using Firebase.Extensions;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class ProgressBar : MonoBehaviour
+public class DownloadBar : MonoBehaviour
 {
     [SerializeField]
     private Slider slider;
@@ -58,6 +58,7 @@ public class ProgressBar : MonoBehaviour
         repairBtn.onClick.AddListener(Repair);
         //yesBtn.onClick.AddListener(AcceptDownload);
         // noBtn.onClick.AddListener(DenyDownload);
+        Debug.Log("Hi");
         StartCoroutine(VerifyData());
     }
 
@@ -162,7 +163,7 @@ public class ProgressBar : MonoBehaviour
                         if (File.Exists(path))
                         {
                             Debug.Log("Found the " + mapID + " file locally, Loading!!!");
-                            checkedFile+=2; //map txt and image
+                            checkedFile += 2; //map txt and image
                         }
                         else
                         {
@@ -188,7 +189,7 @@ public class ProgressBar : MonoBehaviour
         if (filesToDownload.Count > 0)
         {
             askText.text = "Downloading...";
-            foreach(var mapName in filesToDownload)
+            foreach (var mapName in filesToDownload)
             {
                 string urlMap = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{mapName}.txt?alt=media";
                 string fileMapPath = $"{Application.persistentDataPath}/Maps/{mapName}.txt";

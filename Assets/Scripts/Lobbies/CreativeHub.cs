@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class CreativeUI : MonoBehaviour
+public class CreativeHub : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
@@ -148,13 +148,16 @@ public class CreativeUI : MonoBehaviour
 
         playBtn.onClick.AddListener(() => LoadGameByID(map.MapID));
         mapName.text = map.MapName;
-        authorName.text = $"Made by ID: {map.AccountID}";
+        //authorName.text = $"Made by ID: {map.AccountID}";
+        authorName.text = $"Made by: {map.AccountName}";
         mapPopUp.SetActive(true);
     }
 
     private void LoadGameByID(int mapID)
     {
-        InputManager.fileName = mapID + ".txt";
+        PhotonNetwork.OfflineMode = true;
+        PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+        PhotonNetwork.LocalPlayer.CustomProperties["MapID"] = mapID;
         SceneManager.LoadScene("Game");
 
     }
@@ -192,13 +195,42 @@ public class CreativeUI : MonoBehaviour
                         {
                             Debug.Log("Creative map: " + _MapID);
                             //DuplicateObject(_MapID);
-                            creativeMaps.Add(new Map(_AccountID, int.Parse(_MapID), _MapName, _MapType, _Description, DateTime.Parse(_CreatedDate), DateTime.Parse(_CreatedDate), _IsDeleted));
+                            //creativeMaps.Add(new Map(_AccountID, int.Parse(_MapID), _MapName, _MapType, _Description, DateTime.Parse(_CreatedDate), DateTime.Parse(_CreatedDate), _IsDeleted));
+
+                            // Fetch AccountName for the given AccountID
+                            DatabaseReference accountRef = dataRef.Child("Account").Child(_AccountID.ToString());
+                            accountRef.GetValueAsync().ContinueWith(accountTask =>
+                            {
+                                if (accountTask.IsFaulted)
+                                {
+                                    Debug.LogError("Failed to read account data: " + accountTask.Exception);
+                                }
+                                else if (accountTask.IsCompleted)
+                                {
+                                    DataSnapshot accountSnapshot = accountTask.Result;
+
+                                    if (accountSnapshot != null && accountSnapshot.HasChildren)
+                                    {
+                                        string _AccountName = accountSnapshot.Child("Fullname").Value.ToString();
+
+                                        // Now you have both _MapID and _AccountName
+
+                                        creativeMaps.Add(new Map(_AccountID, _AccountName, int.Parse(_MapID), _MapName, _MapType, _Description, DateTime.Parse(_CreatedDate), DateTime.Parse(_CreatedDate), _IsDeleted));
+                                    }
+                                    else
+                                    {
+                                        Debug.Log("No account data found for AccountID: " + _AccountID);
+                                    }
+                                    // Set the data loaded flag to true
+                                    isDataLoaded = true;
+                                }
+                            });
 
                         }
                     }
 
                     // Set the data loaded flag to true
-                    isDataLoaded = true;
+                    //isDataLoaded = true;
                 }
                 else
                 {

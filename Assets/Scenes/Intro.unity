@@ -687,11 +687,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 636392643}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b30b932534ec5040b5ee372fcd529b2, type: 3}
+  m_Script: {fileID: 11500000, guid: 5c9ced4fd14ffa841a91e09a8265f355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 636392645}
-  fillSpeed: 0.5
+  fillSpeed: 0.75
   repairBtn: {fileID: 1792195802}
   yesBtn: {fileID: 1839194369}
   noBtn: {fileID: 440415320}

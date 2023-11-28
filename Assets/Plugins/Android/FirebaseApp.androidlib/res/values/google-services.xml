@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
-  <string name="firebase_database_url" translatable="false">https://atuhinnowhere-testing-default-rtdb.asia-southeast1.firebasedatabase.app/</string>
+  <string name="firebase_database_url" translatable="false">https://atuhinnowhere-testing-default-rtdb.asia-southeast1.firebasedatabase.app</string>
   <string name="gcm_defaultSenderId" translatable="false">1065060603749</string>
   <string name="google_storage_bucket" translatable="false">atuhinnowhere-testing.appspot.com</string>
   <string name="project_id" translatable="false">atuhinnowhere-testing</string>
   <string name="google_api_key" translatable="false">AIzaSyDVyzcD-0KonR1GOqwxxelrsuhuUoE8dEY</string>
   <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDVyzcD-0KonR1GOqwxxelrsuhuUoE8dEY</string>
   <string name="google_app_id" translatable="false">1:1065060603749:android:6e8c1afb128f3f42c9b38c</string>
-  <string name="default_web_client_id" translatable="false">1065060603749-3p5uot9c1etjr4sbgohnneqvm7dd1ml1.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">1065060603749-3uqv6s623j8pjdn2amplbg362qpndcsn.apps.googleusercontent.com</string>
 </resources>
