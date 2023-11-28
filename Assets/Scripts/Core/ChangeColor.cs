@@ -12,7 +12,8 @@ public class ChangeColor : MonoBehaviour
     private Color COLOR_RED = new Color(Divider(255f), Divider(0f), Divider(0), 1);
     private Color COLOR_GREEN = new Color(Divider(0), Divider(255f), Divider(0), 1);
     private Color COLOR_BLUE = new Color(Divider(0f), Divider(0f), Divider(255f), 1);
-    private Color COLOR_PINK = new Color(Divider(255f), Divider(0f), Divider(175f), 1);
+    private Color COLOR_LOTUS = new Color(Divider(255f), Divider(0f), Divider(175f), 1);
+    private Color COLOR_PINK = new Color(Divider(255f), Divider(130f), Divider(180f), 1);
     private Color COLOR_PURPLE = new Color(Divider(180f), Divider(0f), Divider(255f), 1);
     private Color COLOR_YELLOW = new Color(Divider(255f), Divider(255f), Divider(0), 1);
     private Color COLOR_ORANGE = new Color(Divider(255f), Divider(128f), Divider(0), 1);
@@ -34,6 +35,7 @@ public class ChangeColor : MonoBehaviour
         colorConvertMap["Green"] = COLOR_GREEN;
         colorConvertMap["Blue"] = COLOR_BLUE;
         colorConvertMap["Pink"] = COLOR_PINK;
+        colorConvertMap["Lotus"] = COLOR_LOTUS;
         colorConvertMap["Purple"] = COLOR_PURPLE;
         colorConvertMap["Yellow"] = COLOR_YELLOW;
         colorConvertMap["Orange"] = COLOR_ORANGE;
@@ -52,6 +54,7 @@ public class ChangeColor : MonoBehaviour
         colorConvertMap["Green"] = COLOR_GREEN;
         colorConvertMap["Blue"] = COLOR_BLUE;
         colorConvertMap["Pink"] = COLOR_PINK;
+        colorConvertMap["Lotus"] = COLOR_LOTUS;
         colorConvertMap["Purple"] = COLOR_PURPLE;
         colorConvertMap["Yellow"] = COLOR_YELLOW;
         colorConvertMap["Orange"] = COLOR_ORANGE;

@@ -7,11 +7,12 @@ using UnityEngine.UI;
 public class ChatMenu : MonoBehaviourPun
 {
     public Vector2 spacing;
-    Button mainBtn;
+    
+    [SerializeField] private Button btn_ChatMenu;
     public ChatMessage[] chatMessages;
     bool isExpand = false;
 
-    public Vector2 mainBtnPos;
+    public Vector2 btn_ChatMenuPos;
     int itemCnt;
 
     public Text otherChatMessage;
@@ -25,23 +26,26 @@ public class ChatMenu : MonoBehaviourPun
         for (int i = 0; i < itemCnt; i++) {
             chatMessages[i] = transform.GetChild(i + 1).GetComponent<ChatMessage>();
         }
+        if (!PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") || PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
+        {
+            btn_ChatMenu.gameObject.SetActive(false);
+        }
 
-        mainBtn = transform.GetChild(0).GetComponent<Button>();
-        mainBtn.onClick.AddListener(ToggleMenu);
-        mainBtn.transform.SetAsLastSibling();
+        btn_ChatMenu.onClick.AddListener(ToggleMenu);
+        btn_ChatMenu.transform.SetAsLastSibling();
 
-        mainBtnPos = mainBtn.GetComponent<RectTransform>().anchoredPosition;
+        btn_ChatMenuPos = btn_ChatMenu.GetComponent<RectTransform>().anchoredPosition;
 
         ResetPosition();
 
-        mainBtnPos.y -= 25;
+        btn_ChatMenuPos.y -= 25;
     }
 
     private void ResetPosition()
     {
         for (int i = 0; i < itemCnt; i++)
         {
-            chatMessages[i].rectTrans.anchoredPosition = mainBtnPos;
+            chatMessages[i].rectTrans.anchoredPosition = btn_ChatMenuPos;
             chatMessages[i].gameObject.SetActive(false);
         }
     }
@@ -54,7 +58,7 @@ public class ChatMenu : MonoBehaviourPun
         {
             for (int i = 0; i < itemCnt; ++i)
             {
-                chatMessages[i].rectTrans.anchoredPosition = mainBtnPos + spacing * (i+1);
+                chatMessages[i].rectTrans.anchoredPosition = btn_ChatMenuPos + spacing * (i+1);
                 chatMessages[i].gameObject.SetActive(true);
             }
         } else
@@ -88,6 +92,6 @@ public class ChatMenu : MonoBehaviourPun
 
     private void OnDestroy()
     {
-        mainBtn.onClick.RemoveListener(ToggleMenu);
+        btn_ChatMenu.onClick.RemoveListener(ToggleMenu);
     }
 }
