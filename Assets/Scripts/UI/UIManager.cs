@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_pause_player;
     [SerializeField] private TextMeshProUGUI txt_pause_restart;
     [SerializeField] private Button restartBtn;
+    [SerializeField] private Button btn_exit;
 
 
     [Space]
@@ -79,12 +80,15 @@ public class UIManager : MonoBehaviour
         {
             vsPlayerF.SetActive(true);
             vsPlayerM.SetActive(false);
-            btn_vsresult_back.GetComponent<Button>().interactable = false;
         } else
         {
             vsPlayerM.SetActive(true);
             vsPlayerF.SetActive(false);
         }
+        if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+            btn_vsresult_back.interactable = false;
+        }
+
         VSresultUI.SetActive(true);
     }
 
@@ -101,8 +105,12 @@ public class UIManager : MonoBehaviour
             if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")
             {
                 TextMeshProUGUI btnText = restartBtn.GetComponentInChildren<TextMeshProUGUI>();
-                btnText.text = "Surrender";
+                btnText.text = "SURRENDER";
                 restartBtn.interactable = true;
+            }
+            if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+                btn_vsresult_back.interactable = false;
+                btn_exit.interactable = false;
             }
 
         } else if(SceneManager.GetActiveScene().name == "GameMode") {

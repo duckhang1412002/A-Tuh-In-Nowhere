@@ -1682,6 +1682,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
   restartBtn: {fileID: 0}
+  btn_exit: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
@@ -8707,6 +8708,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 2105024311}
   txt_pause_restart: {fileID: 2065223628}
   restartBtn: {fileID: 506388117}
+  btn_exit: {fileID: 64406017}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 1510569762}
   txt_result_mode: {fileID: 697649246}
