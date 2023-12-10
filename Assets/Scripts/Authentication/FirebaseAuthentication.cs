@@ -301,7 +301,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         }
         else if (passwordRegisterField.text.Length < 6)
         {
-            msgErrorPopup.ShowErrorPopup("Password must have more than 5 character! ");
+            msgErrorPopup.ShowErrorPopup("Password must have more than 6 characters! ");
             yield break;
         }
         else if (passwordRegisterField.text != confirmPasswordRegisterField.text)
@@ -345,7 +345,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
                     msgErrorPopup.ShowErrorPopup("Email already in used! ");
                     break;
                 default:
-                    msgErrorPopup.ShowErrorPopup("Password must be more than 5 characters! ");
+                    msgErrorPopup.ShowErrorPopup("Password must have more than 6 characters! ");
                     break;
             }
         }
