@@ -627,7 +627,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         //GameOverUI.SetActive(false);
         if (Input.GetKeyDown(KeyCode.R))
         {
-            ReloadScene();
+            if (PhotonNetwork.IsMasterClient)
+                ReloadScene();
         }
 
         if (PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("GM") && PhotonNetwork.LocalPlayer.CustomProperties["GM"].ToString() == "Versus")

@@ -82,8 +82,6 @@ public class CreativeHub : MonoBehaviour
         // Instantiate a new copy of the object
         GameObject newObject = Instantiate(mapItem);
 
-        Debug.Log("Duplicate: " + newObject);
-
         // Set the new object's parent to the specified parentTransform
         newObject.transform.parent = parentTransform;
 
@@ -117,6 +115,7 @@ public class CreativeHub : MonoBehaviour
         newObject.GetComponent<Button>().onClick.AddListener(() => showMapInfo(map));
         newObject.gameObject.SetActive(true);
         mapItemList.Add(map, newObject);
+        Debug.Log("Render map: " + map.MapID);
     }
 
     private void hideMapInfo()
@@ -241,8 +240,9 @@ public class CreativeHub : MonoBehaviour
 
         yield return new WaitUntil(() => isDataLoaded);
         Debug.Log("All creative maps");
-        foreach (Map map in creativeMaps)
+        for (int i = 0; i <  creativeMaps.Count; ++i)
         {
+            Map map = creativeMaps[i];
             DuplicateObject(map);
         }
         //Destroy(mapItem); //destroy the prototype
