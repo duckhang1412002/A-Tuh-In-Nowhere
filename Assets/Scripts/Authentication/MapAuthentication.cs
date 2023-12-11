@@ -97,19 +97,19 @@ public class MapAuthentication : MonoBehaviourPunCallbacks
 
     public async Task<List<Map>> GetSingleMapList(){
         List<Map> mapList = await GetMapList(accountsRef);
-        List<Map> singleMapList = mapList.Where(m => m.MapType == "single").ToList();
+        List<Map> singleMapList = mapList.Where(m => m.MapType == "Single").ToList();
         return singleMapList;
     }
 
     public async Task<List<Map>> GetMultiplayerMapList(){
         List<Map> mapList = await GetMapList(accountsRef);
-        List<Map> multiplayerMapList = mapList.Where(m => m.MapType == "multiple").ToList();
+        List<Map> multiplayerMapList = mapList.Where(m => m.MapType == "Multiple").ToList();
         return multiplayerMapList;
     }
 
     public async Task<List<Map>> GetCreativeMapList(){
         List<Map> mapList = await GetMapList(accountsRef);
-        List<Map> multiplayerMapList = mapList.Where(m => m.MapType == "creative").ToList();
+        List<Map> multiplayerMapList = mapList.Where(m => m.MapType == "Creative").ToList();
         return multiplayerMapList;
     }
 }
