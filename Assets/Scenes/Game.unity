@@ -4013,7 +4013,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -817.99994, y: -156}
+  m_AnchoredPosition: {x: -818, y: -156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &713778159
@@ -8662,6 +8662,7 @@ MonoBehaviour:
   txt_result_level: {fileID: 1278554514}
   txt_result_player: {fileID: 0}
   txt_result_restart: {fileID: 353675049}
+  result_restartBtn: {fileID: 948093904}
   VSresultUI: {fileID: 1479334198}
   vsPlayerM: {fileID: 1009011858}
   vsPlayerF: {fileID: 3033666824884733349}
@@ -9214,7 +9215,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 901b057384e71ba4e8d87f7d771da1e5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ae0b6bdad74e3be4ba41138359137a8d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

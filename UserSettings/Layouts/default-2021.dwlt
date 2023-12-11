@@ -17,7 +17,7 @@ MonoBehaviour:
     x: 0
     y: 43.2
     width: 1536
-    height: 772.8
+    height: 780.8
   m_ShowMode: 4
   m_Title: Scene
   m_RootView: {fileID: 2}
@@ -45,7 +45,7 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 1536
-    height: 772.8
+    height: 780.8
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
   m_UseTopView: 1
@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
-    y: 752.8
+    y: 760.8
     width: 1536
     height: 20
   m_MinSize: {x: 0, y: 0}
@@ -115,7 +115,7 @@ MonoBehaviour:
     x: 0
     y: 30
     width: 1536
-    height: 722.8
+    height: 730.8
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
@@ -436,7 +436,7 @@ MonoBehaviour:
     m_SaveData: []
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
+      scrollPos: {x: 0, y: 94}
       m_SelectedIDs: 
       m_LastClickedID: 0
       m_ExpandedIDs: b612feff30a5feff18c4feffa6c7feff72ccfeff84cefeffaacefeff62d2feff96d2feffcad2fefffed2feff4ad3feff84d3feff34d4feff36d8feff28defeff50dffeff6ee3feffd6e3feff68e4feff86e8feffe0e8feff22e9feff6ae9feffece9feff14f1feff56f1feffd8f1feff00f9feffb204ffffda0bffff5a0cffff9e0cffffe00cffff3c0dfffffa26ffff8228ffff6c29ffff622effff3c3fffffbe40ffff7a4bffff7460ffff8a6effff2e76ffffd676ffff1c77ffff1278ffff7078ffff2a7effff8c7effff4e8bffffc2b5ffff5cc6ffffc6f9fffffcfafffff4ffffffe4b90000d4e1000026e40000a2ea000006ed00000cf40000d4f90000b8fe00009cff0000520001007800010068010100920101006a090100bc0b01004c2d0100763e0100763f0100c45601000c67010088b6010074cc01000acf010052d00100
@@ -453,7 +453,7 @@ MonoBehaviour:
         m_UserData: -79962
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -740,7 +740,7 @@ MonoBehaviour:
     showImageEffects: 1
     showParticleSystems: 1
     showVisualEffectGraphs: 1
-    m_FxEnabled: 1
+    m_FxEnabled: 0
   m_Grid:
     xGrid:
       m_Fade:
@@ -850,7 +850,7 @@ MonoBehaviour:
   m_LastFolders:
   - Assets/StreamingAssets
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: D:\Project\Unity\Atuh-KL\A-Tuh-In-Nowhere
+  m_LastProjectPath: D:\FPT\Unity\A-Tuh-In-Nowhere
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
