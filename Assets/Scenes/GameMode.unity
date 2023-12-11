@@ -4339,7 +4339,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 234.57399, y: -196.2516}
+  m_AnchoredPosition: {x: 382.05823, y: -196.2516}
   m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &599963238
@@ -5287,7 +5287,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 234.57399, y: -286.2516}
+  m_AnchoredPosition: {x: 382.05823, y: -286.2516}
   m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &672810035
@@ -5692,6 +5692,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 1548442468}
   txt_pause_restart: {fileID: 972530233}
   restartBtn: {fileID: 0}
+  btn_exit: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
@@ -5704,6 +5705,7 @@ MonoBehaviour:
   txt_vsresult_playerName: {fileID: 0}
   txt_vsresult_levelName: {fileID: 0}
   txt_vsresult_stepCount: {fileID: 0}
+  btn_vsresult_back: {fileID: 0}
 --- !u!4 &759965496
 Transform:
   m_ObjectHideFlags: 0
@@ -8723,8 +8725,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 234.57399, y: -241.2516}
-  m_SizeDelta: {x: 469.14798, y: 482.5032}
+  m_AnchoredPosition: {x: 382.05823, y: -241.2516}
+  m_SizeDelta: {x: 764.11646, y: 482.5032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1241216243
 MonoBehaviour:
@@ -11458,7 +11460,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BACK TO TITLE
+  m_text: EXIT TO TITLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
   m_sharedMaterial: {fileID: 5470026232906179221, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
@@ -11927,8 +11929,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 703.722, y: -241.2516}
-  m_SizeDelta: {x: 469.14798, y: 482.5032}
+  m_AnchoredPosition: {x: 1146.1747, y: -241.2516}
+  m_SizeDelta: {x: 764.11646, y: 482.5032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1731430978
 MonoBehaviour:
@@ -11997,7 +11999,7 @@ RectTransform:
   m_GameObject: {fileID: 1759767865}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.00008, y: 1.00008, z: 1.00008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 280925537}
@@ -12005,7 +12007,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 44, y: -41}
+  m_AnchoredPosition: {x: 50, y: -50}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1759767867
@@ -12026,6 +12028,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 1548442468}
   txt_pause_restart: {fileID: 972530233}
   restartBtn: {fileID: 0}
+  btn_exit: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
@@ -12038,6 +12041,7 @@ MonoBehaviour:
   txt_vsresult_playerName: {fileID: 0}
   txt_vsresult_levelName: {fileID: 0}
   txt_vsresult_stepCount: {fileID: 0}
+  btn_vsresult_back: {fileID: 0}
 --- !u!114 &1759767868
 MonoBehaviour:
   m_ObjectHideFlags: 0

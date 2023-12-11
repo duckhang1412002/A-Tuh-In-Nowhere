@@ -34,14 +34,14 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         MapRole = "";
         CurrentChosingMap = -1;
         PlayGameMode = PhotonNetwork.CurrentRoom.CustomProperties["GM"].ToString();
-        roomName.text = PhotonNetwork.CurrentRoom.Name + " - GM : " + PlayGameMode;
+        roomName.text = (PhotonNetwork.CurrentRoom.IsVisible?"Public - ":"Private - ") + (PlayGameMode=="VS"?"VERSUS MODE\n":"CO-OP MODE\n") + PhotonNetwork.CurrentRoom.Name;
         Debug.Log($"Public room ?: {PhotonNetwork.CurrentRoom.IsVisible}");
 
         if(PlayGameMode == "Co-op" && isFirstTimeJoinRoom){
             playerM_Init_XPos = -3;
             playerM_Init_YPos = -4;
-            playerF_Init_XPos = -1;
-            playerF_Init_YPos = -4;
+            playerF_Init_XPos = -2;
+            playerF_Init_YPos = -3;
             isFirstTimeJoinRoom = false;
         } else if (PlayGameMode == "VS"){
             GameObject.Find("CameraManager").GetComponent<CameraManager>().SetupMultiplayerCamera(0, 0, "Versus");
@@ -57,16 +57,20 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             myPlayer = PhotonInstantiate(playerPrefabM, playerM_Init_XPos, playerM_Init_YPos);
+            LobbyMove.PositionBeforePlay = new Vector2(playerM_Init_XPos, playerM_Init_YPos);
+            LobbyMove.PositionPlayMap = new Vector2(playerM_Init_XPos, playerM_Init_YPos);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID); //buffer remember when new player joined
         } else
         {
             myPlayer = PhotonInstantiate(playerPrefabF, playerF_Init_XPos, playerF_Init_YPos);
+            LobbyMove.PositionBeforePlay = new Vector2(playerF_Init_XPos, playerF_Init_YPos);
+            LobbyMove.PositionPlayMap = new Vector2(playerF_Init_XPos, playerF_Init_YPos);
             myPlayer.GetComponent<LobbyMove>().enabled = true;
             photonView.RPC("SetOtherPlayer", RpcTarget.OthersBuffered, myPlayer.GetComponent<PhotonView>().ViewID);
             playBtn.interactable = false;
             TextMeshProUGUI btnText = playBtn.GetComponentInChildren<TextMeshProUGUI>();
-            btnText.text = "Ready";
+            btnText.text = "READY";
             Debug.Log("I'm not master client!");
         }
     }
@@ -97,7 +101,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         if(!GameObject.Find("UIManager").GetComponent<UIManager>().CheckActiveConfirmMapUI()) return;
 
         if(PhotonNetwork.IsMasterClient){
-            playBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Waiting for others";
+            playBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Waiting for others!";
             playBtn.interactable = false;
         } else {
             playBtn.interactable = true;

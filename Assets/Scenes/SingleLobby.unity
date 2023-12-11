@@ -9654,7 +9654,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BACK TO TITLE
+  m_text: EXIT TO GAME MODE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
   m_sharedMaterial: {fileID: 5470026232906179221, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
@@ -9889,6 +9889,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
   restartBtn: {fileID: 0}
+  btn_exit: {fileID: 0}
   confirmMapUI: {fileID: 0}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
@@ -9901,6 +9902,7 @@ MonoBehaviour:
   txt_vsresult_playerName: {fileID: 0}
   txt_vsresult_levelName: {fileID: 0}
   txt_vsresult_stepCount: {fileID: 0}
+  btn_vsresult_back: {fileID: 0}
 --- !u!1 &593767053
 GameObject:
   m_ObjectHideFlags: 0
@@ -13380,7 +13382,7 @@ RectTransform:
   m_GameObject: {fileID: 794374536}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.00008, y: 1.00008, z: 1.00008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 464088611}
@@ -13388,7 +13390,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 44, y: -41}
+  m_AnchoredPosition: {x: 50, y: -50}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &794374539
@@ -13937,7 +13939,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play
+  m_text: START
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
   m_sharedMaterial: {fileID: 5470026232906179221, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
@@ -20953,6 +20955,7 @@ MonoBehaviour:
   txt_pause_player: {fileID: 0}
   txt_pause_restart: {fileID: 0}
   restartBtn: {fileID: 0}
+  btn_exit: {fileID: 0}
   confirmMapUI: {fileID: 496759945}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}
@@ -20965,6 +20968,7 @@ MonoBehaviour:
   txt_vsresult_playerName: {fileID: 0}
   txt_vsresult_levelName: {fileID: 0}
   txt_vsresult_stepCount: {fileID: 0}
+  btn_vsresult_back: {fileID: 0}
 --- !u!4 &1171185798 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2775976767752157289, guid: 217e25996adb2e34da6af88f78fc18d4, type: 3}
@@ -24801,7 +24805,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Back
+  m_text: BACK
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
   m_sharedMaterial: {fileID: 5470026232906179221, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}

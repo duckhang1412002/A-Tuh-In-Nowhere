@@ -200,7 +200,7 @@ public class PlayerMapController : MonoBehaviour
     {
         //Debug.Log("Did i found?" + playBtn + " " + backBtn);
         playBtn.interactable = false;
-        playBtn.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Wating for others";
+        playBtn.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Wating for others!";
         backBtn.interactable = false;
     }
 

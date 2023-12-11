@@ -672,7 +672,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void BackToLobbyScene(){
         /*Kick out the lobby - comment*/
-        if (singleMode)
+        if(PlayerMapController.CurrentGameMode == "Creative Mode"){
+            PhotonNetwork.LeaveRoom();
+            SceneManager.LoadScene("CreativeLobby");
+        }
+        else if (singleMode)
         {
             PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene("SingleLobby");

@@ -56,9 +56,21 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         }
         if(SceneManager.GetActiveScene().name == "GameMode" && PlayerMapController.CurrentGameMode == "Single Mode"){
             player.DefaultZAxis = 6f;
-            player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
-            player.CurrentPosition = PositionBeforePlay;
-            player.TargetPosition = PositionBeforePlay;
+            player.transform.position = new Vector3(-4f, -1f, player.DefaultZAxis);
+            player.CurrentPosition = new Vector2(-4f,-1f);
+            player.TargetPosition = new Vector2(-3f,-1f);
+            player.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f);
+        } else if(SceneManager.GetActiveScene().name == "GameMode" && PlayerMapController.CurrentGameMode == "Multiplayer Mode"){
+            player.DefaultZAxis = 6f;
+            player.transform.position = new Vector3(4f, -1f, player.DefaultZAxis);
+            player.CurrentPosition = new Vector2(4f,-1f);
+            player.TargetPosition = new Vector2(3f,-1f);
+            player.transform.Find("PlayerInner").localScale = new Vector3(-1f, 1f, 1f);
+        } else if(SceneManager.GetActiveScene().name == "GameMode" && PlayerMapController.CurrentGameMode == "Creative Mode"){
+            player.DefaultZAxis = 6f;
+            player.transform.position = new Vector3(0f, -2f, player.DefaultZAxis);
+            player.CurrentPosition = new Vector2(0f,-2f);
+            player.TargetPosition = new Vector2(0f,-2f);
             player.transform.Find("PlayerInner").localScale = new Vector3(1f, 1f, 1f);
         }
 
@@ -235,18 +247,22 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
             if(item.name.Contains("Entrance")){
                 if(item.name.Contains("Sing")){
+                    PlayerMapController.CurrentGameMode = "Single Mode";
                     SceneManager.LoadScene("SingleLobby");
                 } else if(item.name.Contains("Mult")){
+                    PlayerMapController.CurrentGameMode = "Multiplayer Mode";
                     SceneManager.LoadScene("Loading");
                 } else {
+                    PlayerMapController.CurrentGameMode = "Creative Mode";
                     SceneManager.LoadScene("CreativeLobby");
                 }     
             } else if(item.name.Contains("Outrance")){
                 if(item.name.Contains("Sing")){
-                    PositionBeforePlay = new Vector2(-3f,-1f);
-                    PositionPlayMap = new Vector2(-4f,-1f);
                     SceneManager.LoadScene("GameMode");
-                }  
+                } else if(item.name.Contains("Mult")){
+                    MultiplayerLobby.isFirstTimeJoinRoom = true;
+                    PhotonNetwork.LeaveRoom();
+                }
             } else if(item.name.Contains("Info")){
                 if(SceneManager.GetActiveScene().name == "SingleLobby"){
                     if(item.name.Contains("Map")){
