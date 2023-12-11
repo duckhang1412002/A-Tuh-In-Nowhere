@@ -11,6 +11,7 @@ using TMPro;
 
 public class LobbyMove : MonoBehaviourPunCallbacks
 {
+    private UIManager uiManager;
     Camera worldCamera;
     Camera playerCamera;
 
@@ -34,11 +35,16 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
     public static Vector2 PositionBeforePlay{get; set;}
     public static Vector2 PositionPlayMap{get; set;}
+    private Vector2 touchStartPos;
+    private Vector2 touchEndPos;
+    private bool isSwiping = false;
+    private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
 
     // Start is called before the first frame update
     void Start()
     {
+        uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         /*Player part*/
         player = this.gameObject.GetComponent<Player>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
@@ -135,6 +141,14 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        /*Check if the PauseUI is activating, pause the game movement*/
+        if (uiManager.GetPauseUI().activeSelf)
+        {
+            isPauseGame = true;
+        }else{
+            isPauseGame = false;
+        }
+        
         if (isPauseGame) return; // Disable movement game is paused
         if (!allowInput)
         {
@@ -164,6 +178,73 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         { // Enable move if player is allowed to move
             Vector2 moveDirection = Vector2.zero;
             GameObject item = GetItemAtPosition(player.CurrentPosition);
+
+            // Check for touch input
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        // Record the start position of the touch
+                        touchStartPos = touch.position;
+                        isSwiping = true;
+                        break;
+
+                    case TouchPhase.Moved:
+                        // Determine the direction of the swipe
+                        touchEndPos = touch.position;
+                        Vector2 swipeDirection = touchEndPos - touchStartPos;
+
+                        // Check if the swipe distance exceeds the threshold
+                        if (isSwiping && swipeDirection.magnitude > minSwipeDistance)
+                        {
+                            // Normalize the swipe direction to get a consistent movement speed
+                            swipeDirection.Normalize();
+
+                            // Determine the dominant axis of the swipe
+                            if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+                            {
+                                // Horizontal swipe
+                                if (swipeDirection.x > 0)
+                                {
+                                    // Swipe right
+                                    // Move your player right here
+                                    moveDirection = Vector2.right;
+                                }
+                                else
+                                {
+                                    // Swipe left
+                                    moveDirection = Vector2.left;
+                                }
+                            }
+                            else
+                            {
+                                // Vertical swipe
+                                if (swipeDirection.y > 0)
+                                {
+                                    // Swipe up
+                                    moveDirection = Vector2.up;
+                                }
+                                else
+                                {
+                                    // Swipe down
+                                    moveDirection = Vector2.down;
+                                }
+                            }
+
+                            // Reset the isSwiping flag
+                            isSwiping = false;
+                        }
+                        break;
+
+                    case TouchPhase.Ended:
+                        isSwiping = false;
+                        break;
+                }
+            }
+
             if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             {
                 moveDirection = Vector2.up;
@@ -271,7 +352,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.StepNumber = 0;
       
                         MapProjector currentProjector = GameObject.Find("GameObj_MapBlock_Map_" + PlayerMapController.MapID).GetComponent<MapProjector>();
-                        GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
+                        uiManager.ShowConfirmMapUI(currentProjector);
 
                         PositionBeforePlay = player.PreviousPosition;    
                         PositionPlayMap = player.CurrentPosition;                
@@ -284,7 +365,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.MapRole = SplitText(item.name, 4);
  
                         MapProjector currentProjector = GameObject.Find("GameObj_MapBlock_Map_" + PlayerMapController.MapID).GetComponent<MapProjector>();
-                        GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
+                        uiManager.ShowConfirmMapUI(currentProjector);
 
                         PositionBeforePlay = player.PreviousPosition;
                         PositionPlayMap = player.CurrentPosition;   
@@ -305,7 +386,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                         PlayerMapController.MapRole = SplitText(item.name, 4);
  
                         MapProjector currentProjector = GameObject.Find("GameObj_MapBlock_VSMap_0").GetComponent<MapProjector>();
-                        GameObject.Find("UIManager").GetComponent<UIManager>().ShowConfirmMapUI(currentProjector);
+                        uiManager.ShowConfirmMapUI(currentProjector);
 
                         PositionBeforePlay = player.PreviousPosition;
                         PositionPlayMap = player.CurrentPosition;
@@ -422,7 +503,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                 canvas_board_mult.enabled = false;
                 canvas_board_prof.enabled = false;
             } else if (SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-                GameObject.Find("UIManager").GetComponent<UIManager>().HideConfirmMapUI();
+                uiManager.HideConfirmMapUI();
             }
         }  
         else // Just ground

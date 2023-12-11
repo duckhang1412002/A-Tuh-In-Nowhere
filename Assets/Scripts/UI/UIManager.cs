@@ -42,8 +42,8 @@ public class UIManager : MonoBehaviour
     private PlayerMapAuthentication playerMapAuthentication;
 
     void Update(){
-        if(Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "Game"){
-            ToggleUI(pauseUI);
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            if(pauseUI != null) ToggleUI(pauseUI);
         }
     }
 
@@ -125,5 +125,9 @@ public class UIManager : MonoBehaviour
             txt_pause_restart.text = "";
             txt_pause_player.text = txt_player;
         }
+    }
+
+    public GameObject GetPauseUI(){
+        return pauseUI;
     }
 }

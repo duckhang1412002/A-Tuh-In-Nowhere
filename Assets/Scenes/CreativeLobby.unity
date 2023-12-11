@@ -772,7 +772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76f2f90f7d1a4c479413e0867ddac10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseUI: {fileID: 0}
+  pauseUI: {fileID: 1726384962}
   txt_pause_mode: {fileID: 0}
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}

@@ -11,6 +11,7 @@ using UnityEngine.EventSystems;
 
 public class MoveController : MonoBehaviourPun
 {
+    private UIManager uiManager;
     private static GameManager gameManager;
     private static RPCManager rpcManager;
     private static Wire wireSpawner;
@@ -39,6 +40,7 @@ public class MoveController : MonoBehaviourPun
     // Start is called before the first frame update
     void Start()
     {
+        uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         stepCount = 0;
         dimensionIn = null;
         dimensionOut = null;
@@ -284,6 +286,14 @@ public class MoveController : MonoBehaviourPun
 
     private void Update()
     {
+        /*Check if the PauseUI is activating, pause the game movement*/
+        if (uiManager.GetPauseUI().activeSelf)
+        {
+            isPauseGame = true;
+        }else{
+            isPauseGame = false;
+        }
+
         if (photonView.IsMine)
         {
             if (isPauseGame) return; // Disable movement game is paused

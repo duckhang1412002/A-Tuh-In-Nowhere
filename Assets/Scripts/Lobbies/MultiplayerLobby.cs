@@ -40,7 +40,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         if(PlayGameMode == "Co-op" && isFirstTimeJoinRoom){
             playerM_Init_XPos = -3;
             playerM_Init_YPos = -4;
-            playerF_Init_XPos = -2;
+            playerF_Init_XPos = -4;
             playerF_Init_YPos = -3;
             isFirstTimeJoinRoom = false;
         } else if (PlayGameMode == "VS"){

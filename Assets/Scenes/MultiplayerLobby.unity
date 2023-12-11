@@ -20153,13 +20153,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76f2f90f7d1a4c479413e0867ddac10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseUI: {fileID: 0}
-  txt_pause_mode: {fileID: 0}
-  txt_pause_level: {fileID: 0}
-  txt_pause_player: {fileID: 0}
-  txt_pause_restart: {fileID: 0}
+  pauseUI: {fileID: 1266747489}
+  txt_pause_mode: {fileID: 925695049}
+  txt_pause_level: {fileID: 611435102}
+  txt_pause_player: {fileID: 1637681664}
+  txt_pause_restart: {fileID: 102255139}
   restartBtn: {fileID: 0}
-  btn_exit: {fileID: 0}
+  btn_exit: {fileID: 5738728}
   confirmMapUI: {fileID: 1654156967}
   resultUI: {fileID: 0}
   txt_result_mode: {fileID: 0}

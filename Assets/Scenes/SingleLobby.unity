@@ -867,6 +867,18 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5087362225389337233, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: glowColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087362225389337233, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: glowColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087362225389337233, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: glowColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6867808612369307855, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -20949,7 +20961,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76f2f90f7d1a4c479413e0867ddac10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseUI: {fileID: 0}
+  pauseUI: {fileID: 1839733004}
   txt_pause_mode: {fileID: 0}
   txt_pause_level: {fileID: 0}
   txt_pause_player: {fileID: 0}
@@ -25208,6 +25220,18 @@ PrefabInstance:
     - target: {fileID: 4822507923271265639, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087362225389337233, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: glowColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087362225389337233, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: glowColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087362225389337233, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
+      propertyPath: glowColor.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6867808612369307855, guid: 8fcc3edab0dfd294db86592ec4b88e56, type: 3}
       propertyPath: m_Materials.Array.data[0]
