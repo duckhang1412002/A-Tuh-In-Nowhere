@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txt_result_level;
     [SerializeField] private TextMeshProUGUI txt_result_player;
     [SerializeField] private TextMeshProUGUI txt_result_restart;
+    [SerializeField] private Button result_restartBtn;
 
     [Space]
     [Header("Versus Result UI")]
@@ -66,6 +67,10 @@ public class UIManager : MonoBehaviour
         txt_result_mode.text = txt_mode;
         txt_result_level.text = "Level " + txt_level;
         txt_result_restart.text = "Restart Number: " + txt_restart;
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            result_restartBtn.interactable = false;
+        }
         resultUI.SetActive(true);
     }
 
