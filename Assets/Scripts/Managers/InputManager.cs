@@ -37,10 +37,10 @@ public class InputManager : MonoBehaviour
         //fileName = PhotonNetwork.LocalPlayer.CustomProperties["MapID"].ToString();
         filePath = $"{Application.persistentDataPath}/Maps/{fileName}";
         //initialize storage reference
-        storage = FirebaseStorage.DefaultInstance;
-        storageReference = storage.GetReferenceFromUrl("gs://atuhinnowhere-testing.appspot.com");
+        //storage = FirebaseStorage.DefaultInstance;
+        //storageReference = storage.GetReferenceFromUrl("gs://a-tuh-connectrix-c4f3.appspot.com");
 
-        mapInfo = storageReference.Child(fileName);
+        //mapInfo = storageReference.Child(fileName);
         gameManager = this.gameObject.GetComponent<GameManager>();
 
     }

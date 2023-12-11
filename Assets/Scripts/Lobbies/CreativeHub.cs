@@ -155,7 +155,7 @@ public class CreativeHub : MonoBehaviour
     private void LoadGameByID(int mapID)
     {
         PhotonNetwork.OfflineMode = true;
-        PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+        PhotonNetwork.CreateRoom("Single", new RoomOptions(), TypedLobby.Default);
         PhotonNetwork.LocalPlayer.CustomProperties["MapID"] = mapID;
         SceneManager.LoadScene("Game");
 
@@ -190,7 +190,7 @@ public class CreativeHub : MonoBehaviour
                         string _StatusID = s.Child("StatusID").Value.ToString();
                         string _CreatedDate = s.Child("Createddate").Value.ToString();
 
-                        if (_MapType == "creative" && _StatusID == "map_approved")
+                        if (_MapType == "Creative" && _StatusID == "map_approved")
                         {
                             Debug.Log("Creative map: " + _MapID);
                             //DuplicateObject(_MapID);

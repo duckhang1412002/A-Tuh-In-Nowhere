@@ -163,7 +163,7 @@ public class PlayerMapController : MonoBehaviour
     public void StartTheMap(){
         if(SceneManager.GetActiveScene().name == "SingleLobby"){
             PhotonNetwork.OfflineMode = true;
-            PhotonNetwork.CreateRoom("single", new RoomOptions(), TypedLobby.Default);
+            PhotonNetwork.CreateRoom("Single", new RoomOptions(), TypedLobby.Default);
             Hashtable myProperties = new Hashtable();
             myProperties["MapID"] = GetProjectorByID(MapID).MapInfo.MapID;
             PhotonNetwork.LocalPlayer.CustomProperties = myProperties;

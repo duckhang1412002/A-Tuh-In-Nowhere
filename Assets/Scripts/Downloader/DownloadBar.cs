@@ -135,6 +135,7 @@ public class DownloadBar : MonoBehaviour
         yield return null;
     }
 
+    private List<Map> mapsToDownload = new List<Map>();
     private List<string> filesToDownload = new List<string>();
     private bool isDataLoaded;
     private IEnumerator VerifyData()
@@ -157,9 +158,20 @@ public class DownloadBar : MonoBehaviour
                     totalFile = snapshot.ChildrenCount;
                     foreach (var mapSnapShot in snapshot.Children)
                     {
+                        Debug.Log("Checking a snapshot...");
                         string mapID = mapSnapShot.Child("MapID").Value.ToString();
-                        string path = folderPath + mapID + ".txt";
+                        string mapType = mapSnapShot.Child("Maptype").Value.ToString();
+                        bool isDeleted = bool.Parse(mapSnapShot.Child("IsDeleted").Value.ToString());
+                        string statusID = mapSnapShot.Child("StatusID").Value.ToString();
+                        Debug.Log("map status: " + statusID + " " + isDeleted);
+                        if (isDeleted) continue;
+                        if (!statusID.Contains("approved")) continue;
+                        Map map = new Map();
 
+                        map.MapID = int.Parse(mapID);
+                        map.MapType = mapType;
+                        Debug.Log("Checking file exist...");
+                        string path = folderPath + mapID + ".txt";
                         if (File.Exists(path))
                         {
                             Debug.Log("Found the " + mapID + " file locally, Loading!!!");
@@ -168,7 +180,8 @@ public class DownloadBar : MonoBehaviour
                         else
                         {
                             Debug.Log("Adding " + mapID + " to download queue");
-                            filesToDownload.Add(mapID);
+                            //filesToDownload.Add(mapID);
+                            mapsToDownload.Add(map);
                         }
                     }
 
@@ -177,22 +190,24 @@ public class DownloadBar : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("No accounts data found.");
+                    Debug.Log("No new maps data found.");
                 }
             }
         });
 
         // Wait until the data is loaded
         yield return new WaitUntil(() => isDataLoaded);
-        Debug.Log(filesToDownload.Count);
+        Debug.Log(mapsToDownload.Count);
         // Now, you can proceed with the download
-        if (filesToDownload.Count > 0)
+        if (mapsToDownload.Count > 0)
         {
             askText.text = "Downloading...";
-            foreach (var mapName in filesToDownload)
+            foreach (Map map in mapsToDownload)
             {
-                string urlMap = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/{mapName}.txt?alt=media";
-                string fileMapPath = $"{Application.persistentDataPath}/Maps/{mapName}.txt";
+                //string urlMap = $"https://firebasestorage.googleapis.com/v0/b/a-tuh-connectrix-c4f3.appspot.com/o/{mapName}.txt?alt=media";
+                string urlMap = $"https://firebasestorage.googleapis.com/v0/b/a-tuh-connectrix-c4f3.appspot.com/o/Map%2F{map.MapType}%2F{map.MapID}.txt?alt=media";
+                Debug.Log(urlMap);
+                string fileMapPath = $"{Application.persistentDataPath}/Maps/{map.MapID}.txt";
                 StartCoroutine(GetFileRequest(urlMap, fileMapPath, (UnityWebRequest req) =>
                 {
                     if (req.isNetworkError || req.isHttpError)
@@ -211,8 +226,8 @@ public class DownloadBar : MonoBehaviour
                 ));
 
                 // %2F = /
-                string urlThumb = $"https://firebasestorage.googleapis.com/v0/b/atuhinnowhere-testing.appspot.com/o/Thumbnail%2F{mapName}.png?alt=media";
-                string thumbPath = $"{Application.persistentDataPath}/Thumbs/{mapName}.png";
+                string urlThumb = $"https://firebasestorage.googleapis.com/v0/b/a-tuh-connectrix-c4f3.appspot.com/o/Map%2FThumbnail%2F{map.MapType}%2F{map.MapID}.png?alt=media";
+                string thumbPath = $"{Application.persistentDataPath}/Thumbs/{map.MapID}.png";
                 StartCoroutine(GetFileRequest(urlThumb, thumbPath, (UnityWebRequest req) =>
                 {
                     if (req.isNetworkError || req.isHttpError)
