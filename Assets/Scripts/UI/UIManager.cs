@@ -41,6 +41,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button btn_vsresult_back;
     private PlayerMapAuthentication playerMapAuthentication;
 
+    void Update(){
+        if(Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().name == "Game"){
+            ToggleUI(pauseUI);
+        }
+    }
+
     public void ToggleUI(GameObject UI){
         if(UI.activeSelf == true){
             UI.SetActive(false);

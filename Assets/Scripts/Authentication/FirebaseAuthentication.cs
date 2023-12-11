@@ -530,6 +530,29 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
             GameObject.Find("Pnl_Greeting").transform.Find("Txt_GreetingMessage").GetComponent<TextMeshProUGUI>().text = "Goodbye " + lastAccountName + "!";
             GameObject.Find("GreetingUI").transform.Find("Pnl_Greeting").GetComponent<Animator>().SetTrigger("RGreeting-Popup");
         }
+
+        /*Reset all static variable*/
+        /*PlayerMapController*/
+        PlayerMapController.MapID = -1;
+        PlayerMapController.RestartNumber = -1;
+        PlayerMapController.StepNumber = 0;
+        PlayerMapController.MapRole = "";
+        PlayerMapController.CurrentGameMode = "";
+        PlayerMapController.ProjectorList = null;
+
+        /*GameMode*/
+        GameMode.IsUnlockMultiplayerMode = false;
+        GameMode.IsUnlockCreativeMode = false;
+        GameMode.ShowCutSceneMultiplayerMode = false;
+        GameMode.ShowCutSceneCreativeMode = false;
+
+        /*LobbyMove*/
+        LobbyMove.PositionBeforePlay = new Vector2(0f,-2f);
+        LobbyMove.PositionPlayMap = new Vector2(0f,-2f);
+
+        /*MapAuthentication*/
+        Destroy(MapAuthentication.Instance);
+        Destroy(PlayerMapAuthentication.Instance);
     }
 
     public void ExitGame(){

@@ -1002,7 +1002,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BACK TO TITLE
+  m_text: EXIT TO GAME MODE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}
   m_sharedMaterial: {fileID: 5470026232906179221, guid: 5e312871ffa2f734ea6a44dea5dcf3ad, type: 2}

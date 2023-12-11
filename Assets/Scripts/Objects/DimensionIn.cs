@@ -118,10 +118,10 @@ public class DimensionIn : MonoBehaviour
             transform.Rotate(0f, 0f, dimensionInRotation[0]);
         } else if (!HasTop() && HasRight() && HasBottom() && !HasLeft()){
             spriteRenderer.sprite = dimensionInSprites[2];
-            transform.Rotate(0f, 0f, dimensionInRotation[1]);
+            transform.Rotate(0f, 0f, dimensionInRotation[2]);
         } else if (!HasTop() && !HasRight() && HasBottom() && HasLeft()){
             spriteRenderer.sprite = dimensionInSprites[2];
-            transform.Rotate(0f, 0f, dimensionInRotation[2]);
+            transform.Rotate(0f, 0f, dimensionInRotation[1]);
         } else if (HasTop() && HasRight() && !HasBottom() && !HasLeft()){
             spriteRenderer.sprite = dimensionInSprites[2];
             transform.Rotate(0f, 0f, dimensionInRotation[3]);
