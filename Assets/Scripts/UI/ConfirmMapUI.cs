@@ -11,6 +11,7 @@ using TMPro;
 
 
 public class ConfirmMapUI : MonoBehaviour {
+    [SerializeField] private Sprite defautThumbnail;
     [SerializeField] private GameObject btn_Play;
     [SerializeField] private GameObject btn_Next;
     [SerializeField] private GameObject btn_Prev;
@@ -134,7 +135,10 @@ public class ConfirmMapUI : MonoBehaviour {
             btn_Next.GetComponent<Button>().interactable = false;
             btn_Prev.GetComponent<Button>().interactable = false;  
 
-            txt_MapName.text = "Verus Mode Custom Map";
+            RawImage imageComponent = this.gameObject.transform.Find("Board/Frame/Mask/Map Image").GetComponent<RawImage>();
+            imageComponent.texture = defautThumbnail.texture;
+
+            txt_MapName.text = "Versus Mode Custom Map";
             txt_MapStatus.text = "";
             txt_RestartNumber.text = "";
         }

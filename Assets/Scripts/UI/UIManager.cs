@@ -124,10 +124,10 @@ public class UIManager : MonoBehaviour
                 btn_exit.interactable = false;
             }
 
-        } else if(SceneManager.GetActiveScene().name == "GameMode") {
-            txt_pause_mode.text = "";
-            txt_pause_level.text = "";
-            txt_pause_restart.text = "";
+        } else if(SceneManager.GetActiveScene().name != "Game" && pauseUI != null) {
+            // txt_pause_mode.text = "";
+            // txt_pause_level.text = "";
+            // txt_pause_restart.text = "";
             txt_pause_player.text = txt_player;
         }
     }

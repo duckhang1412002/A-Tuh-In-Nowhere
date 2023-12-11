@@ -43,7 +43,7 @@ public class MapProjector : MonoBehaviour {
         GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
 
         // Use LINQ to filter objects by name
-        GameObject[] matchingObjects = allObjects.Where(obj => obj.name.Contains(partialName)).ToArray();
+        GameObject[] matchingObjects = allObjects.Where(obj => obj.name == partialName).ToArray();
 
         return matchingObjects;
     }

@@ -15,7 +15,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     Camera worldCamera;
     Camera playerCamera;
 
-    Canvas canvas_screen, canvas_board_idle, canvas_board_sing, canvas_board_mult, canvas_board_prof;
+    Canvas canvas_screen, canvas_board_idle, canvas_board_sing, canvas_board_mult, canvas_board_crea, canvas_board_prof;
     private Dictionary<Vector2,GameObject> objectList = new Dictionary<Vector2,GameObject>();
 
 
@@ -40,11 +40,15 @@ public class LobbyMove : MonoBehaviourPunCallbacks
     private bool isSwiping = false;
     private float minSwipeDistance = 50f; // Adjust this threshold to your preference
 
+    DimensionIn dimensionIn;
+    DimensionOut dimensionOut;
 
     // Start is called before the first frame update
     void Start()
     {
         uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        dimensionIn = null;
+        dimensionOut = null;
         /*Player part*/
         player = this.gameObject.GetComponent<Player>();
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
@@ -108,10 +112,14 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             canvas_board_sing = GameObject.Find("Canvas_Board_Sing").GetComponent<Canvas>();
             canvas_board_mult = GameObject.Find("Canvas_Board_Mult").GetComponent<Canvas>();
             canvas_board_prof = GameObject.Find("Canvas_Board_Prof").GetComponent<Canvas>();
+            canvas_board_crea = GameObject.Find("Canvas_Board_Crea").GetComponent<Canvas>();
             canvas_board_idle.enabled = true;
             canvas_board_sing.enabled = false;
             canvas_board_mult.enabled = false;
+            canvas_board_crea.enabled = false;
             canvas_board_prof.enabled = false;
+
+            canvas_board_prof.gameObject.transform.Find("Txt_PlayerName").gameObject.GetComponent<TextMeshProUGUI>().text = FirebaseAuthentication.currentAccount.Fullname;
         }
 
         /*Init 2 type cameras*/
@@ -300,6 +308,12 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             // {
             //     TeleportPlayer();
             // }
+
+            if (dimensionIn != null || dimensionOut != null)
+            {
+                TeleportPlayer();
+            }
+
             GameObject item = GetItemAtPosition((Vector2)player.transform.position);
 
             if(SceneManager.GetActiveScene().name == "GameMode" && item.name.Contains("Info")){
@@ -308,21 +322,25 @@ public class LobbyMove : MonoBehaviourPunCallbacks
                     canvas_board_sing.enabled = true;
                     canvas_board_mult.enabled = false;
                     canvas_board_prof.enabled = false;
+                    canvas_board_crea.enabled = false;
                 } else if(item.name.Contains("Mult")){
                     canvas_board_idle.enabled = false;
                     canvas_board_sing.enabled = false;
                     canvas_board_mult.enabled = true;
                     canvas_board_prof.enabled = false;
+                    canvas_board_crea.enabled = false;
                 } else if(item.name.Contains("Crea")){
                     canvas_board_idle.enabled = false;
                     canvas_board_sing.enabled = false;
                     canvas_board_mult.enabled = false;
-                    canvas_board_prof.enabled = true;
+                    canvas_board_prof.enabled = false;
+                    canvas_board_crea.enabled = true;
                 } else if(item.name.Contains("Prof")){
                     canvas_board_idle.enabled = false;
                     canvas_board_sing.enabled = false;
                     canvas_board_mult.enabled = false;
                     canvas_board_prof.enabled = true;
+                    canvas_board_crea.enabled = false;
                 } 
             }
 
@@ -417,7 +435,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1.5f);
         isPauseGame = true;
-        Camera mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        Camera mainCamera = GameObject.Find("Camera_Single_1").GetComponent<Camera>();
         Camera cutScene_1 = GameObject.Find("Camera_Cut_1").GetComponent<Camera>();
         mainCamera.enabled = false;
         cutScene_1.enabled = true;
@@ -443,7 +461,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(1.5f);
         isPauseGame = true;
-        Camera mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        Camera mainCamera = GameObject.Find("Camera_Single_2").GetComponent<Camera>();
         Camera cutScene_2 = GameObject.Find("Camera_Cut_2").GetComponent<Camera>();
         mainCamera.enabled = false;
         cutScene_2.enabled = true;
@@ -496,16 +514,46 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         else if (itemTag.Contains("MapBlock")) {
             return false;        
         }
+        else if (itemTag.Contains("DimensionIn")){
+            DimensionIn dIn = item.GetComponent<DimensionIn>();
+            Vector2 telePos = dIn.GetEntrancePosition(moveDirection);
+            if (telePos == Vector2.zero)
+            {
+                return false;
+            }
+            if (IsPositionValid(telePos, moveDirection))
+            {
+                dimensionIn = dIn;
+                this.gameObject.transform.Find("PlayerInner").transform.Find("WholePlayerObject").gameObject.GetComponent<Animator>().SetTrigger("Smaller");
+                return true;
+            }
+            return false;
+        }
+        else if (itemTag.Contains("DimensionOut")) {
+            DimensionOut dOut = item.GetComponent<DimensionOut>();
+            Vector2 telePos = dOut.GetExitPosition(moveDirection);
+            if (telePos == Vector2.zero)
+            {
+                return false;
+            }
+            if (IsPositionValid(telePos, moveDirection))
+            {
+                dimensionOut = dOut;
+                return true;
+            }
+            return false;
+        } 
         else if(!itemTag.Contains("Info")){
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 canvas_board_idle.enabled = true;
                 canvas_board_sing.enabled = false;
                 canvas_board_mult.enabled = false;
+                canvas_board_crea.enabled = false;
                 canvas_board_prof.enabled = false;
             } else if (SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
                 uiManager.HideConfirmMapUI();
             }
-        }  
+        } 
         else // Just ground
         {
             // Handle the default case for "Ground" here if needed
@@ -532,6 +580,45 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         }
 
         return true;
+    }
+
+    private void TeleportPlayer()
+    {
+        CameraManager cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
+        if (dimensionIn != null)
+        {
+            Vector2 dimPos = dimensionIn.GetEntrancePosition(player.PreviousDirection);
+            player.transform.position = new Vector3(dimPos.x, dimPos.y, player.transform.position.z);
+            //dimensionIn = null;
+            DimensionOut dOut = dimensionIn.GetDimensionOut(player.PreviousDirection).GetComponent<DimensionOut>();  
+            cameraManager.SetupSingleplayerCamera(int.Parse(SplitText(dOut.gameObject.name, 2)), int.Parse(SplitText(dimensionIn.gameObject.name, 2)));    
+        } else
+        {
+            //player.transform.position = dimensionOut.GetExitPosition(player.PreviousDirection);
+            Vector2 dimPos = dimensionOut.GetExitPosition(player.PreviousDirection);
+            player.transform.position = new Vector3(dimPos.x, dimPos.y, player.transform.position.z);
+            //dimensionOut = null;  
+            DimensionIn dIn = dimensionOut.GetDimensionIn();
+            Debug.Log(int.Parse(SplitText(dimensionOut.gameObject.name, 2)) + " --- " + int.Parse(SplitText(dIn.gameObject.name, 2)));
+            cameraManager.SetupSingleplayerCamera(int.Parse(SplitText(dIn.gameObject.name, 2)), int.Parse(SplitText(dimensionOut.gameObject.name, 2)));    
+        }
+        /* !!!!! CHECK HERE !!!!! */
+        player.PreviousPosition =  CalculatePrevious(player.transform.position, player.PreviousDirection);
+        
+        //Debug.Log("Previous move after teleport:" + player.PreviousPosition);
+        player.CurrentPosition = player.transform.position;
+        player.TargetPosition = player.transform.position;
+        //player.PreviousPosition = player.CurrentPosition = player.TargetPosition = player.transform.position;
+        dimensionIn = null;
+        dimensionOut = null;
+    }
+
+    private Vector2 CalculatePrevious(Vector2 pos, Vector2 dir)
+    {
+        if (dir == Vector2.up) return new Vector2(pos.x, pos.y - 1);
+        if (dir == Vector2.down) return new Vector2(pos.x, pos.y + 1);
+        if (dir == Vector2.left) return new Vector2(pos.x+1, pos.y);
+        return new Vector2(pos.x-1, pos.y);
     }
 
     GameObject[] FindObjectsWithNameContaining(string partialName)

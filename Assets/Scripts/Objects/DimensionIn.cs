@@ -13,12 +13,20 @@ public class DimensionIn : MonoBehaviour
     public GameObject exitBottom { get; set; }
     public GameObject exitLeft { get; set; }
 
+    [SerializeField] private GameObject obj_exitTop;
+    [SerializeField] private GameObject obj_exitRight;
+    [SerializeField] private GameObject obj_exitBottom;
+    [SerializeField] private GameObject obj_exitLeft;
+
     [SerializeField] private Sprite[] dimensionInSprites;
     private static float[] dimensionInRotation = { 0f, 90.0f, 180.0f, 270.0f };
 
     public void Start()
     {
-
+        if(obj_exitTop != null) exitTop = obj_exitTop;
+        if(obj_exitLeft != null) exitLeft = obj_exitLeft;
+        if(obj_exitBottom != null) exitBottom = obj_exitBottom;
+        if(obj_exitRight != null) exitRight = obj_exitRight;
     }
 
     public Vector2 GetEntrancePosition(Vector2 moveDirection)

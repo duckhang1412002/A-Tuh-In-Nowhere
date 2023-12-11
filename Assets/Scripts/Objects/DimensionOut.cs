@@ -11,11 +11,16 @@ public class DimensionOut : MonoBehaviour
     public string OutDirection { get; set; }
     public string WireOnColor { get; set; }
 
+    [SerializeField] private DimensionIn obj_BaseDimension;
+    [SerializeField] private string insp_OutDirection;
+
     private static float[] dimensionOutRotation = { 0f, 90.0f, 180.0f, 270.0f };
 
     private void Start()
     {
         WireOnColor = null;
+        if(obj_BaseDimension != null) BaseDimension = obj_BaseDimension;
+        if(insp_OutDirection != "") OutDirection = insp_OutDirection;
     }
 
     public Vector2 GetExitPosition(Vector2 moveDirection)
@@ -95,5 +100,9 @@ public class DimensionOut : MonoBehaviour
         } else if(direction == "Top"){
             transform.Rotate(0f, 0f, dimensionOutRotation[3]);
         }
+    }
+
+    public DimensionIn GetDimensionIn(){
+        return BaseDimension;
     }
 }

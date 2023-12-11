@@ -16,7 +16,7 @@ public class Account
         Pwd = _Pwd;
         Fullname = _Fullname;
         IsOnlined = _IsOnlined;
-        RoleID = 2;
+        RoleID = 3;
         Nickname = "";
         Avatarlink = "";
         Ribbon = 0;

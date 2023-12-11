@@ -69,9 +69,9 @@ public class PlayerMapController : MonoBehaviour
                 CurrentGameMode = "Creative Mode";
             }
 
+            GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
 
             if(SceneManager.GetActiveScene().name == "GameMode"){
-                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
                 foreach(PlayerMap m in ActiveMapList){
                     if(m.MapID == 1){
                         GameMode.IsUnlockMultiplayerMode = true;
@@ -86,9 +86,7 @@ public class PlayerMapController : MonoBehaviour
             else if(SceneManager.GetActiveScene().name == "Game" && MapID != -1){
                 GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI(CurrentGameMode, MapID, ++RestartNumber, playerMapAuthentication.currentAccount.Fullname);
             } 
-            else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby"){
-                GameObject.Find("UIManager").GetComponent<UIManager>().SetupPauseUI("", -1, -1, playerMapAuthentication.currentAccount.Fullname);
-                
+            else if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby" ){                
                 if(SceneManager.GetActiveScene().name == "SingleLobby" || GameObject.Find("LobbyManager").GetComponent<MultiplayerLobby>().PlayGameMode == "Co-op"){
                     foreach(MapProjector m in ProjectorList){
                         PlayerMap foundMap = ActiveMapList.FirstOrDefault(playerMap => playerMap.MapID == m.MapInfo.MapID);

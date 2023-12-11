@@ -50,7 +50,7 @@ public class SoundtrackManager : MonoBehaviour
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 1 || SceneManager.GetActiveScene().buildIndex == 0)
+        if (SceneManager.GetActiveScene().name != "Game")
         {
             audio[0].enabled = true;
             audio[1].enabled = false;
