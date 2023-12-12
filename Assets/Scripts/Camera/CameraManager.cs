@@ -116,8 +116,8 @@ public class CameraManager : MonoBehaviour
         deActiveCam = GameObject.Find("Camera_Single_" + oldPartionIndex).GetComponent<Camera>();
         GameObject.Find("Canvas_Screen").GetComponent<Canvas>().worldCamera = activeCam;
 
-        activeCam.enabled = true;
         deActiveCam.enabled = false;
+        activeCam.enabled = true;       
     }
 
     public void SetupMultiplayerCamera(int oldPartionIndex ,int newPartionIndex, string mode){
@@ -133,7 +133,7 @@ public class CameraManager : MonoBehaviour
             GameObject.Find("Canvas_Screen").GetComponent<Canvas>().worldCamera = activeCam;
         }
 
-        activeCam.enabled = true;
         deActiveCam.enabled = false;
+        activeCam.enabled = true;
     }
 }

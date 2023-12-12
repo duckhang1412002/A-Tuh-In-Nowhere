@@ -549,6 +549,7 @@ public class FirebaseAuthentication : MonoBehaviourPunCallbacks
         /*LobbyMove*/
         LobbyMove.PositionBeforePlay = new Vector2(0f,-2f);
         LobbyMove.PositionPlayMap = new Vector2(0f,-2f);
+        LobbyMove.PartionID = 1;
 
         /*MapAuthentication*/
         Destroy(MapAuthentication.Instance.gameObject);

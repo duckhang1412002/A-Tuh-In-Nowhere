@@ -35,6 +35,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
 
     public static Vector2 PositionBeforePlay{get; set;}
     public static Vector2 PositionPlayMap{get; set;}
+
+    public static int PartionID{get; set;}
     private Vector2 touchStartPos;
     private Vector2 touchEndPos;
     private bool isSwiping = false;
@@ -54,6 +56,10 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         rpcManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<RPCManager>();
         playerMapController = GameObject.Find("PlayerMapController");
         if(SceneManager.GetActiveScene().name == "SingleLobby" || SceneManager.GetActiveScene().name == "MultiplayerLobby" ){
+            if(SceneManager.GetActiveScene().name == "SingleLobby"){
+                CameraManager cameraManager = GameObject.Find("CameraManager").GetComponent<CameraManager>();
+                cameraManager.SetupSingleplayerCamera(1,PartionID);
+            }
             if(PlayerMapController.MapID != -1){
                 player.DefaultZAxis = 6f;
                 player.transform.position = new Vector3(PositionPlayMap.x, PositionPlayMap.y, player.DefaultZAxis);
@@ -135,10 +141,10 @@ public class LobbyMove : MonoBehaviourPunCallbacks
         enableMove = true;
 
         /*Cutscene check part*/
-        if(PlayerMapController.MapID == 1 && GameMode.ShowCutSceneMultiplayerMode && SceneManager.GetActiveScene().name == "SingleLobby"){
+        if(PlayerMapController.MapID == 10 && GameMode.ShowCutSceneMultiplayerMode && SceneManager.GetActiveScene().name == "SingleLobby"){
             GameMode.ShowCutSceneMultiplayerMode = false;
             StartCoroutine(LoadCutScene_1());
-        } else if(PlayerMapController.MapID == 2 && GameMode.ShowCutSceneCreativeMode && SceneManager.GetActiveScene().name == "SingleLobby"){
+        } else if(PlayerMapController.MapID == 15 && GameMode.ShowCutSceneCreativeMode && SceneManager.GetActiveScene().name == "SingleLobby"){
             GameMode.ShowCutSceneCreativeMode = false;
             StartCoroutine(LoadCutScene_2());
         }
@@ -347,6 +353,7 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             if(item.name.Contains("Entrance")){
                 if(item.name.Contains("Sing")){
                     PlayerMapController.CurrentGameMode = "Single Mode";
+                    PartionID = 1;
                     SceneManager.LoadScene("SingleLobby");
                 } else if(item.name.Contains("Mult")){
                     PlayerMapController.CurrentGameMode = "Multiplayer Mode";
@@ -591,7 +598,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             player.transform.position = new Vector3(dimPos.x, dimPos.y, player.transform.position.z);
             //dimensionIn = null;
             DimensionOut dOut = dimensionIn.GetDimensionOut(player.PreviousDirection).GetComponent<DimensionOut>();  
-            cameraManager.SetupSingleplayerCamera(int.Parse(SplitText(dOut.gameObject.name, 2)), int.Parse(SplitText(dimensionIn.gameObject.name, 2)));    
+            cameraManager.SetupSingleplayerCamera(int.Parse(SplitText(dOut.gameObject.name, 2)), int.Parse(SplitText(dimensionIn.gameObject.name, 2)));
+            PartionID = int.Parse(SplitText(dimensionIn.gameObject.name, 2));
         } else
         {
             //player.transform.position = dimensionOut.GetExitPosition(player.PreviousDirection);
@@ -600,7 +608,8 @@ public class LobbyMove : MonoBehaviourPunCallbacks
             //dimensionOut = null;  
             DimensionIn dIn = dimensionOut.GetDimensionIn();
             Debug.Log(int.Parse(SplitText(dimensionOut.gameObject.name, 2)) + " --- " + int.Parse(SplitText(dIn.gameObject.name, 2)));
-            cameraManager.SetupSingleplayerCamera(int.Parse(SplitText(dIn.gameObject.name, 2)), int.Parse(SplitText(dimensionOut.gameObject.name, 2)));    
+            cameraManager.SetupSingleplayerCamera(int.Parse(SplitText(dIn.gameObject.name, 2)), int.Parse(SplitText(dimensionOut.gameObject.name, 2)));
+            PartionID = int.Parse(SplitText(dimensionOut.gameObject.name, 2));
         }
         /* !!!!! CHECK HERE !!!!! */
         player.PreviousPosition =  CalculatePrevious(player.transform.position, player.PreviousDirection);

@@ -128,13 +128,13 @@ public class PlayerMapController : MonoBehaviour
             bool isActivateCut_1 = true;
             bool isActivateCut_2 = true;
             foreach(PlayerMap m in ActiveMapList){
-                if(m.MapID == 1 && PlayerMapController.MapID == 1){
+                if(m.MapID == 10 && PlayerMapController.MapID == 10){
                     isActivateCut_1 = false;
                     break;
                 }
             }
             foreach(PlayerMap m in ActiveMapList){
-                if(m.MapID == 2 && PlayerMapController.MapID == 2){
+                if(m.MapID == 15 && PlayerMapController.MapID == 15){
                     isActivateCut_2 = false; 
                     break;
                 }
