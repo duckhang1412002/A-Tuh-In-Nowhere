@@ -73,11 +73,11 @@ public class PlayerMapController : MonoBehaviour
 
             if(SceneManager.GetActiveScene().name == "GameMode"){
                 foreach(PlayerMap m in ActiveMapList){
-                    if(m.MapID == 1){
+                    if(m.MapID == 10){
                         GameMode.IsUnlockMultiplayerMode = true;
                         GameMode.UpdateMultiplayerMode();
                     }
-                    if(m.MapID == 2){
+                    if(m.MapID == 15){
                         GameMode.IsUnlockCreativeMode = true;
                         GameMode.UpdateCreativeMode();
                     }
