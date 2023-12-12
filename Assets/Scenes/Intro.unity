@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec4d2aea492c78f4e8b40b218cc06d75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursor: {fileID: 21300000, guid: fda823403f6b55a4abe4187925cec20e, type: 3}
+  cursorSprite: {fileID: 21300000, guid: fda823403f6b55a4abe4187925cec20e, type: 3}
 --- !u!4 &15435531
 Transform:
   m_ObjectHideFlags: 0

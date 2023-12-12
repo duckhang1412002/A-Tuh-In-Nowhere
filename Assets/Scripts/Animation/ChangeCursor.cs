@@ -2,20 +2,24 @@ using UnityEngine;
 
 public class ChangeCursor : MonoBehaviour
 {
-    [SerializeField] private Sprite cursor;
+    [SerializeField] private Sprite cursorSprite;
 
     void Start()
     {
         // Hide the default cursor
-        Cursor.visible = false;
+        //Cursor.visible = false;
 
-        // Set the custom cursor texture
-        Cursor.SetCursor(cursor.texture, Vector2.zero, CursorMode.ForceSoftware);
+        if (cursorSprite != null)
+        {
+            Texture2D customCursorTexture = cursorSprite.texture;
+            Cursor.SetCursor(customCursorTexture, Vector2.zero, CursorMode.ForceSoftware);
+            Debug.Log("Custom cursor set");
+        }
+        else
+        {
+            Debug.LogError("Custom cursor sprite not assigned in the Unity Inspector.");
+        }
+
         DontDestroyOnLoad(this.gameObject);
-    }
-
-    void Update()
-    {
-        // Add your game logic here
     }
 }
