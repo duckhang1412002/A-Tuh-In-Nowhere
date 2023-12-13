@@ -1,0 +1,20 @@
+2
+6 12
+Null Wall Wall Wall Wall Wall Wall Wall Wall Wall Null Null
+Wall Ground Ground Ground Ground Ground Ground Wall Wall Socket_Green Wall Null
+Wall Ground Wall PlayerM:0 Ground Wall DimensionIn:1 Ground Ground Ground Ground Wall
+Wall Socket_Blue Wall H_Door:0:Left Ground Ground Wall Wall Socket_Green V_Door:1:Down DoorButton:0 Wall
+Null Wall Socket_Blue Ground Ground Socket_Red Wall Wall Wall Wall Wall Null
+Null Null Wall Wall Wall Wall Wall Null Null Null Null Null
+7 7
+Null Null Wall DimensionOut:Top Wall Null Null
+Null Wall Socket_Orange Ground Socket_Orange Wall Null
+Wall Ground V_Bridge Ground Ground Socket_Red Wall
+Wall Ground Ground Ground Ground Ground DimensionOut:Right
+Wall Ground Ground Ground Ground Ground Wall
+Null Wall Ground DoorButton:1 Wall Wall Null
+Null Null Wall Wall Wall Null Null
+---DoorButton---
+2
+0 0
+1 1

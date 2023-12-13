@@ -1,0 +1,43 @@
+2
+17 17
+Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall
+Wall Socket_Green Ground Wall Ground Ground Ground Ground DoorButton:4 Ground Ground Ground Ground Wall Ground Socket_Yellow Wall
+Wall Ground PlayerF:1 Wall Ground Ground Ground Ground Ground Ground Ground Ground Ground Wall Ground Ground Wall
+Wall Wall H_Door:0:Right Wall Ground Ground Ground Ground Ground Ground Ground Ground Ground Wall H_Door:1:Left Wall Wall
+Wall Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Wall
+Wall Ground Ground Ground Ground Ground Wall Wall H_Door:7:Left Wall Wall Ground Ground Ground Ground Ground Wall
+Wall Ground Ground Ground Ground Ground Wall DoorButton:3 Ground DoorButton:0 Wall Ground Ground Ground Ground Ground Wall
+Wall Ground Ground Ground Ground Ground Wall Ground Ground PlayerM:0 Wall Ground Ground Ground Ground Ground Wall
+Wall DoorButton:7 Ground Ground Ground Ground V_Door:6:Up Ground DimensionIn:1 Ground V_Door:4:Up Ground Ground Ground Ground DoorButton:5 Wall
+Wall Ground Ground Ground Ground Ground Wall Ground Ground Ground Wall Ground Ground Ground Ground Ground Wall
+Wall Ground Ground Ground Ground Ground Wall DoorButton:2 Ground DoorButton:1 Wall Ground Ground Ground Ground Ground Wall
+Wall Ground Ground Ground Ground Ground Wall Wall H_Door:5:Right Wall Wall Ground Ground Ground Ground Ground Wall
+Wall Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Ground Wall
+Wall Wall H_Door:3:Right Wall Ground Ground Ground Ground Ground Ground Ground Ground Ground Wall H_Door:2:Left Wall Wall
+Wall Ground Ground Wall Ground Ground Ground Ground Ground Ground Ground Ground Ground Wall Ground Ground Wall
+Wall Socket_Blue Ground Wall Ground Ground Ground Ground DoorButton:6 Ground Ground Ground Ground Wall Ground Socket_Red Wall
+Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall
+9 9
+Null Null Null Wall DimensionOut:Top Wall Null Null Null
+Null Null Null Wall Ground Wall Null Null Null
+Null Null Null Wall H_Door_Reverse:8:Left Wall Null Null Null
+Wall Wall Wall Socket_Green Ground Socket_Yellow Wall Wall Wall
+DimensionOut:Left Ground V_Door_Reverse:11:Up Ground Ground Ground V_Door_Reverse:9:Down Ground DimensionOut:Right
+Wall Wall Wall Socket_Blue Ground Socket_Red Wall Wall Wall
+Null Null Null Wall H_Door_Reverse:10:Right Wall Null Null Null
+Null Null Null Wall Ground Wall Null Null Null
+Null Null Null Wall DimensionOut:Bottom Wall Null Null Null
+---DoorButton---
+12
+0 0
+1 1
+2 2
+3 3
+4 4
+5 5
+6 6
+7 7
+4 8
+5 9
+6 10
+7 11

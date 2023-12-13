@@ -1,0 +1,11 @@
+1
+9 13
+Null Wall Null Null Null Null Null Wall Null Null Null Null Null
+Wall Socket_Yellow Wall Wall Wall Wall Wall Socket_Green Wall Null Null Null Null
+Wall Ground Ground Ground Ground Ground Ground Ground Ground Wall Null Wall Wall
+Wall Ground V_Bridge Bridge_H Ground Ground Ground Ground Ground Ground Wall Socket_Blue Wall
+Wall Ground Ground Socket_Blue Ground Wall Ground V_Bridge Ground Ground Ground Ground Wall
+Wall Ground Ground Ground H_Bridge PlayerM:0 Ground Ground Ground Ground Wall Ground Wall
+Wall Ground Wall Ground Ground Wall Ground Ground Ground Wall Wall Wall Wall
+Wall Socket_Green Wall Wall Wall Socket_Yellow Ground Ground Wall Null Null Null Null
+Wall Wall Wall Null Null Wall Wall Wall Null Null Null Null Null

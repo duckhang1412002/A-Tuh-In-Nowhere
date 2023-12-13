@@ -1,0 +1,49 @@
+1
+16 14
+Null Null Null Null Null Null Null Null Null Null Null Null Null Null
+Null Null Null Wall Wall Wall Wall Wall Wall Wall Wall Null Null Null
+Null Null Wall V_Door:17:Up V_Door_Reverse:18:Up V_Door:19:Up V_Door_Reverse:20:Down V_Door_Reverse:21:Up V_Door_Reverse:22:Up V_Door:23:Down Ground Wall Null Null
+Null Wall Ground V_Door:16:Down Wall Wall Wall Wall Wall Wall H_Door_Reverse:24:Left H_Door:25:Right Wall Null
+Null Wall H_Door:15:Left Wall Wall Null Null Null Null Null Wall H_Door:26:Left Wall Null
+Null Wall H_Door:14:Right Wall Null Null Wall Wall Wall Null Wall H_Door:27:Left Wall Null
+Null Wall H_Door_Reverse:13:Left Wall Null Wall Socket_Yellow Ground PlayerF:1 Wall Wall H_Door_Reverse:28:Left Wall Null
+Null Wall H_Door:12:Right Wall Null Wall Ground Ground Ground V_Door_Reverse:0:Up Ground Ground Wall Null
+Null Wall H_Door_Reverse:11:Right Wall Null Wall DoorButton:1 Ground Ground Wall Wall Wall Null Null
+Null Wall H_Door:10:Left Wall Null Null Wall Wall Wall Null Null Null Null Null
+Null Wall H_Door:9:Right Wall Wall Null Null Null Null Null Null Wall Null Null
+Null Wall H_Door_Reverse:8:Left H_Door:7:Right Wall Wall Wall Wall Wall Wall Wall Socket_Yellow Wall Null
+Null Null Wall Ground V_Door:6:Down V_Door_Reverse:5:Down V_Door_Reverse:4:Up V_Door:3:Down V_Door_Reverse:2:Down V_Door:1:Up Ground DoorButton:0 PlayerM:0 Wall
+Null Null Null Wall Wall Wall Wall Wall Wall Wall Wall Ground Wall Null
+Null Null Null Null Null Null Null Null Null Null Null Wall Null Null
+Null Null Null Null Null Null Null Null Null Null Null Null Null Null
+---DoorButton---
+29
+0 0
+1 1
+1 2
+1 3
+1 4
+1 5
+1 6
+1 7
+1 8
+1 9
+1 10
+1 11
+1 12
+1 13
+1 14
+1 15
+1 16
+1 17
+1 18
+1 19
+1 20
+1 21
+1 22
+1 23
+1 24
+1 25
+1 26
+1 27
+1 28

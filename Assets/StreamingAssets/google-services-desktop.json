@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "414701862728",
+    "firebase_url": "https://a-tuh-connectrix-c4f3-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "a-tuh-connectrix-c4f3",
+    "storage_bucket": "a-tuh-connectrix-c4f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414701862728:android:42a9e0c23293028709fd7d",
+        "android_client_info": {
+          "package_name": "com.c4f3.atuhconnectrix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "414701862728-rjsp6fvgf7h9g8657c4movt22ia2khi9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDverXsWfAQXvvzJzuM8K1F1_zpa7ZSWkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "414701862728-rjsp6fvgf7h9g8657c4movt22ia2khi9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

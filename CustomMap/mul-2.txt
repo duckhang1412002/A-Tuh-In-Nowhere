@@ -1,0 +1,40 @@
+4 
+7 7
+Wall Wall Wall Wall Wall Wall Wall
+Wall Ground Ground Ground Ground Ground Wall
+Wall Ground PlayerM:0 Ground Ground Ground Wall
+Wall Ground Ground DimensionIn:1 Ground Ground Wall
+Wall Ground Ground Ground PlayerF:1 Ground Wall
+Wall Socket_Blue Ground Ground Ground Ground Wall
+Wall Wall Wall Wall Wall Wall Wall
+7 7
+Wall Wall Wall Wall Wall Wall Wall
+Wall Socket_Yellow V_Door:0:Up Ground Ground Ground Wall
+Wall Wall Wall Ground Ground Ground Wall
+DimensionOut:Left Ground Ground DimensionIn:2 Ground Ground DimensionOut:Right
+Wall Ground Ground Ground Ground Ground Wall
+Wall DoorButton:0 Ground Ground Ground Socket_Yellow Wall
+Wall Wall Wall Wall Wall Wall Wall
+7 7
+Wall Wall Wall DimensionOut:Top Wall Wall Wall
+Wall Socket_Red Ground Ground Ground Ground Wall
+Wall Socket_Orange Ground Ground Ground Ground Wall
+Wall Ground Ground DimensionIn:3 Ground Ground Wall
+Wall Ground Ground Ground Ground Socket_Orange Wall
+Wall Socket_Blue Ground Ground Ground Socket_Red Wall
+Wall Wall Wall DimensionOut:Bottom Wall Wall Wall
+7 7
+Wall Wall Wall DimensionOut:Top Wall Wall Wall
+Wall DoorButton:1 Ground Ground Ground DoorButton:2 Wall
+Wall Ground Wall H_Door:3:Left Wall Ground Wall
+DimensionOut:Left Ground V_Door:2:Up H_Bridge V_Door:1:Up Ground DimensionOut:Right
+Wall Ground Wall H_Door:4:Right Wall Ground Wall
+Wall DoorButton:4 Ground Ground Ground DoorButton:3 Wall
+Wall Wall Wall DimensionOut:Bottom Wall Wall Wall
+---DoorButton---
+5
+0 0
+1 1
+2 2
+3 3
+4 4

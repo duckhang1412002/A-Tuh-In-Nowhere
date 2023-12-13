@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3758f8f58fdef43803eb9be1df0608, type: 3}
+  m_Name: PhotonServerSettings
+  m_EditorClassIdentifier: 
+  AppSettings:
+    AppIdRealtime: b1703cac-f0e7-454f-a118-ddf6c6b346f0
+    AppIdFusion: 
+    AppIdChat: 
+    AppIdVoice: 
+    AppVersion: 
+    UseNameServer: 1
+    FixedRegion: asia
+    Server: 
+    Port: 0
+    ProxyServer: 
+    Protocol: 0
+    EnableProtocolFallback: 1
+    AuthMode: 0
+    EnableLobbyStatistics: 0
+    NetworkLogging: 1
+  DevRegion: asia
+  PunLogging: 0
+  EnableSupportLogger: 0
+  RunInBackground: 1
+  StartInOfflineMode: 0
+  RpcList:
+  - ClickRpc
+  - DestroyRpc
+  - DestroySpaceship
+  - Fire
+  - RespawnSpaceship
+  - SpawnWire
+  - LogMove
+  - ResetTheGame
+  - CallChangePlayerAttrStartPoint
+  - ChangePlayerAttrStartPoint
+  - RPC_PunMap
+  - SetPlayerF
+  - SetPlayerM
+  - InitializeMapRPC
+  - GenerateGame
+  - CallChangePlayerAttrEndPoint
+  - GenerateWire
+  - SetPreviousMove
+  - SetTempTargetMove
+  - UpdateLocation
+  - DimensionInUpdateLocation
+  - DimensionOutUpdateLocation
+  - CallCheckBridgeNextStep
+  - CallBridgeCheckCurrentStep
+  - CallBridgeCheckNextStep
+  - CallDoorButtonCheckCurrentStep
+  - CallDoorButtonCheckNextStep
+  - CallDoorCheckNextStep
+  - CallChangeDoorAttr
+  - CallWinGameTwoPlayer
+  - CallPlusScore
+  - CallScene
+  - CallLeaveRoom
+  - SetCurrentPosition
+  - SetTargetPosition
+  - SetTempCurrentPosition
+  - SetTempTargetPosition
+  - RenderWire
+  - SetPreviousPosition
+  - AddScore
+  - ChangePlayerColor
+  - UpdateMapWire
+  - UpdateDefaultZAxis
+  - UpdateSocket
+  - CallInitializeMapRPC
+  - StartDownloadOnClients
+  - ActiveStartBtn
+  - AddMapLoaded
+  - CallPunPlayerM
+  - setP1
+  - setP
+  - SetOtherPlayer
+  - CheckBeforeStartTheMap
+  - Pun_CheckBeforeStartTheMap
+  - EnableMove
+  - Pun_SetGender
+  - Pun_LoadGame
+  - CallWinGameVSMode
+  - SendMessage
+  - Surrender
+  - SetMapID
+  - Pun_SetMapIDVersusMode
+  DisableAutoOpenWizard: 1
+  ShowSettings: 1
+  DevRegionSetOnce: 1

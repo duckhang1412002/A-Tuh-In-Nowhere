@@ -1,0 +1,11 @@
+1
+9 11
+Null Null Null Null Null Null Wall Wall Wall Null Null
+Null Null Wall Wall Wall Wall Wall Socket_Red Wall Null Null
+Null Null Wall Ground Ground Ground Ground Ground Wall Wall Wall
+Wall Wall Wall Ground Wall Wall Ground Ground Ground Ground Wall
+Wall Socket_Blue Ground Ground Wall Ground Ground Wall Wall Ground Wall
+Wall Wall Wall Wall Wall Ground PlayerM:0 Ground Socket_Red Ground Wall
+Wall Wall Socket_Blue Wall Ground Ground Ground Ground Ground Ground Wall
+Null Wall Ground Ground Ground Ground Wall Wall Wall Wall Wall
+Null Wall Wall Wall Wall Wall Wall Null Null Null Null

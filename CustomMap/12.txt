@@ -1,0 +1,31 @@
+1
+13 11
+Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall
+Wall Socket_Red PlayerM:0 Ground Ground DoorButton:3 Ground Ground Ground Ground Wall
+Wall Ground Wall Wall Wall H_Door:0:Left Wall Wall Wall Ground Wall
+Wall Ground Wall Ground Ground DoorButton:6 V_Door_Reverse:9:Up Ground Wall Ground Wall
+Wall Ground Wall H_Door_Reverse:8:Left Wall H_Door:5:Left Wall Ground Wall Ground Wall
+Wall Ground Wall H_Door_Reverse:12:Right Wall H_Door:13:Right Wall Ground Wall Ground Wall
+Wall DoorButton:2 V_Door:3:Up DoorButton:5 V_Door:4:Up Socket_Red V_Door:6:Down DoorButton:7 V_Door:1:Up DoorButton:0 Wall
+Wall Ground Wall Ground Wall H_Door_Reverse:11:Left Wall Ground Wall Ground Wall
+Wall Ground Wall Ground Wall H_Door:7:Right Wall Ground Wall Ground Wall
+Wall Ground Wall Ground V_Door_Reverse:10:Up DoorButton:4 Ground Ground Wall Ground Wall
+Wall Ground Wall Wall Wall H_Door:2:Right Wall Wall Wall Ground Wall
+Wall Ground Ground Ground Ground DoorButton:1 Ground Ground Ground Ground Wall
+Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall Wall
+---DoorButton---
+14
+0 0
+6 9
+1 1
+2 2
+3 3
+4 4
+5 5
+5 8
+6 6
+7 7
+4 10
+4 11
+6 12
+6 13

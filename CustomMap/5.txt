@@ -1,0 +1,16 @@
+2
+6 8
+Null Null Null Wall Wall Wall Null Null
+Null Null Wall Socket_Green Ground Socket_Red Wall Null
+Null Wall Ground Ground Ground Ground Ground Wall
+Wall Socket_Red Ground PlayerM:0 Ground DimensionIn:1 Ground Wall
+Null Wall Ground Ground Ground Ground Socket_Green Wall
+Null Null Wall Wall Wall Wall Wall Null
+7 7
+Null Null Wall DimensionOut:Top Wall Null Null
+Null Null Wall Ground Wall Null Null
+Wall Wall Wall Ground Wall Wall Wall
+DimensionOut:Left Ground Ground H_Bridge Ground Ground DimensionOut:Right
+Wall Wall Wall Ground Wall Wall Wall
+Null Null Wall Ground Wall Null Null
+Null Null Wall DimensionOut:Bottom Wall Null Null
